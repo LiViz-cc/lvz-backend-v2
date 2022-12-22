@@ -1,7 +1,6 @@
 package com.liviz.v2.controller;
 
 import com.liviz.v2.config.JwtTokenUtil;
-import com.liviz.v2.dto.AuthDto;
 import com.liviz.v2.dto.AuthSignUpDto;
 import com.liviz.v2.dto.JwtResponse;
 import com.liviz.v2.model.JwtRequest;
@@ -15,6 +14,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -36,16 +36,19 @@ public class JwtAuthenticationController {
     @Autowired
     private AuthService authService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @PostMapping("/auth/login")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
-
-        // prepare authentication
-        authenticate(authenticationRequest.getEmail(), authenticationRequest.getPassword());
+//        // prepare authentication
+//        authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
 
         // get user details
         final UserDetails userDetails = userDetailsService
-                .loadUserByUsername(authenticationRequest.getEmail());
+                .loadUserByUsername(authenticationRequest.getUsername());
 
+        System.out.println("userDetails: " + userDetails);
         // generate token
         final String token = jwtTokenUtil.generateToken(userDetails);
 

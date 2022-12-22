@@ -29,7 +29,6 @@ public class UserController {
             @PathVariable("id") String id,
             @RequestHeader("Authorization") String authorizationHeader
     ) {
-        System.out.println("authorizationHeader: " + authorizationHeader);
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
             throw new RuntimeException("Unauthorized");
         }
@@ -42,8 +41,10 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        System.out.println("userData: " + userData.get().toString());
         if (!jwtTokenUtil.validateToken(bearerToken, userData.get().getUsername())) {
+            // TODO: handle expired token
+            System.out.println("bearerToken: " + bearerToken);
+            System.out.println("userData.get().getUsername(): " + userData.get().getUsername());
             throw new ExpiredJwtException(null, null, "Token expired or not valid");
         }
 

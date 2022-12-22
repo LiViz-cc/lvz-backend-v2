@@ -2,6 +2,7 @@ package com.liviz.v2.config;
 
 import java.io.Serializable;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -50,6 +51,7 @@ public class JwtTokenUtil implements Serializable {
     //check if the token has expired
     private Boolean isTokenExpired(String token) {
         final Date expiration = getExpirationDateFromToken(token);
+        System.out.println("expiration: " + expiration);
         return expiration.before(new Date());
     }
 

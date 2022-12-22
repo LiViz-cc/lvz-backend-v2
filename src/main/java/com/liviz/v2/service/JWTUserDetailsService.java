@@ -17,12 +17,12 @@ public class JWTUserDetailsService implements UserDetailsService {
     private UserDao userDao;
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Optional<com.liviz.v2.model.User> user = userDao.findByEmail(email);
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<com.liviz.v2.model.User> user = userDao.findByUsername(username);
         if (user.isEmpty()) {
-            throw new UsernameNotFoundException("User not found with email: " + email);
+            throw new UsernameNotFoundException("User not found with username: " + username);
         }
-        return new User(user.get().getEmail(), user.get().getPassword(),
+        return new User(user.get().getUsername(), user.get().getPassword(),
                 new ArrayList<>());
     }
 

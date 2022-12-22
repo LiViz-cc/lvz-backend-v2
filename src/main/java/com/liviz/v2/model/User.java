@@ -30,6 +30,8 @@ public class User {
     @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
     private Date modified;
 
+    @Indexed(unique = true)
+    @NonNull
     private String username;
 
     public User(String email, String password, String username) {
