@@ -1,5 +1,6 @@
 package com.liviz.v2.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -12,20 +13,21 @@ public class DataSource {
     private String id;
 
     private String name;
-    private Date created;
-    private Date modified;
     private boolean isPublic;
     private String description;
+    private String static_data;
+    private String data_type;
+    private String url;
+
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
+    private Date created;
+
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
+    private Date modified;
 
     @DBRef(lazy = true)
     private User created_by;
 
-    // json
-    private String static_data;
-
-    private String data_type;
-
-    private String url;
 
     public DataSource(String name, boolean isPublic, String description, String static_data, String data_type, String url) {
         this.name = name;
@@ -78,8 +80,8 @@ public class DataSource {
         return name;
     }
 
-    public long getCreated() {
-        return created.getTime();
+    public Date getCreated() {
+        return created;
     }
 
     public long getModified() {

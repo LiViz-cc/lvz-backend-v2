@@ -1,5 +1,6 @@
 package com.liviz.v2.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -7,14 +8,19 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.Date;
 import java.util.List;
 
-@Document(collation = "user")
+@Document("user")
 public class User {
     @Id
     private String id;
 
     private String email;
+
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
     private Date created;
+
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
     private Date modified;
+
     private String username;
 
     public User(String email, String username) {

@@ -1,5 +1,6 @@
 package com.liviz.v2.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -9,13 +10,17 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import java.sql.Timestamp;
 import java.util.Date;
 
-@Document(collation = "project")
+@Document("project")
 public class Project {
     @Id
     private String id;
 
     private String name;
+
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
     private Date created;
+
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
     private Date modified;
 
     @DBRef(lazy = true)
