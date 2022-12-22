@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
 
 @Document("project")
 public class Project {
@@ -30,6 +31,9 @@ public class Project {
     private boolean isPublic;
 
     private String description;
+
+    @DBRef(lazy = true)
+    private List<DataSource> dataSources;
 
     public Project(String name, User created_by, boolean isPublic, String description) {
         this.name = name;

@@ -5,6 +5,8 @@ import com.liviz.v2.dao.UserDao;
 import com.liviz.v2.dto.DataSourcePostingDto;
 import com.liviz.v2.model.DataSource;
 import com.liviz.v2.model.User;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,8 @@ public class DataSourceController {
 
     @Autowired
     UserDao userDao;
+
+    private final Log logger = LogFactory.getLog(getClass());
 
     @GetMapping("/data_sources/{id}")
     public ResponseEntity<DataSource> getDataSourceById(@PathVariable("id") String id) {
@@ -51,7 +55,7 @@ public class DataSourceController {
             dataSource = dataSourceDao.save(dataSource);
             return new ResponseEntity<>(dataSource, HttpStatus.CREATED);
         } catch (Exception e) {
-            System.out.println(e);
+            logger.error(e);
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

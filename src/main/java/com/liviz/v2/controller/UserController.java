@@ -42,10 +42,7 @@ public class UserController {
         }
 
         if (!jwtTokenUtil.validateToken(bearerToken, userData.get().getUsername())) {
-            // TODO: handle expired token
-            System.out.println("bearerToken: " + bearerToken);
-            System.out.println("userData.get().getUsername(): " + userData.get().getUsername());
-            throw new ExpiredJwtException(null, null, "Token expired or not valid");
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
         return new ResponseEntity<>(userData.get(), HttpStatus.OK);

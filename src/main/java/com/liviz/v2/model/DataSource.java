@@ -2,16 +2,19 @@ package com.liviz.v2.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
+import java.util.List;
 
 @Document("data_source")
 public class DataSource {
     @Id
     private String id;
 
+    @Indexed(unique = true)
     private String name;
     private boolean isPublic;
     private String description;
@@ -27,6 +30,9 @@ public class DataSource {
 
     @DBRef(lazy = true)
     private User created_by;
+
+    @DBRef(lazy = true)
+    private List<Project> projects;
 
 
     public DataSource(String name, boolean isPublic, String description, String static_data, String data_type, String url) {

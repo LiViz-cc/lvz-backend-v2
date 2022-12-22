@@ -4,6 +4,8 @@ import com.liviz.v2.dao.ProjectDao;
 import com.liviz.v2.dao.UserDao;
 import com.liviz.v2.model.Project;
 import com.liviz.v2.model.User;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,8 @@ public class ProjectController {
 
     @Autowired
     UserDao userDao;
+
+    private final Log logger = LogFactory.getLog(getClass());
 
     @GetMapping("/projects/{id}")
     public ResponseEntity<Project> getUserById(@PathVariable("id") String id) {
@@ -38,7 +42,7 @@ public class ProjectController {
                     userData.get(), project.isPublic(), project.getDescription()));
             return new ResponseEntity<>(_project, HttpStatus.CREATED);
         } catch (Exception e) {
-            System.out.println(e);
+            logger.error(e);
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
