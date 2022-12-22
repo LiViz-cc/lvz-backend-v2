@@ -4,18 +4,16 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.net.URL;
-import java.sql.Timestamp;
 import java.util.Date;
 
-@Document(collation = "DataSource")
+@Document("data_source")
 public class DataSource {
     @Id
     private String id;
 
     private String name;
-    private Timestamp created;
-    private Timestamp modified;
+    private Date created;
+    private Date modified;
     private boolean isPublic;
     private String description;
 
@@ -36,8 +34,8 @@ public class DataSource {
         this.static_data = static_data;
         this.data_type = data_type;
         this.url = url;
-        this.created = new Timestamp(System.currentTimeMillis());
-        this.modified = new Timestamp(System.currentTimeMillis());
+        this.created = new Date(System.currentTimeMillis());
+        this.modified = new Date(System.currentTimeMillis());
     }
 
     public User getUser() {
@@ -84,8 +82,8 @@ public class DataSource {
         return created.getTime();
     }
 
-    public Date getModified() {
-        return modified;
+    public long getModified() {
+        return modified.getTime();
     }
 
     public boolean isPublic() {

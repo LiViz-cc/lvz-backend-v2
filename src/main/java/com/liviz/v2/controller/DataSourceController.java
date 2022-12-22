@@ -24,7 +24,7 @@ public class DataSourceController {
     @GetMapping("/data_sources/{id}")
     public ResponseEntity<DataSource> getDataSourceById(@PathVariable("id") String id) {
 
-        Optional<DataSource> dataSourceData = dataSourceDao.findById((id));
+        Optional<DataSource> dataSourceData = dataSourceDao.findById(id);
         if (dataSourceData.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
