@@ -35,24 +35,7 @@ public class AuthService {
 
         // check if username already exists
         if (authSignUpDto.getUsername() == null) {
-            // refer to https://stackoverflow.com/questions/17947026/java-method-which-can-provide-the-same-output-as-python-method-for-hmac-sha256-i
-            try {
-                // get HMAC sha256 algorithm
-                Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
-                // set secret key
-                SecretKeySpec secretKey = new SecretKeySpec("1234".getBytes(), "HmacSHA256");
-                sha256_HMAC.init(secretKey);
-                // get HMAC sha256 hash
-                byte[] hash = sha256_HMAC.doFinal("test".getBytes());
-                // convert to hex string
-                String check = Hex.encodeHexString(hash);
-                // set username with first 10 characters of hex string
-                authSignUpDto.setUsername(check.substring(0, 10));
-            } catch (NoSuchAlgorithmException e) {
-                logger.debug("NoSuchAlgorithmException, " + e.getMessage());
-            } catch (InvalidKeyException e) {
-                logger.debug("InvalidKeyException, " + e.getMessage());
-            }
+            authSignUpDto.setUsername(generateUsername(authSignUpDto.getEmail()));
         } else {
             userOptional = userDao.findByUsername(authSignUpDto.getUsername());
             if (userOptional.isPresent()) {
@@ -63,5 +46,28 @@ public class AuthService {
         // create user
         User user = new User(authSignUpDto.getEmail(), passwordEncoder.encode(authSignUpDto.getPassword()), authSignUpDto.getUsername());
         return Optional.of(userDao.save(user));
+    }
+
+    // refer to https://stackoverflow.com/questions/17947026/java-method-which-can-provide-the-same-output-as-python-method-for-hmac-sha256-i
+    private String generateUsername(String email) {
+        try {
+            // get HMAC sha256 algorithm
+            Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
+            // set secret key
+            final String randomSecret = "wje9ewEWFX";
+            SecretKeySpec secretKey = new SecretKeySpec(randomSecret.getBytes(), "HmacSHA256");
+            sha256_HMAC.init(secretKey);
+            // get HMAC sha256 hash
+            byte[] hash = sha256_HMAC.doFinal(email.getBytes());
+            // convert to hex string
+            String check = Hex.encodeHexString(hash);
+            // set username with first 10 characters of hex string
+            return check.substring(0, 10);
+        } catch (NoSuchAlgorithmException e) {
+            logger.debug("NoSuchAlgorithmException, " + e.getMessage());
+        } catch (InvalidKeyException e) {
+            logger.debug("InvalidKeyException, " + e.getMessage());
+        }
+        return null;
     }
 }
