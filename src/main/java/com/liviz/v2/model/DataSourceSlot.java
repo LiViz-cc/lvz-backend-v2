@@ -1,9 +1,6 @@
 package com.liviz.v2.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import javax.validation.constraints.NotEmpty;
@@ -13,6 +10,7 @@ import javax.validation.constraints.NotNull;
 @Setter
 @AllArgsConstructor
 @ToString
+@NoArgsConstructor
 public class DataSourceSlot {
     @NotEmpty
     private String name;

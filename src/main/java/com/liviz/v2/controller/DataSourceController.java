@@ -1,5 +1,6 @@
 package com.liviz.v2.controller;
 
+import com.liviz.v2.config.JwtTokenUtil;
 import com.liviz.v2.dao.DataSourceDao;
 import com.liviz.v2.dao.UserDao;
 import com.liviz.v2.dto.DataSourcePostingDto;
@@ -23,20 +24,53 @@ public class DataSourceController {
     @Autowired
     UserDao userDao;
 
+    @Autowired
+    JwtTokenUtil jwtTokenUtil;
+
     private final Log logger = LogFactory.getLog(getClass());
 
     @GetMapping("/data_sources/{id}")
-    public ResponseEntity<DataSource> getDataSourceById(@PathVariable("id") String id) {
+    public ResponseEntity<DataSource> getDataSourceById(@PathVariable("id") String id,
+                                                        @RequestHeader("Authorization") String authorizationHeader) {
+        // get jwt username
+        String usernameFromToken = jwtTokenUtil.getJwtIdentity(authorizationHeader);
 
+        // return unauthenticated if jwt username is null
+        Optional<User> userOptional = userDao.findByUsername(usernameFromToken);
+        if (userOptional.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
+        }
+        User user = userOptional.get();
+
+        // return not found if data source is not found
         Optional<DataSource> dataSourceData = dataSourceDao.findById(id);
         if (dataSourceData.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
+
+        // return unauthorized if jwt username is not equal to user id
+        if (!dataSourceData.get().getCreatedBy().getId().equals(user.getId())) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
+        // return data source
         return new ResponseEntity<>(dataSourceData.get(), HttpStatus.OK);
     }
 
     @GetMapping("/data_sources")
-    public ResponseEntity<List<DataSource>> getAllDataSources() {
+    public ResponseEntity<List<DataSource>> getAllDataSources(@RequestHeader("Authorization") String authorizationHeader) {
+        // get jwt username
+        String usernameFromToken = jwtTokenUtil.getJwtIdentity(authorizationHeader);
+
+        // return unauthenticated if jwt username is null
+        Optional<User> userOptional = userDao.findByUsername(usernameFromToken);
+        if (userOptional.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
+        }
+        User user = userOptional.get();
+
+        // TODO: check if user is the creator of the data source
+
         List<DataSource> dataSources = dataSourceDao.findAll();
         if (dataSources.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -45,15 +79,30 @@ public class DataSourceController {
     }
 
     @PostMapping("/data_sources")
-    public ResponseEntity<DataSource> createDataSource(@RequestBody DataSourcePostingDto dataSourceDto) {
+    public ResponseEntity<DataSource> createDataSource(@RequestBody DataSourcePostingDto dataSourceDto,
+                                                       @RequestHeader("Authorization") String authorizationHeader) {
         try {
-            User user = userDao.findById("63a16de74b87ded4ae350dbd").get();
+            // get jwt username
+            String usernameFromToken = jwtTokenUtil.getJwtIdentity(authorizationHeader);
+
+            // return unauthenticated if jwt username is null
+            Optional<User> userOptional = userDao.findByUsername(usernameFromToken);
+            if (userOptional.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
+            }
+            User user = userOptional.get();
+
+            // create new data source
             DataSource dataSource =
                     new DataSource(dataSourceDto.getName(), dataSourceDto.isPublic(), dataSourceDto.getDescription(),
                             dataSourceDto.getStatic_data(), dataSourceDto.getData_type(), dataSourceDto.getUrl(),
                             dataSourceDto.getSlots());
-            dataSource.setUser(user);
+            dataSource.setCreatedBy(user);
+
+            // save data source
             dataSource = dataSourceDao.save(dataSource);
+
+            // return data source
             return new ResponseEntity<>(dataSource, HttpStatus.CREATED);
         } catch (Exception e) {
             logger.error(e);

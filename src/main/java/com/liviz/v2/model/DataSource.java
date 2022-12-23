@@ -1,6 +1,12 @@
 package com.liviz.v2.model;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -13,16 +19,23 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Document("data_source")
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
 public class DataSource {
     @Id
     private String id;
 
     @Indexed(unique = true)
     private String name;
+
+    @Field("public")
     private boolean isPublic;
     private String description;
     private String static_data;
-    private String data_type;
+    @Field("data_type")
+    private String dataType;
     private String url;
 
     @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
@@ -32,7 +45,9 @@ public class DataSource {
     private Date modified;
 
     @DBRef(lazy = true)
-    private User created_by;
+    @Field("created_by")
+    @JsonProperty("created_by")
+    private User createdBy;
 
     @DBRef(lazy = true)
     private List<Project> projects;
@@ -43,13 +58,12 @@ public class DataSource {
     @Field("slots")
     private List<DataSourceSlot> dataSourceSlots;
 
-
     public DataSource(String name, boolean isPublic, String description, String static_data, String data_type, String url, List<DataSourceSlot> dataSourceSlots) {
         this.name = name;
         this.isPublic = isPublic;
         this.description = description;
         this.static_data = static_data;
-        this.data_type = data_type;
+        this.dataType = data_type;
         this.url = url;
 
         // deep copy dataSourceSlots
@@ -68,105 +82,17 @@ public class DataSource {
         this.isPublic = other.isPublic;
         this.description = other.description;
         this.static_data = other.static_data;
-        this.data_type = other.data_type;
+        this.dataType = other.dataType;
         this.url = other.url;
         this.created = other.created;
         this.modified = other.modified;
-        this.created_by = other.created_by;
+        this.createdBy = other.createdBy;
         this.projects = other.projects;
+
+        // deep copy of dataSourceExample and dataSourceSlots
         this.dataSourceExample = new DataSourceExample(other.dataSourceExample);
         this.dataSourceSlots = other.dataSourceSlots.stream().map(DataSourceSlot::new).collect(Collectors.toList());
     }
 
-    public User getUser() {
-        return created_by;
-    }
 
-    public User setUser(User user) {
-        return created_by = user;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setPublic(boolean aPublic) {
-        isPublic = aPublic;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setStatic_data(String static_data) {
-        this.static_data = static_data;
-    }
-
-    public void setData_type(String data_type) {
-        this.data_type = data_type;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Date getCreated() {
-        return created;
-    }
-
-    public long getModified() {
-        return modified.getTime();
-    }
-
-    public boolean isPublic() {
-        return isPublic;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getStatic_data() {
-        return static_data;
-    }
-
-    public String getData_type() {
-        return data_type;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public List<DataSourceSlot> getDataSourceSlots() {
-        return dataSourceSlots;
-    }
-
-    public void setDataSourceSlots(List<DataSourceSlot> dataSourceSlots) {
-        this.dataSourceSlots = dataSourceSlots;
-    }
-
-    @Override
-    public String toString() {
-        return "DataSource{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", created=" + created +
-                ", modified=" + modified +
-                ", isPublic=" + isPublic +
-                ", description='" + description + '\'' +
-                ", created_by=" + created_by +
-                ", static_data='" + static_data + '\'' +
-                ", data_type='" + data_type + '\'' +
-                ", url='" + url + '\'' +
-                '}';
-    }
 }
