@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Document("project")
 public class Project {
@@ -40,6 +41,17 @@ public class Project {
         this.created_by = created_by;
         this.isPublic = isPublic;
         this.description = description;
+    }
+
+    public Project(Project other) {
+        this.id = other.id;
+        this.name = other.name;
+        this.created = other.created;
+        this.modified = other.modified;
+        this.created_by = other.created_by;
+        this.isPublic = other.isPublic;
+        this.description = other.description;
+        this.dataSources = other.dataSources;
     }
 
     public String getName() {

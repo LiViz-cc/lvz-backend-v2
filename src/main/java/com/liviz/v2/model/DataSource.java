@@ -62,6 +62,22 @@ public class DataSource {
         this.modified = new Date(System.currentTimeMillis());
     }
 
+    public DataSource(DataSource other) {
+        this.id = other.id;
+        this.name = other.name;
+        this.isPublic = other.isPublic;
+        this.description = other.description;
+        this.static_data = other.static_data;
+        this.data_type = other.data_type;
+        this.url = other.url;
+        this.created = other.created;
+        this.modified = other.modified;
+        this.created_by = other.created_by;
+        this.projects = other.projects;
+        this.dataSourceExample = new DataSourceExample(other.dataSourceExample);
+        this.dataSourceSlots = other.dataSourceSlots.stream().map(DataSourceSlot::new).collect(Collectors.toList());
+    }
+
     public User getUser() {
         return created_by;
     }
