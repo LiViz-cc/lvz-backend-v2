@@ -8,7 +8,6 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
@@ -26,12 +25,12 @@ public class DisplaySchema {
     private String name;
 
     @Field("created")
-    @NotEmpty
+    @NotNull
     @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
     private Date createdTime;
 
     @Field("modified")
-    @NotEmpty
+    @NotNull
     @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
     private Date modifiedTime;
 
