@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.validator.constraints.URL;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -36,6 +37,8 @@ public class DataSource {
     private String static_data;
     @Field("data_type")
     private String dataType;
+
+    @URL
     private String url;
 
     @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
