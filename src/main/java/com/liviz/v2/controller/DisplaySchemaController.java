@@ -6,6 +6,7 @@ import com.liviz.v2.dto.DisplaySchemaDto;
 import com.liviz.v2.model.DisplaySchema;
 import com.liviz.v2.model.User;
 import com.liviz.v2.service.DisplaySchemaService;
+import com.liviz.v2.service.UserService;
 import org.apache.commons.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,7 +24,7 @@ public class DisplaySchemaController {
     DisplaySchemaService displaySchemaService;
 
     @Autowired
-    UserDao userDao;
+    UserService userService;
 
     @Autowired
     JwtTokenUtil jwtTokenUtil;
@@ -40,7 +41,7 @@ public class DisplaySchemaController {
             String usernameFromToken = jwtTokenUtil.getJwtIdentity(authorizationHeader);
 
             // return unauthenticated if jwt username is null
-            Optional<User> userOptional = userDao.findByUsername(usernameFromToken);
+            Optional<User> userOptional = userService.findByUsername(usernameFromToken);
             if (userOptional.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
             }

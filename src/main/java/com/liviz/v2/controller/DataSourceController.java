@@ -6,6 +6,7 @@ import com.liviz.v2.dao.UserDao;
 import com.liviz.v2.dto.DataSourceDto;
 import com.liviz.v2.model.DataSource;
 import com.liviz.v2.model.User;
+import com.liviz.v2.service.UserService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ public class DataSourceController {
     DataSourceDao dataSourceDao;
 
     @Autowired
-    UserDao userDao;
+    UserService userService;
 
     @Autowired
     JwtTokenUtil jwtTokenUtil;
@@ -36,7 +37,7 @@ public class DataSourceController {
         String usernameFromToken = jwtTokenUtil.getJwtIdentity(authorizationHeader);
 
         // return unauthenticated if jwt username is null
-        Optional<User> userOptional = userDao.findByUsername(usernameFromToken);
+        Optional<User> userOptional = userService.findByUsername(usernameFromToken);
         if (userOptional.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
         }
@@ -63,7 +64,7 @@ public class DataSourceController {
         String usernameFromToken = jwtTokenUtil.getJwtIdentity(authorizationHeader);
 
         // return unauthenticated if jwt username is null
-        Optional<User> userOptional = userDao.findByUsername(usernameFromToken);
+        Optional<User> userOptional = userService.findByUsername(usernameFromToken);
         if (userOptional.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
         }
@@ -86,7 +87,7 @@ public class DataSourceController {
             String usernameFromToken = jwtTokenUtil.getJwtIdentity(authorizationHeader);
 
             // return unauthenticated if jwt username is null
-            Optional<User> userOptional = userDao.findByUsername(usernameFromToken);
+            Optional<User> userOptional = userService.findByUsername(usernameFromToken);
             if (userOptional.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
             }
