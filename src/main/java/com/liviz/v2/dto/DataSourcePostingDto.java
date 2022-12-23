@@ -1,14 +1,21 @@
 package com.liviz.v2.dto;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.liviz.v2.model.DataSourceSlot;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Getter
 @Setter
+@ToString
+@AllArgsConstructor
 public class DataSourcePostingDto {
     @NotEmpty
     private String name;
@@ -24,15 +31,7 @@ public class DataSourcePostingDto {
     private String url;
 
     @NotNull
-    private DataSourceSlot dataSourceSlot;
+    private List<DataSourceSlot> slots;
 
-    public DataSourcePostingDto(String name, boolean isPublic, String description, String static_data, String data_type, String url) {
-        this.name = name;
-        this.isPublic = isPublic;
-        this.description = description;
-        this.static_data = static_data;
-        this.data_type = data_type;
-        this.url = url;
-    }
 
 }

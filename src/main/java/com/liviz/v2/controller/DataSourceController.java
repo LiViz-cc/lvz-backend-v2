@@ -51,7 +51,7 @@ public class DataSourceController {
             DataSource dataSource =
                     new DataSource(dataSourceDto.getName(), dataSourceDto.isPublic(), dataSourceDto.getDescription(),
                             dataSourceDto.getStatic_data(), dataSourceDto.getData_type(), dataSourceDto.getUrl(),
-                            dataSourceDto.getDataSourceSlot());
+                            dataSourceDto.getSlots());
             dataSource.setUser(user);
             dataSource = dataSourceDao.save(dataSource);
             return new ResponseEntity<>(dataSource, HttpStatus.CREATED);

@@ -1,16 +1,16 @@
 package com.liviz.v2.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.springframework.beans.factory.annotation.Required;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Document("data_source")
 public class DataSource {
@@ -40,17 +40,24 @@ public class DataSource {
     private DataSourceExample dataSourceExample;
 
     @NotNull
-    private DataSourceSlot dataSourceSlot;
+    @Field("slots")
+    private List<DataSourceSlot> dataSourceSlots;
 
 
-    public DataSource(String name, boolean isPublic, String description, String static_data, String data_type, String url, DataSourceSlot dataSourceSlot) {
+    public DataSource(String name, boolean isPublic, String description, String static_data, String data_type, String url, List<DataSourceSlot> dataSourceSlots) {
         this.name = name;
         this.isPublic = isPublic;
         this.description = description;
         this.static_data = static_data;
         this.data_type = data_type;
         this.url = url;
-        this.dataSourceSlot = dataSourceSlot;
+
+        // deep copy dataSourceSlots
+        if (dataSourceSlots != null) {
+            this.dataSourceSlots = dataSourceSlots.stream().map(DataSourceSlot::new).collect(Collectors.toList());
+        }
+
+        // set timestamp
         this.created = new Date(System.currentTimeMillis());
         this.modified = new Date(System.currentTimeMillis());
     }
@@ -121,6 +128,14 @@ public class DataSource {
 
     public String getUrl() {
         return url;
+    }
+
+    public List<DataSourceSlot> getDataSourceSlots() {
+        return dataSourceSlots;
+    }
+
+    public void setDataSourceSlots(List<DataSourceSlot> dataSourceSlots) {
+        this.dataSourceSlots = dataSourceSlots;
     }
 
     @Override
