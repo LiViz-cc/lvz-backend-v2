@@ -1,6 +1,7 @@
 package com.liviz.v2.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.*;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -13,6 +14,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Document("project")
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
 public class Project {
     @Id
     private String id;
@@ -54,47 +59,4 @@ public class Project {
         this.dataSources = other.dataSources;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public boolean isPublic() {
-        return isPublic;
-    }
-
-    public void setPublic(boolean aPublic) {
-        isPublic = aPublic;
-    }
-
-    public void setCreated_by(User created_by) {
-        this.created_by = created_by;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public Date getCreated() {
-        return created;
-    }
-
-    public Date getModified() {
-        return modified;
-    }
-
-    public User getCreated_by() {
-        return created_by;
-    }
-
-    public String getDescription() {
-        return description;
-    }
 }

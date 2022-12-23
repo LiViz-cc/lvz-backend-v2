@@ -1,4 +1,4 @@
-package com.liviz.v2.model;
+package com.liviz.v2.dto;
 
 import java.io.Serializable;
 

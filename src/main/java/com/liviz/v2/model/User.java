@@ -3,6 +3,7 @@ package com.liviz.v2.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mongodb.lang.NonNull;
+import lombok.*;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -14,6 +15,10 @@ import java.util.Date;
 import java.util.List;
 
 @Document("user")
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
 public class User {
     @Id
     private String id;
@@ -44,50 +49,4 @@ public class User {
         this.modified = new Date(System.currentTimeMillis());
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public Date getCreate() {
-        return created;
-    }
-
-    public Date getModified() {
-        return modified;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id='" + id + '\'' +
-                ", email='" + email + '\'' +
-                ", created=" + created +
-                ", modified=" + modified +
-                ", username='" + username + '\'' +
-                '}';
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 }

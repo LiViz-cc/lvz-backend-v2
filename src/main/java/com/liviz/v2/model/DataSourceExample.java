@@ -1,9 +1,6 @@
 package com.liviz.v2.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.HashMap;
 
@@ -11,10 +8,11 @@ import java.util.HashMap;
 @Setter
 @ToString
 @AllArgsConstructor
+@NoArgsConstructor
 public class DataSourceExample {
 
-    public HashMap<String,String> params;
-    public HashMap<String,String> data;
+    public HashMap<String, String> params;
+    public HashMap<String, String> data;
 
     public DataSourceExample(DataSourceExample other) {
         this.params = other.params;

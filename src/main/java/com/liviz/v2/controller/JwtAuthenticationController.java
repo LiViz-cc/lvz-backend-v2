@@ -3,7 +3,7 @@ package com.liviz.v2.controller;
 import com.liviz.v2.config.JwtTokenUtil;
 import com.liviz.v2.dto.AuthSignUpDto;
 import com.liviz.v2.dto.JwtResponse;
-import com.liviz.v2.model.JwtRequest;
+import com.liviz.v2.dto.JwtRequest;
 import com.liviz.v2.model.User;
 import com.liviz.v2.service.AuthService;
 import com.liviz.v2.service.JWTUserDetailsService;

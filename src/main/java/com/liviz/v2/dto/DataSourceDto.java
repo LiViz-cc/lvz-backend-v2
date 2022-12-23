@@ -17,7 +17,7 @@ import java.util.List;
 @Setter
 @ToString
 @AllArgsConstructor
-public class DataSourcePostingDto {
+public class DataSourceDto {
     @NotEmpty
     private String name;
 

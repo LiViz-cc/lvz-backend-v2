@@ -3,7 +3,7 @@ package com.liviz.v2.controller;
 import com.liviz.v2.config.JwtTokenUtil;
 import com.liviz.v2.dao.DataSourceDao;
 import com.liviz.v2.dao.UserDao;
-import com.liviz.v2.dto.DataSourcePostingDto;
+import com.liviz.v2.dto.DataSourceDto;
 import com.liviz.v2.model.DataSource;
 import com.liviz.v2.model.User;
 import org.apache.commons.logging.Log;
@@ -79,7 +79,7 @@ public class DataSourceController {
     }
 
     @PostMapping("/data_sources")
-    public ResponseEntity<DataSource> createDataSource(@RequestBody DataSourcePostingDto dataSourceDto,
+    public ResponseEntity<DataSource> createDataSource(@RequestBody DataSourceDto dataSourceDto,
                                                        @RequestHeader("Authorization") String authorizationHeader) {
         try {
             // get jwt username
