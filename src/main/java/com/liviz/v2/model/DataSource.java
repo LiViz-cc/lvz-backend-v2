@@ -1,11 +1,14 @@
 package com.liviz.v2.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.beans.factory.annotation.Required;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 
@@ -34,14 +37,20 @@ public class DataSource {
     @DBRef(lazy = true)
     private List<Project> projects;
 
+    private DataSourceExample dataSourceExample;
 
-    public DataSource(String name, boolean isPublic, String description, String static_data, String data_type, String url) {
+    @NotNull
+    private DataSourceSlot dataSourceSlot;
+
+
+    public DataSource(String name, boolean isPublic, String description, String static_data, String data_type, String url, DataSourceSlot dataSourceSlot) {
         this.name = name;
         this.isPublic = isPublic;
         this.description = description;
         this.static_data = static_data;
         this.data_type = data_type;
         this.url = url;
+        this.dataSourceSlot = dataSourceSlot;
         this.created = new Date(System.currentTimeMillis());
         this.modified = new Date(System.currentTimeMillis());
     }

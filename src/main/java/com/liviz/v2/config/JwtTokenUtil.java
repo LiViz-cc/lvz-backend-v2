@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import com.liviz.v2.controller.UserController;
 import io.jsonwebtoken.impl.TextCodec;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -49,7 +50,7 @@ public class JwtTokenUtil implements Serializable {
     }
 
     //check if the token has expired
-    private Boolean isTokenExpired(String token) {
+    public Boolean isTokenExpired(String token) {
         final Date expiration = getExpirationDateFromToken(token);
         return expiration.before(new Date());
     }
@@ -83,5 +84,20 @@ public class JwtTokenUtil implements Serializable {
         final String usernameFromToken = getUsernameFromToken(token);
         return (usernameFromToken.equals(username) && !isTokenExpired(token));
     }
+
+    public String getJwtIdentity(String authorizationHeader) {
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            throw new RuntimeException("Unauthorized");
+        }
+        String bearerToken = authorizationHeader.substring("Bearer ".length());
+
+        String username = getUsernameFromToken(bearerToken);
+
+        if (isTokenExpired(bearerToken)) {
+            return null;
+        }
+        return username;
+    }
+
 }
 

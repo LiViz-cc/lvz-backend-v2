@@ -49,8 +49,9 @@ public class DataSourceController {
         try {
             User user = userDao.findById("63a16de74b87ded4ae350dbd").get();
             DataSource dataSource =
-                    new DataSource(dataSourceDto.getName(), dataSourceDto.getIsPublic(), dataSourceDto.getDescription(),
-                            dataSourceDto.getStatic_data(), dataSourceDto.getData_type(), dataSourceDto.getUrl());
+                    new DataSource(dataSourceDto.getName(), dataSourceDto.isPublic(), dataSourceDto.getDescription(),
+                            dataSourceDto.getStatic_data(), dataSourceDto.getData_type(), dataSourceDto.getUrl(),
+                            dataSourceDto.getDataSourceSlot());
             dataSource.setUser(user);
             dataSource = dataSourceDao.save(dataSource);
             return new ResponseEntity<>(dataSource, HttpStatus.CREATED);

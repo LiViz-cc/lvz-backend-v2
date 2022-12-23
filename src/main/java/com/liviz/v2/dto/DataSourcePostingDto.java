@@ -1,10 +1,20 @@
 package com.liviz.v2.dto;
 
-import com.liviz.v2.model.User;
+import com.liviz.v2.model.DataSourceSlot;
+import lombok.Getter;
+import lombok.Setter;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
+@Getter
+@Setter
 public class DataSourcePostingDto {
+    @NotEmpty
     private String name;
+
     private boolean isPublic;
+
     private String description;
 
     private String static_data;
@@ -12,6 +22,9 @@ public class DataSourcePostingDto {
     private String data_type;
 
     private String url;
+
+    @NotNull
+    private DataSourceSlot dataSourceSlot;
 
     public DataSourcePostingDto(String name, boolean isPublic, String description, String static_data, String data_type, String url) {
         this.name = name;
@@ -22,27 +35,4 @@ public class DataSourcePostingDto {
         this.url = url;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public boolean getIsPublic() {
-        return isPublic;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getStatic_data() {
-        return static_data;
-    }
-
-    public String getData_type() {
-        return data_type;
-    }
-
-    public String getUrl() {
-        return url;
-    }
 }

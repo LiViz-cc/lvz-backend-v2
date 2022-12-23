@@ -8,6 +8,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.List;
 
@@ -17,11 +19,11 @@ public class User {
     private String id;
 
     @Indexed(unique = true)
-    @NonNull
+    @Email
     private String email;
 
-    // TODO: add verification
     @JsonIgnore
+    @Size(min = 60, max = 60)
     private String password;
 
     @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
