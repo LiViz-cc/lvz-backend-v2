@@ -21,8 +21,17 @@ public class UserService {
     @Autowired
     UserDao userDao;
 
-    @GetMapping("/users/{id}")
-    public Optional<User> findById(@PathVariable("id") String id) {
+    public Optional<User> findById(String id) {
         return userDao.findById(id);
     }
+
+    public Optional<User> findByEmail(String email) {
+        return userDao.findByEmail(email);
+    }
+
+    public Optional<User> findByUsername(String username) {
+        return userDao.findByUsername(username);
+    }
+
+
 }

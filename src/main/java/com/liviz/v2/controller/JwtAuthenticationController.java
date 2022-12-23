@@ -7,6 +7,7 @@ import com.liviz.v2.model.JwtRequest;
 import com.liviz.v2.model.User;
 import com.liviz.v2.service.AuthService;
 import com.liviz.v2.service.JWTUserDetailsService;
+import com.liviz.v2.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,6 +18,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -39,20 +42,34 @@ public class JwtAuthenticationController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    UserService userService;
+
     @PostMapping("/auth/login")
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
-//        // prepare authentication
-//        authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
+    public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest jwtRequest) throws Exception {
+        // Important: check password!
+        authenticate(jwtRequest.getUsername(), jwtRequest.getPassword());
 
         // get user details
         final UserDetails userDetails = userDetailsService
-                .loadUserByUsername(authenticationRequest.getUsername());
+                .loadUserByUsername(jwtRequest.getUsername());
 
         // generate token
         final String token = jwtTokenUtil.generateToken(userDetails);
 
-        // return token
-        return ResponseEntity.ok(new JwtResponse(token));
+        // get user
+        final Optional<User> userOptional = userService.findByUsername(jwtRequest.getUsername());
+
+        // return not found if user not found
+        if (userOptional.isEmpty()){
+            return ResponseEntity.status(401).body("User not found");
+        }
+
+        // return token and user
+        Map<String, Object> response = new HashMap<>();
+        response.put("token", new JwtResponse(token));
+        response.put("user", userOptional.get());
+        return ResponseEntity.ok(response);
     }
 
     private void authenticate(String username, String password) throws Exception {
