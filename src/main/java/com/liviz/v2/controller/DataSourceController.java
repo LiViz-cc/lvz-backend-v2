@@ -95,7 +95,7 @@ public class DataSourceController {
             // create new data source
             DataSource dataSource =
                     new DataSource(dataSourceDto.getName(), dataSourceDto.isPublic(), dataSourceDto.getDescription(),
-                            dataSourceDto.getStatic_data(), dataSourceDto.getData_type(), dataSourceDto.getUrl(),
+                            dataSourceDto.getStaticData(), dataSourceDto.getDataType(), dataSourceDto.getUrl(),
                             dataSourceDto.getSlots());
             dataSource.setCreatedBy(user);
 

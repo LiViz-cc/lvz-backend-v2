@@ -26,9 +26,11 @@ public class DataSourcePostingDto {
 
     private String description;
 
-    private String static_data;
+    @JsonProperty("data_type")
+    private String staticData;
 
-    private String data_type;
+    @JsonProperty("data_type")
+    private String dataType;
 
     private String url;
 
