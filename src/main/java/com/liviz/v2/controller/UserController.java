@@ -3,6 +3,7 @@ package com.liviz.v2.controller;
 import com.liviz.v2.config.JwtTokenUtil;
 import com.liviz.v2.model.User;
 import com.liviz.v2.service.UserService;
+import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,11 +27,15 @@ public class UserController {
             @PathVariable("id") String id,
             @RequestHeader("Authorization") String authorizationHeader
     ) {
-        // get jwt username
-        String username = jwtTokenUtil.getJwtIdentity(authorizationHeader);
+        // get jwt user
+        Pair<User, HttpStatus> userAndStatus = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
+        User jwtUser = userAndStatus.getKey();
+        HttpStatus status = userAndStatus.getValue();
 
-        // return unauthorized if jwt username is null
-        if (username == null) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        // return unauthenticated if jwt username is null
+        if (jwtUser == null) {
+            return new ResponseEntity<>(status);
+        }
 
         // get user by id
         Optional<User> userData = userService.findById(id);
@@ -41,7 +46,7 @@ public class UserController {
         }
 
         // return unauthorized if jwt username is not equal to user id
-        if (!userData.get().getUsername().equals(username)) {
+        if (!userData.get().getId().equals(jwtUser.getId())) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
