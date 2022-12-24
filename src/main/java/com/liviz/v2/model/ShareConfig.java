@@ -1,6 +1,7 @@
 package com.liviz.v2.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -46,6 +47,7 @@ public class ShareConfig {
     @NotNull
     private Boolean passwordProtected;
 
+    @JsonIgnore
     @Size(max = 60)
     private String password;
 
