@@ -119,13 +119,16 @@ public class JwtTokenUtil implements Serializable {
         // get jwt username
         String usernameFromToken = getJwtIdentity(authorizationHeader);
 
-        // return unauthenticated if jwt username is null
+        // get user from database
         Optional<User> userOptional = userService.findByUsername(usernameFromToken);
+
+        // return unauthenticated if jwt username is null
         if (userOptional.isEmpty()) {
-            return new Pair<>(null, HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
+            return new Pair<>(null, HttpStatus.UNAUTHORIZED);
         }
-        User user = userOptional.get();
-        return new Pair<>(user, HttpStatus.OK);
+
+        // return user if jwt username is valid
+        return new Pair<>(userOptional.get(), HttpStatus.OK);
     }
 
 }

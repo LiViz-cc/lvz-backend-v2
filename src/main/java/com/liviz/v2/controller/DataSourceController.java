@@ -7,6 +7,7 @@ import com.liviz.v2.dto.DataSourceDto;
 import com.liviz.v2.model.DataSource;
 import com.liviz.v2.model.User;
 import com.liviz.v2.service.UserService;
+import javafx.util.Pair;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,15 +34,15 @@ public class DataSourceController {
     @GetMapping("/data_sources/{id}")
     public ResponseEntity<DataSource> getDataSourceById(@PathVariable("id") String id,
                                                         @RequestHeader("Authorization") String authorizationHeader) {
-        // get jwt username
-        String usernameFromToken = jwtTokenUtil.getJwtIdentity(authorizationHeader);
+        // get jwt user
+        Pair<User, HttpStatus> userAndStatus = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
+        User user = userAndStatus.getKey();
+        HttpStatus status = userAndStatus.getValue();
 
         // return unauthenticated if jwt username is null
-        Optional<User> userOptional = userService.findByUsername(usernameFromToken);
-        if (userOptional.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
+        if (user == null) {
+            return new ResponseEntity<>(status);
         }
-        User user = userOptional.get();
 
         // return not found if data source is not found
         Optional<DataSource> dataSourceData = dataSourceDao.findById(id);
@@ -60,15 +61,15 @@ public class DataSourceController {
 
     @GetMapping("/data_sources")
     public ResponseEntity<List<DataSource>> getAllDataSources(@RequestHeader("Authorization") String authorizationHeader) {
-        // get jwt username
-        String usernameFromToken = jwtTokenUtil.getJwtIdentity(authorizationHeader);
+        // get jwt user
+        Pair<User, HttpStatus> userAndStatus = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
+        User user = userAndStatus.getKey();
+        HttpStatus status = userAndStatus.getValue();
 
         // return unauthenticated if jwt username is null
-        Optional<User> userOptional = userService.findByUsername(usernameFromToken);
-        if (userOptional.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
+        if (user == null) {
+            return new ResponseEntity<>(status);
         }
-        User user = userOptional.get();
 
         // TODO: check if user is the creator of the data source
 
@@ -83,15 +84,15 @@ public class DataSourceController {
     public ResponseEntity<DataSource> createDataSource(@RequestBody DataSourceDto dataSourceDto,
                                                        @RequestHeader("Authorization") String authorizationHeader) {
         try {
-            // get jwt username
-            String usernameFromToken = jwtTokenUtil.getJwtIdentity(authorizationHeader);
+            // get jwt user
+            Pair<User, HttpStatus> userAndStatus = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
+            User user = userAndStatus.getKey();
+            HttpStatus status = userAndStatus.getValue();
 
             // return unauthenticated if jwt username is null
-            Optional<User> userOptional = userService.findByUsername(usernameFromToken);
-            if (userOptional.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
+            if (user == null) {
+                return new ResponseEntity<>(status);
             }
-            User user = userOptional.get();
 
             // create new data source
             DataSource dataSource =

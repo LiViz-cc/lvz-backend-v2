@@ -7,6 +7,7 @@ import com.liviz.v2.model.DisplaySchema;
 import com.liviz.v2.model.User;
 import com.liviz.v2.service.DisplaySchemaService;
 import com.liviz.v2.service.UserService;
+import javafx.util.Pair;
 import org.apache.commons.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,15 +35,15 @@ public class DisplaySchemaController {
                                                              @RequestHeader("Authorization") String authorizationHeader) {
 
         try {
-            // get jwt username
-            String usernameFromToken = jwtTokenUtil.getJwtIdentity(authorizationHeader);
+            // get jwt user
+            Pair<User, HttpStatus> userAndStatus = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
+            User user = userAndStatus.getKey();
+            HttpStatus status = userAndStatus.getValue();
 
             // return unauthenticated if jwt username is null
-            Optional<User> userOptional = userService.findByUsername(usernameFromToken);
-            if (userOptional.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
+            if (user == null) {
+                return new ResponseEntity<>(status);
             }
-            User user = userOptional.get();
 
             // create display schema
             DisplaySchema savedDisplaySchema = displaySchemaService.createDisplaySchema(displaySchemaDto, user);
@@ -59,15 +60,15 @@ public class DisplaySchemaController {
     public ResponseEntity<DisplaySchema> getDisplaySchema(@PathVariable("id") String id,
                                                           @RequestHeader("Authorization") String authorizationHeader) {
         try {
-            // get jwt username
-            String usernameFromToken = jwtTokenUtil.getJwtIdentity(authorizationHeader);
+            // get jwt user
+            Pair<User, HttpStatus> userAndStatus = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
+            User user = userAndStatus.getKey();
+            HttpStatus status = userAndStatus.getValue();
 
             // return unauthenticated if jwt username is null
-            Optional<User> userOptional = userService.findByUsername(usernameFromToken);
-            if (userOptional.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            if (user == null) {
+                return new ResponseEntity<>(status);
             }
-            User user = userOptional.get();
 
             // search display schema by id and user id
             DisplaySchema displaySchema = displaySchemaService.getDisplaySchema(id, user);
