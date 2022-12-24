@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.Date;
 
@@ -36,7 +37,7 @@ public class User {
     private Date modifiedTime;
 
     @Indexed(unique = true)
-    @NonNull
+    @NotBlank
     private String username;
 
     public User(String email, String password, String username) {
