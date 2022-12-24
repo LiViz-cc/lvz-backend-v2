@@ -19,15 +19,12 @@ public class DataSourceDto {
     @NotBlank
     private String name;
 
-    @JsonProperty("public")
     private boolean isPublic;
 
     private String description;
 
-    @JsonProperty("static_data")
     private String staticData;
 
-    @JsonProperty("data_type")
     private String dataType;
 
     private String url;

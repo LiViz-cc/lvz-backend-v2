@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.Optional;
 
 @RestController
@@ -68,9 +69,11 @@ public class ProjectController {
         }
 
         try {
-            Project _project = projectDao.save(new Project(project.getName(),
-                    user, project.isPublic(), project.getDescription()));
-            return new ResponseEntity<>(_project, HttpStatus.CREATED);
+            Project savedProject = projectDao.save(
+                    new Project(
+                            project.getName(), new Date(), new Date(), user, project.isPublic(),
+                            project.getDescription(), project.getDataSources()));
+            return new ResponseEntity<>(savedProject, HttpStatus.CREATED);
         } catch (Exception e) {
             logger.error(e);
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);

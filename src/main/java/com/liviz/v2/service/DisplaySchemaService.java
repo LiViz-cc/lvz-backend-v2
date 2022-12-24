@@ -18,6 +18,7 @@ public class DisplaySchemaService {
     DisplaySchemaDao displaySchemaDao;
 
     public DisplaySchema createDisplaySchema(DisplaySchemaDto displaySchemaDto, User user) {
+        System.out.println("displaySchemaDto = " + displaySchemaDto);
         // create new display schema
         DisplaySchema displaySchema = new DisplaySchema(displaySchemaDto.getName(), new Date(), new Date(), user, displaySchemaDto.getIsPublic(), displaySchemaDto.getDescription(),
                 displaySchemaDto.getEChartOption(), displaySchemaDto.getLinkedProject());

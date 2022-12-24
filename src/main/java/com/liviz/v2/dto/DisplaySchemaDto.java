@@ -17,22 +17,17 @@ import javax.validation.constraints.Size;
 public class DisplaySchemaDto {
     @Indexed(unique = true)
     @Length(max = 50)
-    @JsonProperty("name")
     private String name;
 
-    @JsonProperty("public")
     @NotNull
     private Boolean isPublic = false;
 
-    @JsonProperty("description")
     @Size(max = 1000)
     private String description = "";
 
-    @JsonProperty("echarts_option")
     // Json string
     private String eChartOption;
 
     @DBRef
-    @JsonProperty("linked_project")
     private Project linkedProject;
 }

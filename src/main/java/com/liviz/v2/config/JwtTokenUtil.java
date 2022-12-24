@@ -114,7 +114,6 @@ public class JwtTokenUtil implements Serializable {
         return username;
     }
 
-    // TODO: use this method to validate token in every request
     public Pair<com.liviz.v2.model.User, HttpStatus> getJwtUserFromToken(String authorizationHeader) {
         // get jwt username
         String usernameFromToken = getJwtIdentity(authorizationHeader);

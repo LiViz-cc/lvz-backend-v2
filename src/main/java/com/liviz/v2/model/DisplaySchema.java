@@ -24,37 +24,29 @@ public class DisplaySchema {
 
     @Indexed(unique = true)
     @Length(max = 50)
-    @Field("name")
     private String name;
 
-    @Field("created")
     @NotNull
     @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
     private Date createdTime;
 
-    @Field("modified")
     @NotNull
     @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
     private Date modifiedTime;
 
-    @Field("created_by")
     @DBRef
     private User createdBy;
 
-    @Field("public")
     @NotNull
     private Boolean isPublic;
 
-    @Field("description")
     @Size(max = 1000)
     private String description;
 
-    @Field("echarts_option")
     // Json string
     private String eChartOption;
 
     @DBRef
-    @Field("linked_project")
     private Project linkedProject;
 
 

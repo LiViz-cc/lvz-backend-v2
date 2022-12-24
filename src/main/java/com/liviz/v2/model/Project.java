@@ -2,16 +2,13 @@ package com.liviz.v2.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Document("project")
 @Getter
@@ -25,15 +22,14 @@ public class Project {
     private String name;
 
     @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
-    private Date created;
+    private Date createdTime;
 
     @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
-    private Date modified;
+    private Date modifiedTime;
 
     @DBRef(lazy = true)
-    private User created_by;
+    private User createdBy;
 
-    @Field("public")
     private boolean isPublic;
 
     private String description;
@@ -41,19 +37,22 @@ public class Project {
     @DBRef(lazy = true)
     private List<DataSource> dataSources;
 
-    public Project(String name, User created_by, boolean isPublic, String description) {
+    public Project(String name, Date createdTime, Date modifiedTime, User createdBy, boolean isPublic, String description, List<DataSource> dataSources) {
         this.name = name;
-        this.created_by = created_by;
+        this.createdTime = createdTime;
+        this.modifiedTime = modifiedTime;
+        this.createdBy = createdBy;
         this.isPublic = isPublic;
         this.description = description;
+        this.dataSources = dataSources;
     }
 
     public Project(Project other) {
         this.id = other.id;
         this.name = other.name;
-        this.created = other.created;
-        this.modified = other.modified;
-        this.created_by = other.created_by;
+        this.createdTime = other.createdTime;
+        this.modifiedTime = other.modifiedTime;
+        this.createdBy = other.createdBy;
         this.isPublic = other.isPublic;
         this.description = other.description;
         this.dataSources = other.dataSources;

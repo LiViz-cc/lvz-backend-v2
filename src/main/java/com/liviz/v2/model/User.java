@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mongodb.lang.NonNull;
 import lombok.*;
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -12,7 +11,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
 import java.util.Date;
-import java.util.List;
 
 @Document("user")
 @Getter
@@ -32,10 +30,10 @@ public class User {
     private String password;
 
     @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
-    private Date created;
+    private Date createdTime;
 
     @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
-    private Date modified;
+    private Date modifiedTime;
 
     @Indexed(unique = true)
     @NonNull
@@ -45,8 +43,8 @@ public class User {
         this.email = email;
         this.password = password;
         this.username = username;
-        this.created = new Date(System.currentTimeMillis());
-        this.modified = new Date(System.currentTimeMillis());
+        this.createdTime = new Date(System.currentTimeMillis());
+        this.modifiedTime = new Date(System.currentTimeMillis());
     }
 
 }
