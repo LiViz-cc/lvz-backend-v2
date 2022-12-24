@@ -49,23 +49,32 @@ public class JwtAuthenticationController {
     // TODO: support login by email
     @PostMapping("/login")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest jwtRequest) throws Exception {
+        // get user by username or email
+        Optional<User> userOptional;
+        if (jwtRequest.getUsername() != null) {
+            userOptional = userService.findByUsername(jwtRequest.getUsername());
+        } else if (jwtRequest.getEmail() != null) {
+            userOptional = userService.findByEmail(jwtRequest.getEmail());
+        } else {
+            return ResponseEntity.badRequest().body("Username and email are null");
+        }
+
+        // return bad request if user is not found
+        if (userOptional.isEmpty()) {
+            return ResponseEntity.badRequest().body("User not found");
+        }
+
+        final User user = userOptional.get();
+
         // Important: check password!
-        authenticate(jwtRequest.getUsername(), jwtRequest.getPassword());
+        authenticate(user.getUsername(), jwtRequest.getPassword());
 
         // get user details
         final UserDetails userDetails = userDetailsService
-                .loadUserByUsername(jwtRequest.getUsername());
+                .loadUserByUsername(user.getUsername());
 
         // generate token
         final String token = jwtTokenUtil.generateToken(userDetails);
-
-        // get user
-        final Optional<User> userOptional = userService.findByUsername(jwtRequest.getUsername());
-
-        // return not found if user not found
-        if (userOptional.isEmpty()){
-            return ResponseEntity.status(401).body("User not found");
-        }
 
         // return token and user
         Map<String, Object> response = new HashMap<>();
