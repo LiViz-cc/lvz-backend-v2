@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/display_schemas")
 public class DisplaySchemaController {
     @Autowired
     DisplaySchemaService displaySchemaService;
@@ -30,7 +31,7 @@ public class DisplaySchemaController {
     @Autowired
     Log logger;
 
-    @PostMapping("/display_schemas")
+    @PostMapping
     public ResponseEntity<DisplaySchema> createDisplaySchema(@RequestBody DisplaySchemaDto displaySchemaDto,
                                                              @RequestHeader("Authorization") String authorizationHeader) {
 
@@ -56,7 +57,7 @@ public class DisplaySchemaController {
         }
     }
 
-    @GetMapping("/display_schemas/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<DisplaySchema> getDisplaySchema(@PathVariable("id") String id,
                                                           @RequestHeader("Authorization") String authorizationHeader) {
         try {

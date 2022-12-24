@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/data_sources")
 public class DataSourceController {
     @Autowired
     DataSourceDao dataSourceDao;
@@ -31,7 +32,7 @@ public class DataSourceController {
 
     private final Log logger = LogFactory.getLog(getClass());
 
-    @GetMapping("/data_sources/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<DataSource> getDataSourceById(@PathVariable("id") String id,
                                                         @RequestHeader("Authorization") String authorizationHeader) {
         // get jwt user
@@ -59,7 +60,7 @@ public class DataSourceController {
         return new ResponseEntity<>(dataSourceData.get(), HttpStatus.OK);
     }
 
-    @GetMapping("/data_sources")
+    @GetMapping()
     public ResponseEntity<List<DataSource>> getAllDataSources(@RequestHeader("Authorization") String authorizationHeader) {
         // get jwt user
         Pair<User, HttpStatus> userAndStatus = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
@@ -80,7 +81,7 @@ public class DataSourceController {
         return new ResponseEntity<>(dataSources, HttpStatus.OK);
     }
 
-    @PostMapping("/data_sources")
+    @PostMapping()
     public ResponseEntity<DataSource> createDataSource(@RequestBody DataSourceDto dataSourceDto,
                                                        @RequestHeader("Authorization") String authorizationHeader) {
         try {

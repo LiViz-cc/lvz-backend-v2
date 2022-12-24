@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/projects")
 public class ProjectController {
     @Autowired
     ProjectService projectService;
@@ -32,7 +33,7 @@ public class ProjectController {
 
     private final Log logger = LogFactory.getLog(getClass());
 
-    @GetMapping("/projects/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Project> getUserById(@PathVariable("id") String id,
                                                @RequestHeader("Authorization") String authorizationHeader) {
         // get jwt user
@@ -53,12 +54,22 @@ public class ProjectController {
         return new ResponseEntity<>(projectData.get(), HttpStatus.OK);
     }
 
-    @PostMapping("/projects")
-    public ResponseEntity<Project> createProject(@RequestBody Project project) {
-        Optional<User> userData = userDao.findById("63a16de74b87ded4ae350dbd");
+    @PostMapping()
+    public ResponseEntity<Project> createProject(@RequestBody Project project,
+                                                 @RequestHeader("Authorization") String authorizationHeader) {
+        // get jwt user
+        Pair<User, HttpStatus> userAndStatus = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
+        User user = userAndStatus.getKey();
+        HttpStatus status = userAndStatus.getValue();
+
+        // return unauthenticated if jwt username is null
+        if (user == null) {
+            return new ResponseEntity<>(status);
+        }
+
         try {
             Project _project = projectDao.save(new Project(project.getName(),
-                    userData.get(), project.isPublic(), project.getDescription()));
+                    user, project.isPublic(), project.getDescription()));
             return new ResponseEntity<>(_project, HttpStatus.CREATED);
         } catch (Exception e) {
             logger.error(e);

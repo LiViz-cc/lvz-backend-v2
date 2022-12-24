@@ -25,6 +25,7 @@ import java.util.Optional;
 
 @RestController
 @CrossOrigin
+@RequestMapping("/auth")
 public class JwtAuthenticationController {
 
     @Autowired
@@ -45,7 +46,8 @@ public class JwtAuthenticationController {
     @Autowired
     UserService userService;
 
-    @PostMapping("/auth/login")
+    // TODO: support login by email
+    @PostMapping("/login")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest jwtRequest) throws Exception {
         // Important: check password!
         authenticate(jwtRequest.getUsername(), jwtRequest.getPassword());
@@ -82,7 +84,7 @@ public class JwtAuthenticationController {
         }
     }
 
-    @PostMapping("/auth/signup")
+    @PostMapping("/signup")
     public ResponseEntity<?> signUp(@RequestBody AuthSignUpDto authSignUpDto) {
         Optional<User> userOptional = authService.signUp(authSignUpDto);
         if (userOptional.isEmpty()) {

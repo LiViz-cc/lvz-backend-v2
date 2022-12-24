@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/users")
 public class UserController {
 
     @Autowired
@@ -20,7 +21,7 @@ public class UserController {
     private JwtTokenUtil jwtTokenUtil;
 
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(
             @PathVariable("id") String id,
             @RequestHeader("Authorization") String authorizationHeader
