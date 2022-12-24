@@ -2,7 +2,6 @@ package com.liviz.v2.service;
 
 import com.liviz.v2.dao.ProjectDao;
 import com.liviz.v2.dao.ShareConfigDao;
-import com.liviz.v2.dto.DisplaySchemaDto;
 import com.liviz.v2.dto.ShareConfigDto;
 import com.liviz.v2.model.Project;
 import com.liviz.v2.model.ShareConfig;
@@ -41,5 +40,20 @@ public class ShareConfigService {
                 shareConfigDto.getPassword()
         );
         return shareConfigDao.save(shareConfig);
+    }
+
+    public Optional<ShareConfig> getShareConfigByIdAndUser(String id, User user) {
+        return shareConfigDao.findByIdAndUserId(id, user.getId());
+    }
+
+    public void deleteShareConfigByIdAndUser(String id, User user) {
+        // check if share config exists
+        Optional<ShareConfig> shareConfigOptional = getShareConfigByIdAndUser(id, user);
+        if (shareConfigOptional.isEmpty()) {
+            throw new RuntimeException("Share config not found");
+        }
+
+        // delete share config
+        shareConfigDao.delete(shareConfigOptional.get());
     }
 }

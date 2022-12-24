@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/share_configs")
 public class ShareConfigController {
@@ -51,5 +53,57 @@ public class ShareConfigController {
         }
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ShareConfig> getShareConfig(@PathVariable("id") String id,
+                                                      @RequestHeader("Authorization") String authorizationHeader) {
+        try {
+            // get jwt user
+            Pair<User, HttpStatus> userAndStatus = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
+            User user = userAndStatus.getKey();
+            HttpStatus status = userAndStatus.getValue();
+
+            // return unauthenticated if jwt username is null
+            if (user == null) {
+                return new ResponseEntity<>(status);
+            }
+
+            // get share config
+            Optional<ShareConfig> shareConfigOptional = shareConfigService.getShareConfigByIdAndUser(id, user);
+            if (shareConfigOptional.isEmpty()){
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+
+            // return share config
+            return new ResponseEntity<>(shareConfigOptional.get(), HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error(e);
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ShareConfig> deleteShareConfig(@PathVariable("id") String id,
+                                                         @RequestHeader("Authorization") String authorizationHeader) {
+        try {
+            // get jwt user
+            Pair<User, HttpStatus> userAndStatus = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
+            User user = userAndStatus.getKey();
+            HttpStatus status = userAndStatus.getValue();
+
+            // return unauthenticated if jwt username is null
+            if (user == null) {
+                return new ResponseEntity<>(status);
+            }
+
+            // delete share config
+            shareConfigService.deleteShareConfigByIdAndUser(id, user);
+
+            // return no content
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error(e);
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 }

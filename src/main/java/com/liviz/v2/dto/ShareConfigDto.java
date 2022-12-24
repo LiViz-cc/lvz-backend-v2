@@ -26,9 +26,6 @@ public class ShareConfigDto {
     private String name;
 
     @NotNull
-    private User createdBy;
-
-    @NotNull
     private String linkedProjectId;
 
     private String description;
