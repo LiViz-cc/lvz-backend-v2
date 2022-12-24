@@ -31,6 +31,7 @@ public class DataSource {
     @Indexed(unique = true)
     private String name;
 
+    // TODO: change all field name in Database and JSON to camel case
     @Field("public")
     private boolean isPublic;
     private String description;

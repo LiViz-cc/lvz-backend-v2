@@ -6,17 +6,24 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 
 import com.liviz.v2.controller.UserController;
+import com.liviz.v2.model.User;
+import com.liviz.v2.service.UserService;
 import io.jsonwebtoken.impl.TextCodec;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import javafx.util.Pair;
 
 //reference: https://www.javainuse.com/spring/boot-jwt
 @Component
@@ -28,6 +35,9 @@ public class JwtTokenUtil implements Serializable {
 
     @Value("${jwt.secret}")
     private String secret;
+
+    @Autowired
+    UserService userService;
 
     //retrieve username from jwt token
     public String getUsernameFromToken(String token) {
@@ -85,8 +95,13 @@ public class JwtTokenUtil implements Serializable {
         return (usernameFromToken.equals(username) && !isTokenExpired(token));
     }
 
+    /**
+     * @param authorizationHeader the JWT token to validate
+     * @return username if token is valid, null otherwise
+     */
     public String getJwtIdentity(String authorizationHeader) {
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            // TODO: define a custom exception
             throw new RuntimeException("Unauthorized");
         }
         String bearerToken = authorizationHeader.substring("Bearer ".length());
@@ -94,9 +109,23 @@ public class JwtTokenUtil implements Serializable {
         String username = getUsernameFromToken(bearerToken);
 
         if (isTokenExpired(bearerToken)) {
-            return null;
+            throw new RuntimeException("Unauthorized");
         }
         return username;
+    }
+
+    // TODO: use this method to validate token in every request
+    public Pair<com.liviz.v2.model.User, HttpStatus> getJwtUserFromToken(String authorizationHeader) {
+        // get jwt username
+        String usernameFromToken = getJwtIdentity(authorizationHeader);
+
+        // return unauthenticated if jwt username is null
+        Optional<User> userOptional = userService.findByUsername(usernameFromToken);
+        if (userOptional.isEmpty()) {
+            return new Pair<>(null, HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
+        }
+        User user = userOptional.get();
+        return new Pair<>(user, HttpStatus.OK);
     }
 
 }

@@ -3,6 +3,7 @@ package com.liviz.v2.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -16,9 +17,11 @@ import java.util.Date;
 @Getter
 @Setter
 @ToString
-@AllArgsConstructor
 @NoArgsConstructor
 public class DisplaySchema {
+    @Id
+    private String id;
+
     @Indexed(unique = true)
     @Length(max = 50)
     @Field("name")
@@ -54,4 +57,15 @@ public class DisplaySchema {
     @Field("linked_project")
     private Project linkedProject;
 
+
+    public DisplaySchema(String name, Date createdTime, Date modifiedTime, User createdBy, Boolean isPublic, String description, String eChartOption, Project linkedProject) {
+        this.name = name;
+        this.createdTime = createdTime;
+        this.modifiedTime = modifiedTime;
+        this.createdBy = createdBy;
+        this.isPublic = isPublic;
+        this.description = description;
+        this.eChartOption = eChartOption;
+        this.linkedProject = linkedProject;
+    }
 }

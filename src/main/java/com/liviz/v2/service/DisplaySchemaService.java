@@ -10,13 +10,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 public class DisplaySchemaService {
     @Autowired
     DisplaySchemaDao displaySchemaDao;
 
-    public ResponseEntity<DisplaySchema> createDisplaySchema(DisplaySchemaDto displaySchemaDto, User user) {
+    public DisplaySchema createDisplaySchema(DisplaySchemaDto displaySchemaDto, User user) {
         // create new display schema
         DisplaySchema displaySchema = new DisplaySchema(displaySchemaDto.getName(), new Date(), new Date(), user, displaySchemaDto.getIsPublic(), displaySchemaDto.getDescription(),
                 displaySchemaDto.getEChartOption(), displaySchemaDto.getLinkedProject());
@@ -25,6 +26,24 @@ public class DisplaySchemaService {
         DisplaySchema savedDisplaySchema = displaySchemaDao.save(displaySchema);
 
         // return display schema
-        return new ResponseEntity<>(savedDisplaySchema, HttpStatus.CREATED);
+        return savedDisplaySchema;
+    }
+
+    public DisplaySchema getDisplaySchema(String id, User user) {
+        // get display schema
+        Optional<DisplaySchema> displaySchemaOptional = displaySchemaDao.findById(id);
+
+
+        // return not found if display schema is not found
+        if (displaySchemaOptional.isEmpty()) {
+            return null;
+        }
+
+        // check if display schema is created by user
+        if (!displaySchemaOptional.get().getCreatedBy().getId().equals(user.getId())) {
+            return null;
+        }
+
+        return displaySchemaOptional.get();
     }
 }

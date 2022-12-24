@@ -11,10 +11,7 @@ import org.apache.commons.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -47,7 +44,36 @@ public class DisplaySchemaController {
             }
             User user = userOptional.get();
 
-            return displaySchemaService.createDisplaySchema(displaySchemaDto, user);
+            // create display schema
+            DisplaySchema savedDisplaySchema = displaySchemaService.createDisplaySchema(displaySchemaDto, user);
+
+            // return created display schema
+            return new ResponseEntity<>(savedDisplaySchema, HttpStatus.CREATED);
+        } catch (Exception e) {
+            logger.error(e);
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/display_schemas/{id}")
+    public ResponseEntity<DisplaySchema> getDisplaySchema(@PathVariable("id") String id,
+                                                          @RequestHeader("Authorization") String authorizationHeader) {
+        try {
+            // get jwt username
+            String usernameFromToken = jwtTokenUtil.getJwtIdentity(authorizationHeader);
+
+            // return unauthenticated if jwt username is null
+            Optional<User> userOptional = userService.findByUsername(usernameFromToken);
+            if (userOptional.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+            User user = userOptional.get();
+
+            // search display schema by id and user id
+            DisplaySchema displaySchema = displaySchemaService.getDisplaySchema(id, user);
+
+            // return display schema
+            return new ResponseEntity<>(displaySchema, HttpStatus.OK);
         } catch (Exception e) {
             logger.error(e);
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
