@@ -24,7 +24,7 @@ public class DataSourceDto {
 
     private String description;
 
-    @JsonProperty("data_type")
+    @JsonProperty("static_data")
     private String staticData;
 
     @JsonProperty("data_type")
