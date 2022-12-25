@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -35,7 +36,13 @@ public class Project {
     private String description;
 
     @DBRef(lazy = true)
-    private List<DataSource> dataSources;
+    private List<DataSource> dataSources = new ArrayList<>();
+
+    @DBRef(lazy = true)
+    private DisplaySchema displaySchema;
+
+    @DBRef(lazy = true)
+    private List<ShareConfig> shareConfigs = new ArrayList<>();
 
     public Project(String name, Date createdTime, Date modifiedTime, User createdBy, boolean isPublic, String description) {
         this.name = name;
@@ -46,6 +53,7 @@ public class Project {
         this.description = description;
     }
 
+    // shallow copy
     public Project(Project other) {
         this.id = other.id;
         this.name = other.name;
@@ -55,6 +63,8 @@ public class Project {
         this.isPublic = other.isPublic;
         this.description = other.description;
         this.dataSources = other.dataSources;
+        this.displaySchema = other.displaySchema;
+        this.shareConfigs = other.shareConfigs;
     }
 
 }

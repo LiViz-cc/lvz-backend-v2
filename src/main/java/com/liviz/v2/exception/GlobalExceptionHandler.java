@@ -17,6 +17,7 @@ import org.apache.commons.logging.Log;
 
 import java.util.Objects;
 
+// reference: https://reflectoring.io/spring-boot-exception-handling/
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
