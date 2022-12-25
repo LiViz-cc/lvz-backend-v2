@@ -46,7 +46,6 @@ public class JwtAuthenticationController {
     @Autowired
     UserService userService;
 
-    // TODO: support login by email
     @PostMapping("/login")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest jwtRequest) throws Exception {
         // get user by username or email
