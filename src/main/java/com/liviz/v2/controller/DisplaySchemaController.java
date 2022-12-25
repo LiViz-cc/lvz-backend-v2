@@ -38,14 +38,7 @@ public class DisplaySchemaController {
 
         try {
             // get jwt user
-            Pair<User, HttpStatus> userAndStatus = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
-            User user = userAndStatus.getKey();
-            HttpStatus status = userAndStatus.getValue();
-
-            // return unauthenticated if jwt username is null
-            if (user == null) {
-                return new ResponseEntity<>(status);
-            }
+            User user = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
 
             // create display schema
             DisplaySchema savedDisplaySchema = displaySchemaService.createDisplaySchema(displaySchemaDto, user);
@@ -62,14 +55,7 @@ public class DisplaySchemaController {
     public ResponseEntity<DisplaySchema> getDisplaySchema(@PathVariable("id") String id,
                                                           @RequestHeader("Authorization") String authorizationHeader) {
         // get jwt user
-        Pair<User, HttpStatus> userAndStatus = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
-        User user = userAndStatus.getKey();
-        HttpStatus status = userAndStatus.getValue();
-
-        // return unauthenticated if jwt username is null
-        if (user == null) {
-            return new ResponseEntity<>(status);
-        }
+        User user = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
 
         // search display schema by id and user id
         DisplaySchema displaySchema = displaySchemaService.getDisplaySchema(id, user);

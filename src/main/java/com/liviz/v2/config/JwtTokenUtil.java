@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import com.liviz.v2.controller.UserController;
+import com.liviz.v2.exception.UnauthenticatedException;
 import com.liviz.v2.model.User;
 import com.liviz.v2.service.UserService;
 import io.jsonwebtoken.impl.TextCodec;
@@ -114,7 +115,7 @@ public class JwtTokenUtil implements Serializable {
         return username;
     }
 
-    public Pair<com.liviz.v2.model.User, HttpStatus> getJwtUserFromToken(String authorizationHeader) {
+    public com.liviz.v2.model.User getJwtUserFromToken(String authorizationHeader) throws UnauthenticatedException {
         // get jwt username
         String usernameFromToken = getJwtIdentity(authorizationHeader);
 
@@ -123,11 +124,10 @@ public class JwtTokenUtil implements Serializable {
 
         // return unauthenticated if jwt username is null
         if (userOptional.isEmpty()) {
-            return new Pair<>(null, HttpStatus.UNAUTHORIZED);
+            throw new UnauthenticatedException("User not found");
         }
 
-        // return user if jwt username is valid
-        return new Pair<>(userOptional.get(), HttpStatus.OK);
+        return userOptional.get();
     }
 
 }

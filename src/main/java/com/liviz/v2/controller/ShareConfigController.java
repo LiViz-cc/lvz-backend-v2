@@ -33,14 +33,7 @@ public class ShareConfigController {
                                                          @RequestHeader("Authorization") String authorizationHeader) {
         try {
             // get jwt user
-            Pair<User, HttpStatus> userAndStatus = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
-            User user = userAndStatus.getKey();
-            HttpStatus status = userAndStatus.getValue();
-
-            // return unauthenticated if jwt username is null
-            if (user == null) {
-                return new ResponseEntity<>(status);
-            }
+            User user = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
 
             // create share config
             ShareConfig savedShareConfig = shareConfigService.createShareConfig(shareConfigDto, user);
@@ -58,14 +51,7 @@ public class ShareConfigController {
                                                       @RequestHeader("Authorization") String authorizationHeader) {
         try {
             // get jwt user
-            Pair<User, HttpStatus> userAndStatus = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
-            User user = userAndStatus.getKey();
-            HttpStatus status = userAndStatus.getValue();
-
-            // return unauthenticated if jwt username is null
-            if (user == null) {
-                return new ResponseEntity<>(status);
-            }
+            User user = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
 
             // get share config
             Optional<ShareConfig> shareConfigOptional = shareConfigService.getShareConfigByIdAndUser(id, user);
@@ -86,14 +72,7 @@ public class ShareConfigController {
                                                          @RequestHeader("Authorization") String authorizationHeader) {
         try {
             // get jwt user
-            Pair<User, HttpStatus> userAndStatus = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
-            User user = userAndStatus.getKey();
-            HttpStatus status = userAndStatus.getValue();
-
-            // return unauthenticated if jwt username is null
-            if (user == null) {
-                return new ResponseEntity<>(status);
-            }
+            User user = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
 
             // delete share config
             shareConfigService.deleteShareConfigByIdAndUser(id, user);

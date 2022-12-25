@@ -36,14 +36,7 @@ public class DataSourceController {
     public ResponseEntity<DataSource> getDataSourceById(@PathVariable("id") String id,
                                                         @RequestHeader("Authorization") String authorizationHeader) {
         // get jwt user
-        Pair<User, HttpStatus> userAndStatus = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
-        User user = userAndStatus.getKey();
-        HttpStatus status = userAndStatus.getValue();
-
-        // return unauthenticated if jwt username is null
-        if (user == null) {
-            return new ResponseEntity<>(status);
-        }
+        User user = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
 
         // return not found if data source is not found
         Optional<DataSource> dataSourceData = dataSourceDao.findById(id);
@@ -63,14 +56,7 @@ public class DataSourceController {
     @GetMapping()
     public ResponseEntity<List<DataSource>> getAllDataSources(@RequestHeader("Authorization") String authorizationHeader) {
         // get jwt user
-        Pair<User, HttpStatus> userAndStatus = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
-        User user = userAndStatus.getKey();
-        HttpStatus status = userAndStatus.getValue();
-
-        // return unauthenticated if jwt username is null
-        if (user == null) {
-            return new ResponseEntity<>(status);
-        }
+        User user = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
 
         // TODO: check if user is the creator of the data source
 
@@ -86,14 +72,7 @@ public class DataSourceController {
                                                        @RequestHeader("Authorization") String authorizationHeader) {
         try {
             // get jwt user
-            Pair<User, HttpStatus> userAndStatus = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
-            User user = userAndStatus.getKey();
-            HttpStatus status = userAndStatus.getValue();
-
-            // return unauthenticated if jwt username is null
-            if (user == null) {
-                return new ResponseEntity<>(status);
-            }
+            User user = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
 
             // create new data source
             DataSource dataSource =

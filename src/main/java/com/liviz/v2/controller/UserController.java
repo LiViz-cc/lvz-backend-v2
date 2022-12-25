@@ -28,14 +28,7 @@ public class UserController {
             @RequestHeader("Authorization") String authorizationHeader
     ) {
         // get jwt user
-        Pair<User, HttpStatus> userAndStatus = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
-        User jwtUser = userAndStatus.getKey();
-        HttpStatus status = userAndStatus.getValue();
-
-        // return unauthenticated if jwt username is null
-        if (jwtUser == null) {
-            return new ResponseEntity<>(status);
-        }
+        User jwtUser = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
 
         // get user by id
         Optional<User> userData = userService.findById(id);

@@ -38,14 +38,7 @@ public class ProjectController {
     public ResponseEntity<Project> getUserById(@PathVariable("id") String id,
                                                @RequestHeader("Authorization") String authorizationHeader) {
         // get jwt user
-        Pair<User, HttpStatus> userAndStatus = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
-        User user = userAndStatus.getKey();
-        HttpStatus status = userAndStatus.getValue();
-
-        // return unauthenticated if jwt username is null
-        if (user == null) {
-            return new ResponseEntity<>(status);
-        }
+        User user = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
 
         Optional<Project> projectData = projectService.findByIdAndUserId(id, user.getId());
 
@@ -59,14 +52,7 @@ public class ProjectController {
     public ResponseEntity<Project> createProject(@RequestBody Project project,
                                                  @RequestHeader("Authorization") String authorizationHeader) {
         // get jwt user
-        Pair<User, HttpStatus> userAndStatus = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
-        User user = userAndStatus.getKey();
-        HttpStatus status = userAndStatus.getValue();
-
-        // return unauthenticated if jwt username is null
-        if (user == null) {
-            return new ResponseEntity<>(status);
-        }
+        User user = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
 
         try {
             Project savedProject = projectDao.save(
