@@ -11,4 +11,5 @@ public class Utils {
     public Log getLogger() {
         return LogFactory.getLog(getClass());
     }
+
 }

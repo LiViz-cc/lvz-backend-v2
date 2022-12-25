@@ -4,10 +4,10 @@ import com.liviz.v2.config.JwtTokenUtil;
 import com.liviz.v2.dao.ProjectDao;
 import com.liviz.v2.dao.UserDao;
 import com.liviz.v2.dto.ProjectDto;
+import com.liviz.v2.dto.ProjectEditingDto;
 import com.liviz.v2.model.Project;
 import com.liviz.v2.model.User;
 import com.liviz.v2.service.ProjectService;
-import javafx.util.Pair;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,13 +58,45 @@ public class ProjectController {
         try {
             Project savedProject = projectDao.save(
                     new Project(
-                            project.getName(), new Date(), new Date(), user, project.isPublic(),
+                            project.getName(), new Date(), new Date(), user, project.getIsPublic(),
                             project.getDescription()));
             return new ResponseEntity<>(savedProject, HttpStatus.CREATED);
         } catch (Exception e) {
             logger.error(e);
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Project> updateProject(@PathVariable("id") String id,
+                                                 @RequestBody ProjectEditingDto projectEditingDto,
+                                                 @RequestHeader("Authorization") String authorizationHeader) {
+        // get jwt user
+        User user = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
+
+        Optional<Project> projectOptional = projectService.findByIdAndUserId(id, user.getId());
+
+        if (projectOptional.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        Project project = projectOptional.get();
+
+        if (projectEditingDto.getName() != null) {
+            project.setName(projectEditingDto.getName());
+        }
+
+        if (projectEditingDto.getDescription() != null) {
+            project.setDescription(projectEditingDto.getDescription());
+        }
+
+        if (projectEditingDto.getIsPublic() != null) {
+            project.setIsPublic(projectEditingDto.getIsPublic());
+        }
+
+        project.setModifiedTime(new Date());
+
+        return new ResponseEntity<>(projectDao.save(project), HttpStatus.OK);
     }
 
 }

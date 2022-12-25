@@ -1,7 +1,5 @@
 package com.liviz.v2.dto;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.liviz.v2.model.DataSourceSlot;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

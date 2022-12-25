@@ -20,8 +20,11 @@ public class ProjectDto {
     @NotBlank
     private String name;
 
+    // TODO: use box type in all models
+
     @NotNull
-    private boolean isPublic;
+    private Boolean isPublic;
 
     private String description = "";
+
 }

@@ -31,7 +31,7 @@ public class Project {
     @DBRef(lazy = true)
     private User createdBy;
 
-    private boolean isPublic;
+    private Boolean isPublic;
 
     private String description;
 

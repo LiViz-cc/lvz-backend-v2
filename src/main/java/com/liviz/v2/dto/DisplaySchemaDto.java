@@ -1,6 +1,5 @@
 package com.liviz.v2.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.liviz.v2.model.Project;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
