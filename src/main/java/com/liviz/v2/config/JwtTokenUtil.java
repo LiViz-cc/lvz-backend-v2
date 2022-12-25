@@ -100,17 +100,16 @@ public class JwtTokenUtil implements Serializable {
      * @param authorizationHeader the JWT token to validate
      * @return username if token is valid, null otherwise
      */
-    public String getJwtIdentity(String authorizationHeader) {
+    public String getJwtIdentity(String authorizationHeader) throws UnauthenticatedException {
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            // TODO: define a custom exception
-            throw new RuntimeException("Unauthorized");
+            throw new UnauthenticatedException("Bearer token is missing or invalid");
         }
         String bearerToken = authorizationHeader.substring("Bearer ".length());
 
         String username = getUsernameFromToken(bearerToken);
 
         if (isTokenExpired(bearerToken)) {
-            throw new RuntimeException("Unauthorized");
+            throw new UnauthenticatedException("Bearer token is invalid");
         }
         return username;
     }

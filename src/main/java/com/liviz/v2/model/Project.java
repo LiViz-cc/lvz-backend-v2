@@ -37,14 +37,13 @@ public class Project {
     @DBRef(lazy = true)
     private List<DataSource> dataSources;
 
-    public Project(String name, Date createdTime, Date modifiedTime, User createdBy, boolean isPublic, String description, List<DataSource> dataSources) {
+    public Project(String name, Date createdTime, Date modifiedTime, User createdBy, boolean isPublic, String description) {
         this.name = name;
         this.createdTime = createdTime;
         this.modifiedTime = modifiedTime;
         this.createdBy = createdBy;
         this.isPublic = isPublic;
         this.description = description;
-        this.dataSources = dataSources;
     }
 
     public Project(Project other) {

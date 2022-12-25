@@ -58,7 +58,7 @@ public class ProjectController {
             Project savedProject = projectDao.save(
                     new Project(
                             project.getName(), new Date(), new Date(), user, project.isPublic(),
-                            project.getDescription(), project.getDataSources()));
+                            project.getDescription()));
             return new ResponseEntity<>(savedProject, HttpStatus.CREATED);
         } catch (Exception e) {
             logger.error(e);
