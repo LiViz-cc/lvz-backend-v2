@@ -50,6 +50,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return buildErrorResponse(exception, HttpStatus.NOT_FOUND, request);
     }
 
+    @ExceptionHandler(UnauthenticatedException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ResponseEntity<Object> handleUnauthenticatedException(
+            UnauthenticatedException exception,
+            WebRequest request
+    ) {
+        logger.error("Unauthenticated", exception);
+        return buildErrorResponse(exception, HttpStatus.UNAUTHORIZED, request);
+    }
+
     @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<Object> handleAllUncaughtException(
