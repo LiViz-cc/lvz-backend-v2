@@ -32,19 +32,16 @@ public class ShareConfigController {
     @PostMapping
     public ResponseEntity<ShareConfig> createShareConfig(@Valid @RequestBody ShareConfigDto shareConfigDto,
                                                          @RequestHeader("Authorization") String authorizationHeader) {
-        try {
-            // get jwt user
-            User user = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
 
-            // create share config
-            ShareConfig savedShareConfig = shareConfigService.createShareConfig(shareConfigDto, user);
+        // get jwt user
+        User user = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
 
-            // return created share config
-            return new ResponseEntity<>(savedShareConfig, HttpStatus.CREATED);
-        } catch (Exception e) {
-            logger.error(e);
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        // create share config
+        ShareConfig savedShareConfig = shareConfigService.createShareConfig(shareConfigDto, user);
+
+        // return created share config
+        return new ResponseEntity<>(savedShareConfig, HttpStatus.CREATED);
+
     }
 
     @GetMapping("/{id}")
@@ -56,7 +53,7 @@ public class ShareConfigController {
 
             // get share config
             Optional<ShareConfig> shareConfigOptional = shareConfigService.getShareConfigByIdAndUser(id, user);
-            if (shareConfigOptional.isEmpty()){
+            if (shareConfigOptional.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
 

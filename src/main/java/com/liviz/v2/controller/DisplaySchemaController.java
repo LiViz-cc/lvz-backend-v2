@@ -37,19 +37,14 @@ public class DisplaySchemaController {
     public ResponseEntity<DisplaySchema> createDisplaySchema(@Valid @RequestBody DisplaySchemaDto displaySchemaDto,
                                                              @RequestHeader("Authorization") String authorizationHeader) {
 
-        try {
-            // get jwt user
-            User user = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
+        // get jwt user
+        User user = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
 
-            // create display schema
-            DisplaySchema savedDisplaySchema = displaySchemaService.createDisplaySchema(displaySchemaDto, user);
+        // create display schema
+        DisplaySchema savedDisplaySchema = displaySchemaService.createDisplaySchema(displaySchemaDto, user);
 
-            // return created display schema
-            return new ResponseEntity<>(savedDisplaySchema, HttpStatus.CREATED);
-        } catch (Exception e) {
-            logger.error(e);
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        // return created display schema
+        return new ResponseEntity<>(savedDisplaySchema, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")

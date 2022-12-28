@@ -75,8 +75,6 @@ public class DataSourceController {
         // get jwt user
         User user = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
 
-        System.out.println("dataSourceDto = " + dataSourceDto);
-
         // create new data source
         DataSource dataSource =
                 new DataSource(dataSourceDto.getName(), dataSourceDto.getIsPublic(), dataSourceDto.getDescription(),

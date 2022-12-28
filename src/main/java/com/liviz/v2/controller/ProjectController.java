@@ -50,7 +50,6 @@ public class ProjectController {
         return new ResponseEntity<>(projectData.get(), HttpStatus.OK);
     }
 
-    // TODO: remove all try-catch blocks in controllers, services and dao
     @PostMapping()
     public ResponseEntity<Project> createProject(@Valid @RequestBody ProjectDto project,
                                                  @RequestHeader("Authorization") String authorizationHeader) {
