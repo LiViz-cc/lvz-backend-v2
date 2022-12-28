@@ -37,8 +37,8 @@ public class ProjectController {
     private final Log logger = LogFactory.getLog(getClass());
 
     @GetMapping("/{id}")
-    public ResponseEntity<Project> getUserById(@PathVariable("id") String id,
-                                               @RequestHeader("Authorization") String authorizationHeader) {
+    public ResponseEntity<Project> getProjectById(@PathVariable("id") String id,
+                                                  @RequestHeader("Authorization") String authorizationHeader) {
         // get jwt user
         User user = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
 
