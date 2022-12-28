@@ -15,7 +15,6 @@ import java.util.Date;
 @Setter
 @ToString
 @NoArgsConstructor
-@AllArgsConstructor
 public class ProjectDto {
     @NotBlank
     private String name;

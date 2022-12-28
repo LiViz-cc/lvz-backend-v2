@@ -1,10 +1,9 @@
 package com.liviz.v2.dto;
 
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 import com.liviz.v2.model.DataSourceSlot;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.validator.constraints.URL;
 
 import javax.validation.constraints.NotBlank;
@@ -14,14 +13,16 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-@AllArgsConstructor
+// TODO: use `NoArgsConstructor` in all DTOs
+@NoArgsConstructor
 public class DataSourceDto {
-    // TODO: validation not working
+    // TODO: enable all validations
     @NotBlank
     private String name;
 
     // TODO: default value not working
-    private Boolean isPublic = false;
+    @JsonSetter(nulls = Nulls.SKIP)
+    private Boolean isPublic;
 
     private String description;
 
@@ -31,7 +32,7 @@ public class DataSourceDto {
 
     @URL
     @NotBlank
-    private String url;
+    private String url = "";
 
     @NotNull
     private List<DataSourceSlot> slots;

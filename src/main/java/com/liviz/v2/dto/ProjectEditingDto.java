@@ -10,7 +10,6 @@ import javax.validation.constraints.NotNull;
 @Setter
 @ToString
 @NoArgsConstructor
-@AllArgsConstructor
 public class ProjectEditingDto {
     private String name;
 

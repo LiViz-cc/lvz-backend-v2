@@ -18,7 +18,6 @@ import java.util.Date;
 @Setter
 @ToString
 @NoArgsConstructor
-@AllArgsConstructor
 public class ShareConfigDto {
     @Indexed(unique = true)
     @Size(max = 50)

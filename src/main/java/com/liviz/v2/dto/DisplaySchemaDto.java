@@ -11,7 +11,6 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 @ToString
-@AllArgsConstructor
 @NoArgsConstructor
 public class DisplaySchemaDto {
     @Indexed(unique = true)
