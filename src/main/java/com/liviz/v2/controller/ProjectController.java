@@ -80,6 +80,7 @@ public class ProjectController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
+        // update project
         Project project = projectOptional.get();
 
         if (projectEditingDto.getName() != null) {

@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.validator.constraints.URL;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -14,10 +16,12 @@ import java.util.List;
 @ToString
 @AllArgsConstructor
 public class DataSourceDto {
+    // TODO: validation not working
     @NotBlank
     private String name;
 
-    private boolean isPublic;
+    // TODO: default value not working
+    private Boolean isPublic = false;
 
     private String description;
 
@@ -25,6 +29,8 @@ public class DataSourceDto {
 
     private String dataType;
 
+    @URL
+    @NotBlank
     private String url;
 
     @NotNull

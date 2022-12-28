@@ -29,7 +29,7 @@ public class DataSource {
     @Indexed(unique = true)
     private String name;
 
-    private boolean isPublic;
+    private Boolean isPublic;
     private String description;
     private String staticData;
     private String dataType;
@@ -54,7 +54,7 @@ public class DataSource {
     @NotNull
     private List<DataSourceSlot> dataSourceSlots;
 
-    public DataSource(String name, boolean isPublic, String description, String static_data, String data_type, String url, List<DataSourceSlot> dataSourceSlots) {
+    public DataSource(String name, Boolean isPublic, String description, String static_data, String data_type, String url, List<DataSourceSlot> dataSourceSlots) {
         this.name = name;
         this.isPublic = isPublic;
         this.description = description;

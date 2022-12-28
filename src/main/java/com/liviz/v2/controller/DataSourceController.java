@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -68,27 +69,26 @@ public class DataSourceController {
     }
 
     @PostMapping()
-    public ResponseEntity<DataSource> createDataSource(@RequestBody DataSourceDto dataSourceDto,
+    public ResponseEntity<DataSource> createDataSource(@Valid @RequestBody DataSourceDto dataSourceDto,
                                                        @RequestHeader("Authorization") String authorizationHeader) {
-        try {
-            // get jwt user
-            User user = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
 
-            // create new data source
-            DataSource dataSource =
-                    new DataSource(dataSourceDto.getName(), dataSourceDto.isPublic(), dataSourceDto.getDescription(),
-                            dataSourceDto.getStaticData(), dataSourceDto.getDataType(), dataSourceDto.getUrl(),
-                            dataSourceDto.getSlots());
-            dataSource.setCreatedBy(user);
+        // get jwt user
+        User user = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
 
-            // save data source
-            dataSource = dataSourceDao.save(dataSource);
+        System.out.println("dataSourceDto = " + dataSourceDto);
 
-            // return data source
-            return new ResponseEntity<>(dataSource, HttpStatus.CREATED);
-        } catch (Exception e) {
-            logger.error(e);
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        // create new data source
+        DataSource dataSource =
+                new DataSource(dataSourceDto.getName(), dataSourceDto.getIsPublic(), dataSourceDto.getDescription(),
+                        dataSourceDto.getStaticData(), dataSourceDto.getDataType(), dataSourceDto.getUrl(),
+                        dataSourceDto.getSlots());
+        dataSource.setCreatedBy(user);
+
+        // save data source
+        dataSource = dataSourceDao.save(dataSource);
+
+        // return data source
+        return new ResponseEntity<>(dataSource, HttpStatus.CREATED);
+
     }
 }

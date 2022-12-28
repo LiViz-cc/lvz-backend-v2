@@ -15,7 +15,10 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 
+import javax.validation.ConstraintViolationException;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 // reference: https://reflectoring.io/spring-boot-exception-handling/
 @ControllerAdvice
@@ -37,8 +40,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             @NotNull HttpStatus status,
             @NotNull WebRequest request
     ) {
+        // handle validation errors
+        List<String> errors = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(x -> x.getField() + ": " + x.getDefaultMessage())
+                .collect(Collectors.toList());
+
         logger.error("Method argument not valid", ex);
-        return buildErrorResponse(ex, status, request);
+        return buildErrorResponse(ex, errors.toString(), status, request);
     }
 
     @ExceptionHandler(NoSuchElementFoundException.class)
@@ -61,10 +71,19 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return buildErrorResponse(exception, HttpStatus.UNAUTHORIZED, request);
     }
 
-    @ExceptionHandler(RuntimeException.class)
+    @ExceptionHandler({ConstraintViolationException.class})
+    public ResponseEntity<Object> handleConstraintViolation(
+            ConstraintViolationException exception, WebRequest request) {
+        List<String> validationErrors = exception.getConstraintViolations().stream().
+                map(violation -> violation.getPropertyPath() + ": " + violation.getMessage())
+                .collect(Collectors.toList());
+        return buildErrorResponse(exception, validationErrors.toString(), HttpStatus.BAD_REQUEST, request);
+    }
+
+    @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<Object> handleAllUncaughtException(
-            RuntimeException exception,
+            Exception exception,
             WebRequest request
     ) {
         logger.error("An unexpected error occurred", exception);
@@ -98,7 +117,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     ) {
         ErrorResponse errorResponse = new ErrorResponse(
                 httpStatus.value(),
-                exception.getMessage()
+                message
         );
 
         if (printStackTraceEnabled && isTraceOn(request)) {
