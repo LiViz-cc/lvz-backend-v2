@@ -8,6 +8,7 @@ import org.hibernate.validator.constraints.Length;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -18,12 +19,14 @@ import javax.validation.constraints.Size;
 public class DisplaySchemaDto {
     @Indexed(unique = true)
     @Length(max = 50)
+    @NotBlank
     private String name;
 
     @NotNull
-    private Boolean isPublic = false;
+    private Boolean isPublic;
 
     @Size(max = 1000)
+    @JsonSetter(nulls = Nulls.SKIP)
     private String description = "";
 
     // Json string

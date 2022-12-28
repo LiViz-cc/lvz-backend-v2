@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController
@@ -29,7 +30,7 @@ public class ShareConfigController {
     Log logger;
 
     @PostMapping
-    public ResponseEntity<ShareConfig> createShareConfig(@RequestBody ShareConfigDto shareConfigDto,
+    public ResponseEntity<ShareConfig> createShareConfig(@Valid @RequestBody ShareConfigDto shareConfigDto,
                                                          @RequestHeader("Authorization") String authorizationHeader) {
         try {
             // get jwt user

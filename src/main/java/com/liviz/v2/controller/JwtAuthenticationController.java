@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -47,7 +48,7 @@ public class JwtAuthenticationController {
     UserService userService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest jwtRequest) throws Exception {
+    public ResponseEntity<?> createAuthenticationToken(@Valid @RequestBody JwtRequest jwtRequest) throws Exception {
         // get user by username or email
         Optional<User> userOptional;
         if (jwtRequest.getUsername() != null) {
@@ -93,7 +94,7 @@ public class JwtAuthenticationController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signUp(@RequestBody AuthSignUpDto authSignUpDto) {
+    public ResponseEntity<?> signUp(@Valid @RequestBody AuthSignUpDto authSignUpDto) {
         Optional<User> userOptional = authService.signUp(authSignUpDto);
         if (userOptional.isEmpty()) {
             return ResponseEntity.badRequest().body("User already exists");
