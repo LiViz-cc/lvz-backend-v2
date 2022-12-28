@@ -18,7 +18,7 @@ public class DataSourceSlot {
     private String slotType;
 
     @NotNull
-    private boolean isOptional;
+    private Boolean isOptional;
 
     private String defaultValue;
 

@@ -44,7 +44,7 @@ public class Project {
     @DBRef(lazy = true)
     private List<ShareConfig> shareConfigs = new ArrayList<>();
 
-    public Project(String name, Date createdTime, Date modifiedTime, User createdBy, boolean isPublic, String description) {
+    public Project(String name, Date createdTime, Date modifiedTime, User createdBy, Boolean isPublic, String description) {
         this.name = name;
         this.createdTime = createdTime;
         this.modifiedTime = modifiedTime;

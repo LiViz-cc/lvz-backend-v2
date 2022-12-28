@@ -14,14 +14,12 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-// TODO: use `NoArgsConstructor` in all DTOs
 @NoArgsConstructor
 public class DataSourceDto {
     // TODO: enable all validations
     @NotBlank
     private String name;
 
-    // TODO: default value not working
     private Boolean isPublic;
 
     private String description;
