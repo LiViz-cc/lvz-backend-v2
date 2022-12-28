@@ -1,6 +1,7 @@
 package com.liviz.v2.dao;
 
 import com.liviz.v2.model.Project;
+import org.springframework.data.mongodb.repository.DeleteQuery;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
@@ -16,4 +17,5 @@ public interface ProjectDao extends MongoRepository<Project, String> {
      */
     @Query("{id: ?0}, {user: {id: ?1} }")
     Optional<Project> findByIdAndUserId(String id, String userId);
+
 }

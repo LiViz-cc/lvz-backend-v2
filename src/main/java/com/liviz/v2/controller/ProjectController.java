@@ -98,4 +98,15 @@ public class ProjectController {
         return new ResponseEntity<>(projectDao.save(project), HttpStatus.OK);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<HttpStatus> deleteProject(@PathVariable("id") String id,
+                                                    @RequestHeader("Authorization") String authorizationHeader) {
+        // get jwt user
+        User user = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
+
+        projectService.deleteByIdAndUserId(id, user.getId());
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+    }
+
 }
