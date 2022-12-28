@@ -1,8 +1,10 @@
 package com.liviz.v2.service;
 
 import com.liviz.v2.dao.DisplaySchemaDao;
+import com.liviz.v2.dao.ProjectDao;
 import com.liviz.v2.dto.DisplaySchemaDto;
 import com.liviz.v2.model.DisplaySchema;
+import com.liviz.v2.model.Project;
 import com.liviz.v2.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,16 +19,22 @@ public class DisplaySchemaService {
     @Autowired
     DisplaySchemaDao displaySchemaDao;
 
+    @Autowired
+    ProjectDao projectDao;
+
     public DisplaySchema createDisplaySchema(DisplaySchemaDto displaySchemaDto, User user) {
+        // find project by id
+        Optional<Project> projectOptional = Optional.empty();
+        if (displaySchemaDto.getLinkedProjectId() != null) {
+            projectOptional = projectDao.findById(displaySchemaDto.getLinkedProjectId());
+        }
+
         // create new display schema
         DisplaySchema displaySchema = new DisplaySchema(displaySchemaDto.getName(), new Date(), new Date(), user, displaySchemaDto.getIsPublic(), displaySchemaDto.getDescription(),
-                displaySchemaDto.getEChartOption(), displaySchemaDto.getLinkedProject());
+                displaySchemaDto.getEChartOption(), projectOptional.orElse(null));
 
-        // save display schema
-        DisplaySchema savedDisplaySchema = displaySchemaDao.save(displaySchema);
-
-        // return display schema
-        return savedDisplaySchema;
+        // save and return display schema
+        return displaySchemaDao.save(displaySchema);
     }
 
     public DisplaySchema getDisplaySchema(String id, User user) {

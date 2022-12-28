@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Date;
 import java.util.Optional;
 
@@ -49,22 +50,19 @@ public class ProjectController {
         return new ResponseEntity<>(projectData.get(), HttpStatus.OK);
     }
 
+    // TODO: remove all try-catch blocks in controllers, services and dao
     @PostMapping()
-    public ResponseEntity<Project> createProject(@RequestBody ProjectDto project,
+    public ResponseEntity<Project> createProject(@Valid @RequestBody ProjectDto project,
                                                  @RequestHeader("Authorization") String authorizationHeader) {
         // get jwt user
         User user = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
 
-        try {
-            Project savedProject = projectDao.save(
-                    new Project(
-                            project.getName(), new Date(), new Date(), user, project.getIsPublic(),
-                            project.getDescription()));
-            return new ResponseEntity<>(savedProject, HttpStatus.CREATED);
-        } catch (Exception e) {
-            logger.error(e);
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        Project savedProject = projectDao.save(
+                new Project(
+                        project.getName(), new Date(), new Date(), user, project.getIsPublic(),
+                        project.getDescription()));
+        return new ResponseEntity<>(savedProject, HttpStatus.CREATED);
+
     }
 
     @PutMapping("/{id}")

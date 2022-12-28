@@ -1,14 +1,12 @@
 package com.liviz.v2.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.liviz.v2.model.User;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.*;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
+
+import com.fasterxml.jackson.annotation.Nulls;
 
 
 @Getter
@@ -24,6 +22,7 @@ public class ProjectDto {
     @NotNull
     private Boolean isPublic;
 
-    private String description = "";
+    @NotNull
+    private String description;
 
 }

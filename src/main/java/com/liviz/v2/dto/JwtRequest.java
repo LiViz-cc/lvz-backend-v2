@@ -2,6 +2,7 @@ package com.liviz.v2.dto;
 
 import lombok.*;
 
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 @Getter
@@ -12,6 +13,8 @@ public class JwtRequest implements Serializable {
     private static final long serialVersionUID = 5926468583005150707L;
 
     private String username;
+
+    @NotBlank
     private String password;
     private String email;
 

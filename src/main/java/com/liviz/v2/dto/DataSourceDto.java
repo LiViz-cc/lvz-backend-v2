@@ -8,6 +8,7 @@ import org.hibernate.validator.constraints.URL;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -21,21 +22,21 @@ public class DataSourceDto {
     private String name;
 
     // TODO: default value not working
-    @JsonSetter(nulls = Nulls.SKIP)
     private Boolean isPublic;
 
     private String description;
 
     private String staticData;
 
+    @NotBlank
     private String dataType;
 
     @URL
     @NotBlank
     private String url = "";
 
-    @NotNull
-    private List<DataSourceSlot> slots;
+    @JsonSetter(nulls = Nulls.SKIP)
+    private List<DataSourceSlot> slots = new ArrayList<>();
 
 
 }

@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -13,6 +15,7 @@ public class AuthSignUpDto {
 
     // raw password
     @JsonIgnore
+    @NotBlank
     private String password;
     private String username;
 
