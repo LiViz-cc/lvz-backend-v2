@@ -45,7 +45,7 @@ public class ProjectController {
         Optional<Project> projectData = projectService.findByIdAndUserId(id, user.getId());
 
         if (projectData.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(projectData.get(), HttpStatus.OK);
     }
