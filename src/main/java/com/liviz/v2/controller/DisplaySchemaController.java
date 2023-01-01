@@ -1,14 +1,12 @@
 package com.liviz.v2.controller;
 
 import com.liviz.v2.config.JwtTokenUtil;
-import com.liviz.v2.dao.UserDao;
 import com.liviz.v2.dto.DisplaySchemaDto;
 import com.liviz.v2.exception.NoSuchElementFoundException;
 import com.liviz.v2.model.DisplaySchema;
 import com.liviz.v2.model.User;
 import com.liviz.v2.service.DisplaySchemaService;
 import com.liviz.v2.service.UserService;
-import javafx.util.Pair;
 import org.apache.commons.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/display_schemas")
@@ -62,6 +59,27 @@ public class DisplaySchemaController {
 
         // return display schema
         return new ResponseEntity<>(displaySchema, HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<DisplaySchema> updateDisplaySchema(@PathVariable("id") String id,
+                                                             @Valid @RequestBody DisplaySchemaDto displaySchemaDto,
+                                                             @RequestHeader("Authorization") String authorizationHeader) {
+        // get jwt user
+        User user = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
+
+        // search display schema by id and user id
+        DisplaySchema displaySchema = displaySchemaService.getDisplaySchema(id, user);
+
+        if (displaySchema == null) {
+            throw new NoSuchElementFoundException(String.format("No display schema found with id %s and current user", id));
+        }
+
+        // update display schema
+        DisplaySchema updatedDisplaySchema = displaySchemaService.updateDisplaySchema(displaySchema, displaySchemaDto, user);
+
+        // return updated display schema
+        return new ResponseEntity<>(updatedDisplaySchema, HttpStatus.OK);
     }
 
 }

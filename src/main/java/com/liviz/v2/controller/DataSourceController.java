@@ -6,10 +6,12 @@ import com.liviz.v2.dao.UserDao;
 import com.liviz.v2.dto.DataSourceDto;
 import com.liviz.v2.model.DataSource;
 import com.liviz.v2.model.User;
+import com.liviz.v2.service.DataSourceService;
 import com.liviz.v2.service.UserService;
 import javafx.util.Pair;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,12 +28,16 @@ public class DataSourceController {
     DataSourceDao dataSourceDao;
 
     @Autowired
+    DataSourceService dataSourceService;
+
+    @Autowired
     UserService userService;
 
     @Autowired
     JwtTokenUtil jwtTokenUtil;
 
-    private final Log logger = LogFactory.getLog(getClass());
+    @Autowired
+    private Log logger;
 
     @GetMapping("/{id}")
     public ResponseEntity<DataSource> getDataSourceById(@PathVariable("id") String id,
@@ -75,18 +81,13 @@ public class DataSourceController {
         // get jwt user
         User user = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
 
-        // create new data source
-        DataSource dataSource =
-                new DataSource(dataSourceDto.getName(), dataSourceDto.getIsPublic(), dataSourceDto.getDescription(),
-                        dataSourceDto.getStaticData(), dataSourceDto.getDataType(), dataSourceDto.getUrl(),
-                        dataSourceDto.getSlots());
-        dataSource.setCreatedBy(user);
-
-        // save data source
-        dataSource = dataSourceDao.save(dataSource);
+        // create and save data source
+        DataSource dataSource = dataSourceService.createDataSource(dataSourceDto, user);
 
         // return data source
         return new ResponseEntity<>(dataSource, HttpStatus.CREATED);
 
     }
+
+
 }
