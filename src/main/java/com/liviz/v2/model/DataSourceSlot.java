@@ -1,6 +1,9 @@
 package com.liviz.v2.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
+import org.springframework.data.annotation.Id;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -24,6 +27,7 @@ public class DataSourceSlot {
 
     private String aliasValue;
 
+
     public DataSourceSlot(DataSourceSlot dataSourceSlot) {
         this.name = dataSourceSlot.name;
         this.slotType = dataSourceSlot.slotType;
@@ -31,6 +35,4 @@ public class DataSourceSlot {
         this.defaultValue = dataSourceSlot.defaultValue;
         this.aliasValue = dataSourceSlot.aliasValue;
     }
-
-
 }

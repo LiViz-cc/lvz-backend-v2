@@ -1,6 +1,8 @@
 package com.liviz.v2.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,6 +24,9 @@ import java.util.stream.Collectors;
 @Setter
 @ToString
 @NoArgsConstructor
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class DataSource {
     @Id
     private String id;
@@ -85,6 +90,7 @@ public class DataSource {
         this.createdBy = other.createdBy;
         this.projects = other.projects;
 
+        // TODO: shallow copy is fine
         // deep copy of dataSourceExample and dataSourceSlots
         this.dataSourceExample = new DataSourceExample(other.dataSourceExample);
         this.dataSourceSlots = other.dataSourceSlots.stream().map(DataSourceSlot::new).collect(Collectors.toList());
