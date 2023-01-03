@@ -14,7 +14,6 @@ public class AuthSignUpDto {
     private String email;
 
     // raw password
-    @JsonIgnore
     @NotBlank
     private String password;
     private String username;
