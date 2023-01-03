@@ -21,13 +21,14 @@ public interface ProjectDao extends MongoRepository<Project, String> {
     @Query("{id: ?0}, {createdBy: {id: ?1} }")
     Optional<Project> findByIdAndUserId(String id, String userId);
 
-    @Query("{ isPublic: ?0 }, { createdBy: { id: ?1 } }")
+    @Query("{isPublic: ?0}, {createdBy: {id: ?1} }")
     List<Project> queryByFilters(Boolean isPublic, String createdById);
 
-    @Query("{ isPublic: ?0 }")
+    @Query("{isPublic: ?0}")
     List<Project> queryByIsPublic(Boolean isPublic);
 
-    @Query("{ createdBy: { id: ?0 } }")
+    @Query("{createdBy: {id: ?0} }")
     // TODO: bug?
     List<Project> queryByCreatedBy(String createdById);
+
 }

@@ -1,22 +1,27 @@
 package com.liviz.v2.service;
 
+import com.liviz.v2.dao.DisplaySchemaDao;
 import com.liviz.v2.dao.ProjectDao;
 import com.liviz.v2.exception.BadRequestException;
 import com.liviz.v2.exception.NoSuchElementFoundException;
+import com.liviz.v2.model.DisplaySchema;
 import com.liviz.v2.model.Project;
 import com.liviz.v2.model.User;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
 public class ProjectService {
     @Autowired
     ProjectDao projectDao;
+
+    @Autowired
+    DisplaySchemaDao displaySchemaDao;
 
     public Optional<Project> findByIdAndUserId(String id, String userId) {
         return projectDao.findByIdAndUserId(id, userId);
@@ -83,5 +88,38 @@ public class ProjectService {
 
         // save and return new project
         return projectDao.save(newProject);
+    }
+
+    @Transactional
+    public Optional<Project> addProjectDisplaySchema(String id, @NotNull User user, String displaySchemaId) {
+        // find project by id and user id
+        Optional<Project> projectOptional = projectDao.findByIdAndUserId(id, user.getId());
+
+        // if project is not found
+        if (projectOptional.isEmpty()) {
+            return projectOptional;
+        }
+
+        Project project = projectOptional.get();
+
+        // get display schema
+        Optional<DisplaySchema> displaySchemaOptional = displaySchemaDao.findByIdAndUserId(displaySchemaId, user.getId());
+
+        // if display schema is not found
+        if (displaySchemaOptional.isEmpty()) {
+            throw new NoSuchElementFoundException(String.format("Display schema not found with id %s", displaySchemaId));
+        }
+
+        // add display schema id to project and vice versa
+        if (project.getDisplaySchema() != null) {
+            project.getDisplaySchema().setLinkedProject(null);
+            displaySchemaDao.save(project.getDisplaySchema());
+        }
+        displaySchemaOptional.get().setLinkedProject(project);
+        displaySchemaDao.save(displaySchemaOptional.get());
+        project.setDisplaySchema(displaySchemaOptional.get());
+
+        // save and return project
+        return Optional.of(projectDao.save(project));
     }
 }

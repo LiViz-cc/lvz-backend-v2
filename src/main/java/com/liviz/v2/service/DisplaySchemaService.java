@@ -41,8 +41,7 @@ public class DisplaySchemaService {
 
     public DisplaySchema getDisplaySchema(String id, User user) {
         // get display schema
-        Optional<DisplaySchema> displaySchemaOptional = displaySchemaDao.findById(id);
-
+        Optional<DisplaySchema> displaySchemaOptional = displaySchemaDao.findByIdAndUserId(id, user.getId());
 
         // return not found if display schema is not found
         if (displaySchemaOptional.isEmpty()) {

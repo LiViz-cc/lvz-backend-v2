@@ -5,7 +5,7 @@ import com.liviz.v2.dao.ProjectDao;
 import com.liviz.v2.dao.UserDao;
 import com.liviz.v2.dto.ProjectDto;
 import com.liviz.v2.dto.ProjectEditingDto;
-import com.liviz.v2.exception.BadRequestException;
+import com.liviz.v2.dto.ProjectPutDisplaySchemaDto;
 import com.liviz.v2.model.Project;
 import com.liviz.v2.model.User;
 import com.liviz.v2.service.ProjectService;
@@ -16,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
@@ -132,6 +131,22 @@ public class ProjectController {
         Project project = projectService.cloneProject(id, user);
 
         return new ResponseEntity<>(project, HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}/display_schema")
+    public ResponseEntity<Project> addProjectDisplaySchema(@PathVariable("id") String id,
+                                                           @Valid @RequestBody ProjectPutDisplaySchemaDto projectPutDisplaySchemaDto,
+                                                           @RequestHeader("Authorization") String authorizationHeader) {
+        // get jwt user
+        User user = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
+
+        Optional<Project> projectOptional = projectService.addProjectDisplaySchema(id, user, projectPutDisplaySchemaDto.getDisplaySchemaId());
+
+        if (projectOptional.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(projectDao.save(projectOptional.get()), HttpStatus.OK);
     }
 
 
