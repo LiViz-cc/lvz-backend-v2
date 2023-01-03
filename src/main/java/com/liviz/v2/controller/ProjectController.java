@@ -5,6 +5,7 @@ import com.liviz.v2.dao.ProjectDao;
 import com.liviz.v2.dao.UserDao;
 import com.liviz.v2.dto.ProjectDto;
 import com.liviz.v2.dto.ProjectEditingDto;
+import com.liviz.v2.exception.BadRequestException;
 import com.liviz.v2.model.Project;
 import com.liviz.v2.model.User;
 import com.liviz.v2.service.ProjectService;
@@ -15,8 +16,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -106,6 +109,18 @@ public class ProjectController {
         projectService.deleteByIdAndUserId(id, user.getId());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
+    }
+
+    @GetMapping
+    public ResponseEntity<Iterable<Project>> getProjectsByFilters(@RequestHeader("Authorization") String authorizationHeader,
+                                                                  @RequestParam(name = "is_public", required = false) Boolean isPublic,
+                                                                  @RequestParam(name = "created_by", required = false) String createdBy) {
+        // get jwt user
+        User user = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
+
+        List<Project> projects = projectService.getProjectsByFilters(user, isPublic, createdBy);
+
+        return new ResponseEntity<>(projects, HttpStatus.OK);
     }
 
 }

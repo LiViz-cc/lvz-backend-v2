@@ -71,7 +71,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return buildErrorResponse(exception, HttpStatus.UNAUTHORIZED, request);
     }
 
-    @ExceptionHandler({ConstraintViolationException.class})
+    @ExceptionHandler(BadRequestException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Object> handleBadRequestException(
+            BadRequestException exception,
+            WebRequest request
+    ) {
+        logger.error("Bad request", exception);
+        return buildErrorResponse(exception, HttpStatus.BAD_REQUEST, request);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Object> handleConstraintViolation(
             ConstraintViolationException exception, WebRequest request) {
         List<String> validationErrors = exception.getConstraintViolations().stream().
