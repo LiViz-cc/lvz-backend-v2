@@ -55,4 +55,33 @@ public class ProjectService {
         throw new BadRequestException("This query combination is not allowed.");
 
     }
+
+    public Project cloneProject(String projectId, User user) {
+        // find project by id
+        Optional<Project> projectOptional = projectDao.findById(projectId);
+
+        // if project is not found
+        if (projectOptional.isEmpty()) {
+            throw new NoSuchElementFoundException(String.format("Project not found with id %s and current user", projectId));
+        }
+
+        Project project = projectOptional.get();
+
+        // check if project is public or created by user
+        if (project.getIsPublic() != Boolean.TRUE && !project.getCreatedBy().getId().equals(user.getId())) {
+            throw new BadRequestException("This project is not public and not created by current user.");
+        }
+
+        // create new project
+        Project newProject = new Project(project);
+
+        // set new project's id to null
+        newProject.setId(null);
+
+        // set new project's created by to current user
+        newProject.setCreatedBy(user);
+
+        // save and return new project
+        return projectDao.save(newProject);
+    }
 }

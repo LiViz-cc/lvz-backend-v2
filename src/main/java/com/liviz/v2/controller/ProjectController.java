@@ -123,4 +123,16 @@ public class ProjectController {
         return new ResponseEntity<>(projects, HttpStatus.OK);
     }
 
+    @PostMapping("/clone")
+    public ResponseEntity<Project> cloneProject(@RequestParam("id") String id,
+                                                @RequestHeader("Authorization") String authorizationHeader) {
+        // get jwt user
+        User user = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
+
+        Project project = projectService.cloneProject(id, user);
+
+        return new ResponseEntity<>(project, HttpStatus.OK);
+    }
+
+
 }
