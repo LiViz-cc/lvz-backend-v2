@@ -60,19 +60,6 @@ public class DataSourceController {
         return new ResponseEntity<>(dataSourceData.get(), HttpStatus.OK);
     }
 
-    @GetMapping()
-    public ResponseEntity<List<DataSource>> getAllDataSources(@RequestHeader("Authorization") String authorizationHeader) {
-        // get jwt user
-        User user = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
-
-        // TODO: check if user is the creator of the data source
-
-        List<DataSource> dataSources = dataSourceDao.findAll();
-        if (dataSources.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(dataSources, HttpStatus.OK);
-    }
 
     @PostMapping()
     public ResponseEntity<DataSource> createDataSource(@Valid @RequestBody DataSourceDto dataSourceDto,
@@ -87,6 +74,20 @@ public class DataSourceController {
         // return data source
         return new ResponseEntity<>(dataSource, HttpStatus.CREATED);
 
+    }
+
+    @GetMapping
+    public ResponseEntity<List<DataSource>> getDataSourcesByUserId(@RequestHeader("Authorization") String authorizationHeader,
+                                                                   @RequestParam(value = "created_by", required = false) String createdById,
+                                                                   @RequestParam(value = "is_public", required = false) Boolean isPublic) {
+        // get jwt user
+        User user = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
+
+        // get data sources
+        List<DataSource> dataSources = dataSourceService.findAllByFilters(user, createdById, isPublic);
+
+        // return data sources
+        return new ResponseEntity<>(dataSources, HttpStatus.OK);
     }
 
 

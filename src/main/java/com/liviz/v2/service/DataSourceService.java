@@ -5,6 +5,7 @@ import com.liviz.v2.dao.DisplaySchemaDao;
 import com.liviz.v2.dao.ProjectDao;
 import com.liviz.v2.dto.DataSourceDto;
 import com.liviz.v2.dto.DisplaySchemaDto;
+import com.liviz.v2.exception.BadRequestException;
 import com.liviz.v2.model.DataSource;
 import com.liviz.v2.model.DisplaySchema;
 import com.liviz.v2.model.Project;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -35,4 +37,24 @@ public class DataSourceService {
         return dataSource;
     }
 
+    public List<DataSource> findAllByFilters(User user, String createdById, Boolean isPublic) {
+        // if requested user is not the jwt user
+        if (user == null || !user.getId().equals(createdById)) {
+            // if isPublic is not True
+            if (isPublic == null || !isPublic) {
+                throw new BadRequestException("Access to other users' non-public data sources is not allowed.");
+            }
+        }
+
+        if (isPublic != null && createdById != null) {
+            return dataSourceDao.queryByFilters(isPublic, createdById);
+        } else if (isPublic != null) {
+            return dataSourceDao.queryByIsPublic(isPublic);
+        } else if (createdById != null) {
+            return dataSourceDao.queryByCreatedBy(createdById);
+        }
+
+        throw new BadRequestException("This query combination is not allowed.");
+
+    }
 }
