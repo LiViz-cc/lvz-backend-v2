@@ -1,8 +1,6 @@
 package com.liviz.v2.dao;
 
 import com.liviz.v2.model.DataSource;
-import com.liviz.v2.model.Project;
-import com.liviz.v2.model.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
@@ -17,5 +15,5 @@ public interface DataSourceDao extends MongoRepository<DataSource, String> {
 
     @Query("{ createdBy: { id: ?0 } }")
         // TODO: bug?
-    List<DataSource> queryByCreatedBy(String createdById);
+    List<DataSource> findByCreatedBy_Id(String createdById);
 }

@@ -119,6 +119,9 @@ public class ProjectController {
 
         List<Project> projects = projectService.getProjectsByFilters(user, isPublic, createdBy);
 
+        if (projects.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
         return new ResponseEntity<>(projects, HttpStatus.OK);
     }
 
@@ -141,6 +144,21 @@ public class ProjectController {
         User user = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
 
         Optional<Project> projectOptional = projectService.addProjectDisplaySchema(id, user, projectPutDisplaySchemaDto.getDisplaySchemaId());
+
+        if (projectOptional.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(projectDao.save(projectOptional.get()), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}/display_schema")
+    public ResponseEntity<Project> deleteProjectDisplaySchema(@PathVariable("id") String projectId,
+                                                              @RequestHeader("Authorization") String authorizationHeader) {
+        // get jwt user
+        User user = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
+
+        Optional<Project> projectOptional = projectService.deleteProjectDisplaySchema(projectId, user);
 
         if (projectOptional.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

@@ -1,22 +1,15 @@
 package com.liviz.v2.service;
 
 import com.liviz.v2.dao.DataSourceDao;
-import com.liviz.v2.dao.DisplaySchemaDao;
-import com.liviz.v2.dao.ProjectDao;
 import com.liviz.v2.dto.DataSourceDto;
-import com.liviz.v2.dto.DisplaySchemaDto;
 import com.liviz.v2.exception.BadRequestException;
 import com.liviz.v2.model.DataSource;
-import com.liviz.v2.model.DisplaySchema;
-import com.liviz.v2.model.Project;
 import com.liviz.v2.model.User;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class DataSourceService {
@@ -51,7 +44,7 @@ public class DataSourceService {
         } else if (isPublic != null) {
             return dataSourceDao.queryByIsPublic(isPublic);
         } else if (createdById != null) {
-            return dataSourceDao.queryByCreatedBy(createdById);
+            return dataSourceDao.findByCreatedBy_Id(createdById);
         }
 
         throw new BadRequestException("This query combination is not allowed.");

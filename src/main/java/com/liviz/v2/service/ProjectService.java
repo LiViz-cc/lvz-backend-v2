@@ -122,4 +122,27 @@ public class ProjectService {
         // save and return project
         return Optional.of(projectDao.save(project));
     }
+
+    @Transactional
+    public Optional<Project> deleteProjectDisplaySchema(String projectId, @NotNull User user) {
+        // find project by id and user id
+        Optional<Project> projectOptional = projectDao.findByIdAndUserId(projectId, user.getId());
+
+        // if project is not found
+        if (projectOptional.isEmpty()) {
+            return projectOptional;
+        }
+
+        Project project = projectOptional.get();
+
+        // remove display schema from project and vice versa
+        if (project.getDisplaySchema() != null) {
+            project.getDisplaySchema().setLinkedProject(null);
+            displaySchemaDao.save(project.getDisplaySchema());
+        }
+        project.setDisplaySchema(null);
+
+        // save and return project
+        return Optional.of(projectDao.save(project));
+    }
 }
