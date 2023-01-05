@@ -5,7 +5,9 @@ import com.liviz.v2.dao.ProjectDao;
 import com.liviz.v2.dao.UserDao;
 import com.liviz.v2.dto.ProjectDto;
 import com.liviz.v2.dto.ProjectEditingDto;
+import com.liviz.v2.dto.ProjectPutDataSourceDto;
 import com.liviz.v2.dto.ProjectPutDisplaySchemaDto;
+import com.liviz.v2.exception.NoSuchElementFoundException;
 import com.liviz.v2.model.Project;
 import com.liviz.v2.model.User;
 import com.liviz.v2.service.ProjectService;
@@ -136,6 +138,7 @@ public class ProjectController {
         return new ResponseEntity<>(project, HttpStatus.OK);
     }
 
+    // TODO: revise api design
     @PutMapping("/{id}/display_schema")
     public ResponseEntity<Project> addProjectDisplaySchema(@PathVariable("id") String id,
                                                            @Valid @RequestBody ProjectPutDisplaySchemaDto projectPutDisplaySchemaDto,
@@ -165,6 +168,18 @@ public class ProjectController {
         }
 
         return new ResponseEntity<>(projectDao.save(projectOptional.get()), HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}/data_sources")
+    public ResponseEntity<Project> addProjectDataSource(@PathVariable("id") String projectId,
+                                                        @Valid @RequestBody ProjectPutDataSourceDto projectPutDataSourceDto,
+                                                        @RequestHeader("Authorization") String authorizationHeader) {
+        // get jwt user
+        User user = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
+
+        Project project = projectService.addProjectDataSource(projectId, user, projectPutDataSourceDto.getDataSourceIds());
+
+        return new ResponseEntity<>(projectDao.save(project), HttpStatus.OK);
     }
 
 

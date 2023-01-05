@@ -25,6 +25,7 @@ class ProjectControllerTest {
     @Autowired
     MockMvc mockMvc;
 
+    // TODO: get bearer token from login
     @Value("${spring.test.bearer-token}")
     String bearerToken;
 

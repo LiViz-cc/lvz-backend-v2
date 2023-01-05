@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class ProjectService {
     @Autowired
     ProjectDao projectDao;
@@ -90,7 +91,6 @@ public class ProjectService {
         return projectDao.save(newProject);
     }
 
-    @Transactional
     public Optional<Project> addProjectDisplaySchema(String id, @NotNull User user, String displaySchemaId) {
         // find project by id and user id
         Optional<Project> projectOptional = projectDao.findByIdAndUserId(id, user.getId());
@@ -123,7 +123,7 @@ public class ProjectService {
         return Optional.of(projectDao.save(project));
     }
 
-    @Transactional
+
     public Optional<Project> deleteProjectDisplaySchema(String projectId, @NotNull User user) {
         // find project by id and user id
         Optional<Project> projectOptional = projectDao.findByIdAndUserId(projectId, user.getId());
@@ -144,5 +144,24 @@ public class ProjectService {
 
         // save and return project
         return Optional.of(projectDao.save(project));
+    }
+
+    public Project addProjectDataSource(String projectId, User user, List<String> dataSourceIds) {
+        // TODO: use SetUniqueList to avoid duplicates
+
+        // find project by id and user id
+        Optional<Project> projectOptional = projectDao.findByIdAndUserId(projectId, user.getId());
+
+        // if project is not found
+        if (projectOptional.isEmpty()) {
+            throw new NoSuchElementFoundException(String.format("Project not found with id %s and current user", projectId));
+        }
+
+        Project project = projectOptional.get();
+
+        // add data source ids to project
+
+        return null;
+
     }
 }
