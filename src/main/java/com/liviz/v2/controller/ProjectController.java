@@ -68,7 +68,7 @@ public class ProjectController {
 
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<Project> updateProject(@PathVariable("id") String id,
                                                  @RequestBody ProjectEditingDto projectEditingDto,
                                                  @RequestHeader("Authorization") String authorizationHeader) {
@@ -139,7 +139,7 @@ public class ProjectController {
     }
 
     // TODO: revise api design
-    @PutMapping("/{id}/display_schema")
+    @PatchMapping("/{id}/display_schema")
     public ResponseEntity<Project> addProjectDisplaySchema(@PathVariable("id") String id,
                                                            @Valid @RequestBody ProjectPutDisplaySchemaDto projectPutDisplaySchemaDto,
                                                            @RequestHeader("Authorization") String authorizationHeader) {
@@ -171,7 +171,7 @@ public class ProjectController {
     }
 
     // TODO: use Patch instead of Put
-    @PutMapping("/{id}/data_sources")
+    @PatchMapping("/{id}/data_sources")
     public ResponseEntity<Project> addProjectDataSource(@PathVariable("id") String projectId,
                                                         @Valid @RequestBody ProjectPutDataSourceDto projectPutDataSourceDto,
                                                         @RequestHeader("Authorization") String authorizationHeader) {
