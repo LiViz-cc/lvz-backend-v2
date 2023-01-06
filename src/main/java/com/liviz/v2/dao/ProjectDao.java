@@ -28,7 +28,6 @@ public interface ProjectDao extends MongoRepository<Project, String> {
     List<Project> queryByIsPublic(Boolean isPublic);
 
     @Query("{'createdBy.id': ?0}")
-        // TODO: replace all `{createdBy: {id: ?1} }` with `{'createdBy.id': ?0}`
     List<Project> queryByCreatedBy(String createdById);
 
 }
