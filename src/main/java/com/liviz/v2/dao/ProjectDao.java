@@ -18,10 +18,10 @@ public interface ProjectDao extends MongoRepository<Project, String> {
      * @param userId user id
      * @return Optional<Project>
      */
-    @Query("{id: ?0}, {createdBy: {id: ?1} }")
+    @Query("{id: ?0}, {'createdBy.id': ?1 }")
     Optional<Project> findByIdAndUserId(String id, String userId);
 
-    @Query("{isPublic: ?0}, {createdBy: {id: ?1} }")
+    @Query("{isPublic: ?0}, {'createdBy.id': ?1 }")
     List<Project> queryByFilters(Boolean isPublic, String createdById);
 
     @Query("{isPublic: ?0}")

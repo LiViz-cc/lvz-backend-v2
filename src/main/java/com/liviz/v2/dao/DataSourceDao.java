@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface DataSourceDao extends MongoRepository<DataSource, String> {
-    @Query("{ isPublic: ?0 }, { createdBy: { id: ?1 } }")
+    @Query("{ isPublic: ?0 }, { 'createdBy.id': ?1 }")
     List<DataSource> queryByFilters(Boolean isPublic, String createdById);
 
     @Query("{ isPublic: ?0 }")

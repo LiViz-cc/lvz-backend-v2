@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 public interface DisplaySchemaDao extends MongoRepository<DisplaySchema, String> {
-    @Query("{id: ?0}, {createdBy: {id: ?1} }")
+    @Query("{id: ?0}, {'createdBy.id': ?1 }")
     Optional<DisplaySchema> findByIdAndUserId(String displaySchemaId, String userId);
 }
 
