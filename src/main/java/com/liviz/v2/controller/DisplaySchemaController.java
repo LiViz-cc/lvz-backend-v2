@@ -82,4 +82,17 @@ public class DisplaySchemaController {
         return new ResponseEntity<>(updatedDisplaySchema, HttpStatus.OK);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<DisplaySchema> deleteDisplaySchema(@PathVariable("id") String displaySchemaId,
+                                                             @RequestHeader("Authorization") String authorizationHeader) {
+        // get jwt user
+        User user = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
+
+        // delete display schema
+        displaySchemaService.deleteDisplaySchema(displaySchemaId, user);
+
+        // return no content
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
 }

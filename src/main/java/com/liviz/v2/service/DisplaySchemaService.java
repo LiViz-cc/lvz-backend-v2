@@ -9,11 +9,13 @@ import com.liviz.v2.model.Project;
 import com.liviz.v2.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class DisplaySchemaService {
     @Autowired
     DisplaySchemaDao displaySchemaDao;
@@ -80,5 +82,25 @@ public class DisplaySchemaService {
         // save and return display schema
         return displaySchemaDao.save(newDisplaySchema);
 
+    }
+
+    public void deleteDisplaySchema(String displaySchemaId, User user) {
+        // get display schema
+        Optional<DisplaySchema> displaySchemaOptional = displaySchemaDao.findByIdAndUserId(displaySchemaId, user.getId());
+
+        // return not found if display schema is not found
+        if (displaySchemaOptional.isEmpty()) {
+            throw new NoSuchElementFoundException(String.format("Display schema not found with id %s and current user", displaySchemaId));
+        }
+
+        // check linked project with display schema
+        if (displaySchemaOptional.get().getLinkedProject() != null) {
+            Project linkedProject = displaySchemaOptional.get().getLinkedProject();
+            linkedProject.setDisplaySchema(null);
+            projectDao.save(linkedProject);
+        }
+
+        // delete display schema
+        displaySchemaDao.delete(displaySchemaOptional.get());
     }
 }
