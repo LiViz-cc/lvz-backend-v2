@@ -153,8 +153,6 @@ public class ProjectService {
     }
 
     public @NotNull Project addProjectDataSource(String projectId, User user, List<String> dataSourceIds) {
-        // TODO: use SetUniqueList to avoid duplicates
-
         // find project by id and user id
         Optional<Project> projectOptional = projectDao.findByIdAndUserId(projectId, user.getId());
 
@@ -169,15 +167,17 @@ public class ProjectService {
         // build a set of data source ids from list
         Set<String> dataSourceIdSetFromProject = project.getDataSources().stream().map(DataSource::getId).collect(Collectors.toSet());
 
-        List<String> duplicatedDataSourceIds = new ArrayList<>();
+        List<String> alreadyLinkedDataSourceIds = new ArrayList<>();
         List<String> nonExistingDataSourceIds = new ArrayList<>();
         List<String> forbiddenDataSourceIds = new ArrayList<>();
+
+        List<String> tobeLinkedDataSourceIds = new ArrayList<>();
 
         // add data source ids to project
         dataSourceIds.forEach((String dataSourceId) -> {
             if (dataSourceIdSetFromProject.contains(dataSourceId)) {
                 // record duplicate data source ids
-                duplicatedDataSourceIds.add(dataSourceId);
+                alreadyLinkedDataSourceIds.add(dataSourceId);
                 return;
             }
             Optional<DataSource> dataSource = dataSourceDao.findById(dataSourceId);
@@ -193,18 +193,18 @@ public class ProjectService {
                 return;
             }
 
-            // add data source to project
-            project.getDataSources().add(dataSource.get());
+            // add to be added data source ids
+            tobeLinkedDataSourceIds.add(dataSourceId);
 
         });
 
         // if any error occurred
-        if (!duplicatedDataSourceIds.isEmpty() || !nonExistingDataSourceIds.isEmpty() || !forbiddenDataSourceIds.isEmpty()) {
+        if (!alreadyLinkedDataSourceIds.isEmpty() || !nonExistingDataSourceIds.isEmpty() || !forbiddenDataSourceIds.isEmpty()) {
             // build error message
             StringBuilder errorMessage = new StringBuilder();
-            if (!duplicatedDataSourceIds.isEmpty()) {
-                errorMessage.append("Duplicated data source ids: ");
-                errorMessage.append(String.join(", ", duplicatedDataSourceIds));
+            if (!alreadyLinkedDataSourceIds.isEmpty()) {
+                errorMessage.append("Already linked data source ids: ");
+                errorMessage.append(String.join(", ", alreadyLinkedDataSourceIds));
                 errorMessage.append(". ");
             }
             if (!nonExistingDataSourceIds.isEmpty()) {
@@ -220,7 +220,111 @@ public class ProjectService {
             throw new BadRequestException(errorMessage.toString());
         }
 
-        return project;
+        // obtain data sources from database
+        List<DataSource> tobeAddedDataSources = tobeLinkedDataSourceIds
+                .stream()
+                .map((String dataSourceId) -> {
+                    Optional<DataSource> dataSource = dataSourceDao.findById(dataSourceId);
+                    assert dataSource.isPresent();
+                    return dataSource.get();
+                })
+                .collect(Collectors.toList());
 
+        // link project to each data source
+        tobeAddedDataSources.forEach((dataSource -> {
+            dataSource.getProjects().add(project);
+            dataSourceDao.save(dataSource);
+        }));
+
+        // link each data source to project
+        project.getDataSources().addAll(tobeAddedDataSources);
+        return projectDao.save(project);
+    }
+
+    public @NotNull Project deleteProjectDataSource(String projectId, User user, List<String> dataSourceIds) {
+        // find project by id and user id
+        Optional<Project> projectOptional = projectDao.findByIdAndUserId(projectId, user.getId());
+
+        // if project is not found
+        if (projectOptional.isEmpty()) {
+            throw new NoSuchElementFoundException(String.format("Project not found with id %s and current user", projectId));
+        }
+
+        Project project = projectOptional.get();
+
+        // build a set of data source ids from list
+        Set<String> dataSourceIdSetFromProject = project.getDataSources().stream().map(DataSource::getId).collect(Collectors.toSet());
+
+        List<String> alreadyUnLinkedDataSourceIds = new ArrayList<>();
+        List<String> nonExistingDataSourceIds = new ArrayList<>();
+        List<String> forbiddenDataSourceIds = new ArrayList<>();
+
+        Set<String> toBeUnlinkedDataSourceIds = new HashSet<>();
+
+        // remove data source ids from project
+        dataSourceIds.forEach((String dataSourceId) -> {
+            if (!dataSourceIdSetFromProject.contains(dataSourceId)) {
+                // record unlinked data source ids
+                alreadyUnLinkedDataSourceIds.add(dataSourceId);
+                return;
+            }
+            Optional<DataSource> dataSource = dataSourceDao.findById(dataSourceId);
+            if (dataSource.isEmpty()) {
+                // record non-existing data source ids
+                nonExistingDataSourceIds.add(dataSourceId);
+                return;
+            }
+
+            if (!dataSource.get().getCreatedBy().getId().equals(user.getId())) {
+                // record non-existing data source ids
+                forbiddenDataSourceIds.add(dataSourceId);
+                return;
+            }
+
+            // add data source to be removed from project
+            toBeUnlinkedDataSourceIds.add(dataSourceId);
+        });
+
+        // if any error occurred
+        // TODO: make a JSON response?
+        if (!alreadyUnLinkedDataSourceIds.isEmpty() || !nonExistingDataSourceIds.isEmpty() || !forbiddenDataSourceIds.isEmpty()) {
+            // build error message
+            StringBuilder errorMessage = new StringBuilder();
+            if (!alreadyUnLinkedDataSourceIds.isEmpty()) {
+                errorMessage.append("Already unlinked data source ids: ");
+                errorMessage.append(String.join(", ", alreadyUnLinkedDataSourceIds));
+                errorMessage.append(". ");
+            }
+            if (!nonExistingDataSourceIds.isEmpty()) {
+                errorMessage.append("Non-existing data source ids: ");
+                errorMessage.append(String.join(", ", nonExistingDataSourceIds));
+                errorMessage.append(". ");
+            }
+            if (!forbiddenDataSourceIds.isEmpty()) {
+                errorMessage.append("Forbidden data source ids: ");
+                errorMessage.append(String.join(", ", forbiddenDataSourceIds));
+                errorMessage.append(". ");
+            }
+            throw new BadRequestException(errorMessage.toString());
+        }
+
+        // unlink project from each data source
+        toBeUnlinkedDataSourceIds.forEach(
+                (toBeDeletedDataSourceId) -> {
+                    dataSourceDao.findById(toBeDeletedDataSourceId).ifPresent(
+                            (dataSource) -> {
+                                dataSource.getProjects().remove(project);
+                                dataSourceDao.save(dataSource);
+                            }
+                    );
+                }
+        );
+
+        // unlink data source from project
+        project.setDataSources(project.getDataSources().stream().filter(
+                dataSource -> !toBeUnlinkedDataSourceIds.contains(dataSource.getId())
+        ).collect(Collectors.toList()));
+
+        return projectDao.save(project);
     }
 }

@@ -96,5 +96,4 @@ public class DataSource {
         this.dataSourceSlots = other.dataSourceSlots.stream().map(DataSourceSlot::new).collect(Collectors.toList());
     }
 
-
 }

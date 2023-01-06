@@ -170,6 +170,7 @@ public class ProjectController {
         return new ResponseEntity<>(projectDao.save(projectOptional.get()), HttpStatus.OK);
     }
 
+    // TODO: use Patch instead of Put
     @PutMapping("/{id}/data_sources")
     public ResponseEntity<Project> addProjectDataSource(@PathVariable("id") String projectId,
                                                         @Valid @RequestBody ProjectPutDataSourceDto projectPutDataSourceDto,
@@ -178,6 +179,18 @@ public class ProjectController {
         User user = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
 
         Project project = projectService.addProjectDataSource(projectId, user, projectPutDataSourceDto.getDataSourceIds());
+
+        return new ResponseEntity<>(projectDao.save(project), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}/data_sources")
+    public ResponseEntity<Project> deleteProjectDataSource(@PathVariable("id") String projectId,
+                                                           @Valid @RequestBody ProjectPutDataSourceDto projectPutDataSourceDto,
+                                                           @RequestHeader("Authorization") String authorizationHeader) {
+        // get jwt user
+        User user = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
+
+        Project project = projectService.deleteProjectDataSource(projectId, user, projectPutDataSourceDto.getDataSourceIds());
 
         return new ResponseEntity<>(projectDao.save(project), HttpStatus.OK);
     }
