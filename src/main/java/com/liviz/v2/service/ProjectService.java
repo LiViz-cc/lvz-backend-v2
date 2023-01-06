@@ -1,9 +1,11 @@
 package com.liviz.v2.service;
 
+import com.liviz.v2.dao.DataSourceDao;
 import com.liviz.v2.dao.DisplaySchemaDao;
 import com.liviz.v2.dao.ProjectDao;
 import com.liviz.v2.exception.BadRequestException;
 import com.liviz.v2.exception.NoSuchElementFoundException;
+import com.liviz.v2.model.DataSource;
 import com.liviz.v2.model.DisplaySchema;
 import com.liviz.v2.model.Project;
 import com.liviz.v2.model.User;
@@ -12,8 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -23,6 +26,9 @@ public class ProjectService {
 
     @Autowired
     DisplaySchemaDao displaySchemaDao;
+
+    @Autowired
+    DataSourceDao dataSourceDao;
 
     public Optional<Project> findByIdAndUserId(String id, String userId) {
         return projectDao.findByIdAndUserId(id, userId);
@@ -146,7 +152,7 @@ public class ProjectService {
         return Optional.of(projectDao.save(project));
     }
 
-    public Project addProjectDataSource(String projectId, User user, List<String> dataSourceIds) {
+    public @NotNull Project addProjectDataSource(String projectId, User user, List<String> dataSourceIds) {
         // TODO: use SetUniqueList to avoid duplicates
 
         // find project by id and user id
@@ -159,9 +165,62 @@ public class ProjectService {
 
         Project project = projectOptional.get();
 
-        // add data source ids to project
 
-        return null;
+        // build a set of data source ids from list
+        Set<String> dataSourceIdSetFromProject = project.getDataSources().stream().map(DataSource::getId).collect(Collectors.toSet());
+
+        List<String> duplicatedDataSourceIds = new ArrayList<>();
+        List<String> nonExistingDataSourceIds = new ArrayList<>();
+        List<String> forbiddenDataSourceIds = new ArrayList<>();
+
+        // add data source ids to project
+        dataSourceIds.forEach((String dataSourceId) -> {
+            if (dataSourceIdSetFromProject.contains(dataSourceId)) {
+                // record duplicate data source ids
+                duplicatedDataSourceIds.add(dataSourceId);
+                return;
+            }
+            Optional<DataSource> dataSource = dataSourceDao.findById(dataSourceId);
+            if (dataSource.isEmpty()) {
+                // record non-existing data source ids
+                nonExistingDataSourceIds.add(dataSourceId);
+                return;
+            }
+
+            if (!dataSource.get().getCreatedBy().getId().equals(user.getId())) {
+                // record non-existing data source ids
+                forbiddenDataSourceIds.add(dataSourceId);
+                return;
+            }
+
+            // add data source to project
+            project.getDataSources().add(dataSource.get());
+
+        });
+
+        // if any error occurred
+        if (!duplicatedDataSourceIds.isEmpty() || !nonExistingDataSourceIds.isEmpty() || !forbiddenDataSourceIds.isEmpty()) {
+            // build error message
+            StringBuilder errorMessage = new StringBuilder();
+            if (!duplicatedDataSourceIds.isEmpty()) {
+                errorMessage.append("Duplicated data source ids: ");
+                errorMessage.append(String.join(", ", duplicatedDataSourceIds));
+                errorMessage.append(". ");
+            }
+            if (!nonExistingDataSourceIds.isEmpty()) {
+                errorMessage.append("Non-existing data source ids: ");
+                errorMessage.append(String.join(", ", nonExistingDataSourceIds));
+                errorMessage.append(". ");
+            }
+            if (!forbiddenDataSourceIds.isEmpty()) {
+                errorMessage.append("Forbidden data source ids: ");
+                errorMessage.append(String.join(", ", forbiddenDataSourceIds));
+                errorMessage.append(". ");
+            }
+            throw new BadRequestException(errorMessage.toString());
+        }
+
+        return project;
 
     }
 }
