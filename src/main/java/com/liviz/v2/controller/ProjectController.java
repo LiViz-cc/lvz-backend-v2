@@ -139,7 +139,7 @@ public class ProjectController {
     }
 
     // TODO: revise api design
-    @PatchMapping("/{id}/display_schema")
+    @PutMapping("/{id}/display_schema")
     public ResponseEntity<Project> addProjectDisplaySchema(@PathVariable("id") String id,
                                                            @Valid @RequestBody ProjectPutDisplaySchemaDto projectPutDisplaySchemaDto,
                                                            @RequestHeader("Authorization") String authorizationHeader) {
