@@ -1,5 +1,6 @@
 package com.liviz.v2.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +27,45 @@ class ProjectControllerTest {
     @Autowired
     MockMvc mockMvc;
 
-    // TODO: get bearer token from login
-    @Value("${spring.test.bearer-token}")
     String bearerToken;
 
+    @Value("${spring.test.username}")
+    String usernameTest;
+
+    @Value("${spring.test.password}")
+    String passwordTest;
+
     Map<String, String> projectMap;
+
+    @BeforeAll
+    void login() throws Exception {
+        System.out.println(String.format("{\"username\": \"%s\"," +
+                "\n\"password\": \"%s\"" +
+                "\n}", usernameTest, passwordTest));
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders
+                        .post("/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(String.format("{\"username\": \"%s\"," +
+                                "\n\"password\": \"%s\"" +
+                                "\n}", usernameTest, passwordTest))
+                ).andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.token.jwtToken").exists())
+                .andReturn(); // Get the full MvcResult object
+
+        // Get the response body as a string
+        String responseBody = result.getResponse().getContentAsString();
+
+        // Parse the response body as JSON
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode root = mapper.readTree(responseBody);
+
+        // Extract the value you want from the JSON
+        String yourValue = root.get("token").get("jwtToken").asText();
+
+        bearerToken = "Bearer " + yourValue;
+
+    }
 
     @Test
     @Order(0)
