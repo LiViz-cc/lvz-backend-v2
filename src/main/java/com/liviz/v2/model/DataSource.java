@@ -90,7 +90,6 @@ public class DataSource {
         this.createdBy = other.createdBy;
         this.projects = other.projects;
 
-        // TODO: shallow copy is fine
         // deep copy of dataSourceExample and dataSourceSlots
         this.dataSourceExample = new DataSourceExample(other.dataSourceExample);
         this.dataSourceSlots = other.dataSourceSlots.stream().map(DataSourceSlot::new).collect(Collectors.toList());

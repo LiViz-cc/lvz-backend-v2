@@ -286,7 +286,6 @@ public class ProjectService {
         });
 
         // if any error occurred
-        // TODO: make a JSON response?
         if (!alreadyUnLinkedDataSourceIds.isEmpty() || !nonExistingDataSourceIds.isEmpty() || !forbiddenDataSourceIds.isEmpty()) {
             // build error message
             StringBuilder errorMessage = new StringBuilder();

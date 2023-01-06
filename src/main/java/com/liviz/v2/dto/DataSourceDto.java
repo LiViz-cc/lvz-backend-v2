@@ -16,7 +16,6 @@ import java.util.List;
 @ToString
 @NoArgsConstructor
 public class DataSourceDto {
-    // TODO: add unit tests
     @NotBlank
     private String name;
 
