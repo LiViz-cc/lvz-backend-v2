@@ -10,6 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -69,6 +70,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     ) {
         logger.error("Unauthenticated", exception);
         return buildErrorResponse(exception, HttpStatus.UNAUTHORIZED, request);
+    }
+
+    @ExceptionHandler(HttpClientErrorException.Forbidden.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ResponseEntity<Object> handleForbiddenException(
+            HttpClientErrorException.Forbidden exception,
+            WebRequest request
+    ) {
+        logger.error("Forbidden", exception);
+        return buildErrorResponse(exception, HttpStatus.FORBIDDEN, request);
     }
 
     @ExceptionHandler(BadRequestException.class)
