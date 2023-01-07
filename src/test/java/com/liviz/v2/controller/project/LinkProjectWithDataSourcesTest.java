@@ -260,6 +260,19 @@ class LinkProjectWithDataSourcesTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
+        // link the data sources with the project again
+        mockMvc.perform(MockMvcRequestBuilders
+                        .patch("/projects/" + projectMap.get("id") + "/data_sources")
+                        .header(HttpHeaders.AUTHORIZATION, bearerToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\n" +
+                                "    \"dataSourceIds\": " +
+                                "[\"" + String.join("\",\"", dataSourceIds) + "\"]" +
+                                "\n" +
+                                "}")
+                )
+                .andExpect(status().isBadRequest())
+                .andReturn();
 
         // check the linkage from the project to the data sources
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders
@@ -300,10 +313,6 @@ class LinkProjectWithDataSourcesTest {
 
         }
         return dataSourceIds;
-    }
-
-    @Test
-    void testDoubleLinking() throws Exception {
     }
 
 
