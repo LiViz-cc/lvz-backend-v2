@@ -3,6 +3,7 @@ package com.liviz.v2.service;
 import com.liviz.v2.dao.DataSourceDao;
 import com.liviz.v2.dto.DataSourceDto;
 import com.liviz.v2.exception.BadRequestException;
+import com.liviz.v2.exception.NoSuchElementFoundException;
 import com.liviz.v2.model.DataSource;
 import com.liviz.v2.model.User;
 import org.jetbrains.annotations.NotNull;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class DataSourceService {
@@ -49,5 +51,15 @@ public class DataSourceService {
 
         throw new BadRequestException("This query combination is not allowed.");
 
+    }
+
+    public void deleteDataSource(String dataSourceId, User user) {
+        // get data source
+        Optional<DataSource> dataSourceOptional = dataSourceDao.findByIdAndUserId(dataSourceId, user.getId());
+
+        // delete data source
+        dataSourceDao.delete(dataSourceOptional.orElseThrow(
+                () -> new NoSuchElementFoundException(String.format("Data source not found with id %s and current user", dataSourceId)))
+        );
     }
 }

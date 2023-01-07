@@ -90,5 +90,16 @@ public class DataSourceController {
         return new ResponseEntity<>(dataSources, HttpStatus.OK);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<DataSource> deleteDataSource(@PathVariable("id") String id,
+                                                       @RequestHeader("Authorization") String authorizationHeader) {
+        // get jwt user
+        User user = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
 
+        // delete data source
+        dataSourceService.deleteDataSource(id, user);
+
+        // return no content
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
