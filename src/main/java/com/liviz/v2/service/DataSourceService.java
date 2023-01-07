@@ -23,8 +23,8 @@ public class DataSourceService {
         // create new data source
         DataSource dataSource =
                 new DataSource(dataSourceDto.getName(), dataSourceDto.getIsPublic(), dataSourceDto.getDescription(),
-                        dataSourceDto.getStaticData(), dataSourceDto.getDataType(), dataSourceDto.getUrl(),
-                        dataSourceDto.getSlots());
+                        dataSourceDto.getStaticData(), dataSourceDto.getDataType(), dataSourceDto.getUrl(), dataSourceDto.getDataSourceExample(),
+                        dataSourceDto.getDataSourceSlots());
         dataSource.setCreatedBy(user);
 
         // save data source

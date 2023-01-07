@@ -2,6 +2,7 @@ package com.liviz.v2.dto;
 
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
+import com.liviz.v2.model.DataSourceExample;
 import com.liviz.v2.model.DataSourceSlot;
 import lombok.*;
 import org.hibernate.validator.constraints.URL;
@@ -32,8 +33,10 @@ public class DataSourceDto {
     @NotBlank
     private String url = "";
 
+    private DataSourceExample dataSourceExample;
+
     @JsonSetter(nulls = Nulls.SKIP)
-    private List<DataSourceSlot> slots = new ArrayList<>();
+    private List<DataSourceSlot> dataSourceSlots = new ArrayList<>();
 
 
 }
