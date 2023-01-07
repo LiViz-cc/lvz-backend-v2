@@ -7,7 +7,6 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,6 +17,7 @@ import java.util.List;
 @Setter
 @ToString
 @NoArgsConstructor
+@EqualsAndHashCode(of = {"id"})
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "id")
@@ -71,5 +71,6 @@ public class Project {
         this.displaySchema = other.displaySchema;
         this.shareConfigs = other.shareConfigs;
     }
+
 
 }

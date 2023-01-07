@@ -9,7 +9,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -20,6 +19,7 @@ import java.util.Date;
 @Setter
 @ToString
 @NoArgsConstructor
+@EqualsAndHashCode(of = {"id"})
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "id")
@@ -65,4 +65,6 @@ public class DisplaySchema {
         this.eChartOption = eChartOption;
         this.linkedProject = linkedProject;
     }
+
+
 }

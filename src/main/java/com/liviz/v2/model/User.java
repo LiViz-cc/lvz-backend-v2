@@ -20,6 +20,7 @@ import java.util.Date;
 @Setter
 @ToString
 @NoArgsConstructor
+@EqualsAndHashCode(of = {"id"})
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "id")
