@@ -1,6 +1,7 @@
 package com.liviz.v2.controller;
 
 import com.liviz.v2.config.JwtTokenUtil;
+import com.liviz.v2.dto.DisplaySchemaChangePasswordDto;
 import com.liviz.v2.dto.DisplaySchemaDto;
 import com.liviz.v2.dto.ShareConfigDto;
 import com.liviz.v2.model.DisplaySchema;
@@ -81,6 +82,20 @@ public class ShareConfigController {
             logger.error(e);
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @PostMapping("/{id}/password")
+    public ResponseEntity<ShareConfig> changePassword(@PathVariable("id") String shareConfigId,
+                                                      @Valid @RequestBody DisplaySchemaChangePasswordDto displaySchemaChangePasswordDto,
+                                                      @RequestHeader("Authorization") String authorizationHeader) {
+
+        // get jwt user
+        User user = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
+
+        // change password
+        ShareConfig shareConfig = shareConfigService.changePassword(shareConfigId, displaySchemaChangePasswordDto, user);
+
+        return new ResponseEntity<>(shareConfig, HttpStatus.OK);
     }
 
 }
