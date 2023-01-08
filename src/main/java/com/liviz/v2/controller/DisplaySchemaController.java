@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/display_schemas")
@@ -93,6 +94,28 @@ public class DisplaySchemaController {
 
         // return no content
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    // TODO: add pagination
+    @GetMapping
+    public ResponseEntity<Iterable<DisplaySchema>> getDisplaySchemas(
+            @RequestHeader("Authorization") String authorizationHeader,
+            @RequestParam(name = "is_public", required = false) Boolean isPublic,
+            @RequestParam(name = "created_by", required = false) String createdBy
+    ) {
+        // get jwt user
+        User user = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
+
+        // get display schemas
+        List<DisplaySchema> displaySchemas = displaySchemaService.getDisplaySchemas(user, isPublic, createdBy);
+
+        if (displaySchemas.size() == 0) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        // return display schemas
+        return new ResponseEntity<>(displaySchemas, HttpStatus.OK);
+
     }
 
 }

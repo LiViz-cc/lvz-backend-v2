@@ -3,15 +3,18 @@ package com.liviz.v2.service;
 import com.liviz.v2.dao.DisplaySchemaDao;
 import com.liviz.v2.dao.ProjectDao;
 import com.liviz.v2.dto.DisplaySchemaDto;
+import com.liviz.v2.exception.BadRequestException;
 import com.liviz.v2.exception.NoSuchElementFoundException;
 import com.liviz.v2.model.DisplaySchema;
 import com.liviz.v2.model.Project;
 import com.liviz.v2.model.User;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -102,5 +105,27 @@ public class DisplaySchemaService {
 
         // delete display schema
         displaySchemaDao.delete(displaySchemaOptional.get());
+    }
+
+    public @NotNull List<DisplaySchema> getDisplaySchemas(User user, Boolean isPublic, String createdById) {
+        // if requested user is not the jwt user
+        if (user == null || !user.getId().equals(createdById)) {
+            // if isPublic is not True
+            if (isPublic == null || !isPublic) {
+                throw new BadRequestException("This query combination is not allowed.");
+            }
+        }
+
+        if (isPublic != null && createdById != null) {
+            return displaySchemaDao.queryByFilters(isPublic, createdById);
+        } else if (isPublic != null) {
+            return displaySchemaDao.queryByIsPublic(isPublic);
+        } else if (createdById != null) {
+            return displaySchemaDao.queryByCreatedBy(createdById);
+        }
+
+        throw new BadRequestException("This query combination is not allowed.");
+
+
     }
 }
