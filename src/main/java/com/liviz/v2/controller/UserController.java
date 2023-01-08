@@ -3,6 +3,7 @@ package com.liviz.v2.controller;
 import com.liviz.v2.config.JwtTokenUtil;
 import com.liviz.v2.dto.ChangePasswordDto;
 import com.liviz.v2.dto.ChangeUsernameDto;
+import com.liviz.v2.dto.ResetUserDto;
 import com.liviz.v2.model.User;
 import com.liviz.v2.service.AuthService;
 import com.liviz.v2.service.UserService;
@@ -89,6 +90,27 @@ public class UserController {
 
         // change username
         User userData = userService.changeUsername(jwtUser, userId, changeUsernameDto);
+
+        // return user
+        return new ResponseEntity<>(userData, HttpStatus.OK);
+
+    }
+
+    @PostMapping("/{id}/reset")
+    public ResponseEntity<User> resetUser(
+            @PathVariable("id") String userId,
+            @RequestHeader("Authorization") String authorizationHeader,
+            @Valid @RequestBody ResetUserDto resetUserDto
+    ) throws Exception {
+
+        // get jwt user
+        User jwtUser = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
+
+        // check password
+        authService.authenticate(jwtUser.getUsername(), resetUserDto.getPassword());
+
+        // reset user
+        User userData = userService.resetUser(jwtUser, userId);
 
         // return user
         return new ResponseEntity<>(userData, HttpStatus.OK);

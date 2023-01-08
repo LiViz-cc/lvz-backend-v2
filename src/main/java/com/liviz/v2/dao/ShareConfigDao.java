@@ -12,4 +12,6 @@ public interface ShareConfigDao extends MongoRepository<ShareConfig, String> {
     @Query("{id: ?0}, {user: {id: ?1} }")
     Optional<ShareConfig> findByIdAndUserId(String id, String userId);
 
+    @DeleteQuery("{'user.id': ?0 }")
+    void deleteAllByUserId(String userId);
 }

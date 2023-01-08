@@ -30,4 +30,6 @@ public interface ProjectDao extends MongoRepository<Project, String> {
     @Query("{'createdBy.id': ?0}")
     List<Project> queryByCreatedBy(String createdById);
 
+    @DeleteQuery("{'createdBy.id': ?0}")
+    void deleteAllByUserId(String userId);
 }

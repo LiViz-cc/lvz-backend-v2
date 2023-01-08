@@ -1,6 +1,7 @@
 package com.liviz.v2.dao;
 
 import com.liviz.v2.model.DataSource;
+import org.springframework.data.mongodb.repository.DeleteQuery;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
@@ -19,4 +20,7 @@ public interface DataSourceDao extends MongoRepository<DataSource, String> {
 
     @Query("{ 'id': ?0, 'createdBy.id': ?1 } }")
     Optional<DataSource> findByIdAndUserId(String id, String userId);
+
+    @DeleteQuery("{'createdBy.id': ?0 } }")
+    void deleteAllByUserId(String userId);
 }
