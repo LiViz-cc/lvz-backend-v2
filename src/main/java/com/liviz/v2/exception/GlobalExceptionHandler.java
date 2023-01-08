@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -71,6 +72,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         logger.error("Unauthenticated", exception);
         return buildErrorResponse(exception, HttpStatus.UNAUTHORIZED, request);
     }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ResponseEntity<Object> handleUsernameNotFoundException(
+            UnauthenticatedException exception,
+            WebRequest request
+    ) {
+        logger.error("Unauthenticated", exception);
+        return buildErrorResponse(exception, HttpStatus.UNAUTHORIZED, request);
+    }
+
 
     @ExceptionHandler(HttpClientErrorException.Forbidden.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)

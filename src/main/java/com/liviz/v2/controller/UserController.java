@@ -2,15 +2,16 @@ package com.liviz.v2.controller;
 
 import com.liviz.v2.config.JwtTokenUtil;
 import com.liviz.v2.dto.ChangePasswordDto;
+import com.liviz.v2.dto.ChangeUsernameDto;
 import com.liviz.v2.model.User;
 import com.liviz.v2.service.AuthService;
 import com.liviz.v2.service.UserService;
-import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController
@@ -56,7 +57,7 @@ public class UserController {
     public ResponseEntity<User> changePassword(
             @PathVariable("id") String userId,
             @RequestHeader("Authorization") String authorizationHeader,
-            @RequestBody ChangePasswordDto changePasswordDto
+            @Valid @RequestBody ChangePasswordDto changePasswordDto
     ) throws Exception {
 
         // get jwt user
@@ -73,5 +74,24 @@ public class UserController {
 
     }
 
+    @PostMapping("/{id}/username")
+    public ResponseEntity<User> changeUsername(
+            @PathVariable("id") String userId,
+            @RequestHeader("Authorization") String authorizationHeader,
+            @Valid @RequestBody ChangeUsernameDto changeUsernameDto
+    ) throws Exception {
 
+        // get jwt user
+        User jwtUser = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
+
+        // check password
+        authService.authenticate(jwtUser.getUsername(), changeUsernameDto.getPassword());
+
+        // change username
+        User userData = userService.changeUsername(jwtUser, userId, changeUsernameDto);
+
+        // return user
+        return new ResponseEntity<>(userData, HttpStatus.OK);
+
+    }
 }

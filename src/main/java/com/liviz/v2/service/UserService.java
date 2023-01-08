@@ -2,11 +2,10 @@ package com.liviz.v2.service;
 
 import com.liviz.v2.dao.UserDao;
 import com.liviz.v2.dto.ChangePasswordDto;
+import com.liviz.v2.dto.ChangeUsernameDto;
 import com.liviz.v2.exception.UnauthenticatedException;
 import com.liviz.v2.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -57,5 +56,21 @@ public class UserService {
         // save user
         return userDao.save(user);
 
+    }
+
+    public User changeUsername(User jwtUser, String userId, ChangeUsernameDto changeUsernameDto) {
+        // get user by id
+        User user = userDao.findById(userId).orElseThrow(() -> new UnauthenticatedException("Unauthorized"));
+
+        // return unauthorized if jwt username is not equal to user id
+        if (!userId.equals(jwtUser.getId())) {
+            throw new UnauthenticatedException("Unauthorized");
+        }
+
+        // change username
+        user.setUsername(changeUsernameDto.getUsername());
+
+        // save user
+        return userDao.save(user);
     }
 }
