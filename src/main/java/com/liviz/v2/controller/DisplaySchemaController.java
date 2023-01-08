@@ -62,7 +62,7 @@ public class DisplaySchemaController {
         return new ResponseEntity<>(displaySchema, HttpStatus.OK);
     }
 
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<DisplaySchema> updateDisplaySchema(@PathVariable("id") String id,
                                                              @Valid @RequestBody DisplaySchemaDto displaySchemaDto,
                                                              @RequestHeader("Authorization") String authorizationHeader) {
@@ -117,5 +117,6 @@ public class DisplaySchemaController {
         return new ResponseEntity<>(displaySchemas, HttpStatus.OK);
 
     }
+
 
 }
