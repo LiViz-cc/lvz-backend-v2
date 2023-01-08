@@ -62,4 +62,21 @@ public class DataSourceService {
                 () -> new NoSuchElementFoundException(String.format("Data source not found with id %s and current user", dataSourceId)))
         );
     }
+
+    public DataSource cloneDataSource(String id, User user) {
+        // get data source by id
+        Optional<DataSource> dataSourceOptional = dataSourceDao.findByIdAndUserId(id, user.getId());
+
+        if (dataSourceOptional.isEmpty()) {
+            throw new NoSuchElementFoundException(String.format("Data source not found with id %s and current user", id));
+        }
+
+        // clone data source
+        DataSource dataSource = dataSourceOptional.get();
+        DataSource clonedDataSource = new DataSource(dataSource);
+        clonedDataSource.setId(null);
+
+        // save cloned data source
+        return dataSourceDao.save(clonedDataSource);
+    }
 }

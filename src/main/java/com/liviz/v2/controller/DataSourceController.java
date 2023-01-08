@@ -13,6 +13,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.annotation.QueryAnnotation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -101,5 +102,18 @@ public class DataSourceController {
 
         // return no content
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping("/clone")
+    public ResponseEntity<DataSource> cloneDataSource(@RequestParam("id") String id,
+                                                      @RequestHeader("Authorization") String authorizationHeader) {
+        // get jwt user
+        User user = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
+
+        // clone data source
+        DataSource dataSource = dataSourceService.cloneDataSource(id, user);
+
+        // return data source
+        return new ResponseEntity<>(dataSource, HttpStatus.CREATED);
     }
 }
