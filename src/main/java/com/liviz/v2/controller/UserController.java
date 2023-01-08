@@ -1,7 +1,9 @@
 package com.liviz.v2.controller;
 
 import com.liviz.v2.config.JwtTokenUtil;
+import com.liviz.v2.dto.ChangePasswordDto;
 import com.liviz.v2.model.User;
+import com.liviz.v2.service.AuthService;
 import com.liviz.v2.service.UserService;
 import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,9 @@ public class UserController {
 
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
+
+    @Autowired
+    private AuthService authService;
 
 
     @GetMapping("/{id}")
@@ -45,6 +50,27 @@ public class UserController {
 
         // return user
         return new ResponseEntity<>(userData.get(), HttpStatus.OK);
+    }
+
+    @PostMapping("/{id}/password")
+    public ResponseEntity<User> changePassword(
+            @PathVariable("id") String userId,
+            @RequestHeader("Authorization") String authorizationHeader,
+            @RequestBody ChangePasswordDto changePasswordDto
+    ) throws Exception {
+
+        // get jwt user
+        User jwtUser = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
+
+        // check password
+        authService.authenticate(jwtUser.getUsername(), changePasswordDto.getOldPassword());
+
+        // change password
+        User userData = userService.changePassword(jwtUser, userId, changePasswordDto);
+
+        // return ok if change password success
+        return new ResponseEntity<>(userData, HttpStatus.OK);
+
     }
 
 
