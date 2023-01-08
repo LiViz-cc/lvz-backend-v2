@@ -10,6 +10,8 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,18 +67,63 @@ public class DataSourceService {
 
     public DataSource cloneDataSource(String id, User user) {
         // get data source by id
+        Optional<DataSource> dataSourceOptional = dataSourceDao.findById(id);
+
+        if (dataSourceOptional.isEmpty()) {
+            throw new NoSuchElementFoundException(String.format("Data source not found with id %s and current user", id));
+        }
+        DataSource dataSource = dataSourceOptional.get();
+
+        // check if data source is public or created by user
+        if (dataSource.getIsPublic() != Boolean.TRUE && !dataSource.getCreatedBy().getId().equals(user.getId())) {
+            throw new BadRequestException("Access to other users' non-public data sources is not allowed.");
+        }
+
+        // clone data source
+        DataSource clonedDataSource = new DataSource(dataSource);
+
+        // set id
+        clonedDataSource.setId(null);
+
+        // set created by
+        clonedDataSource.setCreatedBy(user);
+
+        // set time
+        clonedDataSource.setCreatedTime(new Date());
+        clonedDataSource.setModifiedTime(new Date());
+
+        // clean linkage
+        clonedDataSource.setProjects(new ArrayList<>());
+
+        // save cloned data source
+        return dataSourceDao.save(clonedDataSource);
+    }
+
+    public DataSource updateDataSource(String id, DataSourceDto dataSourceDto, User user) {
+        // get data source by id and userId
         Optional<DataSource> dataSourceOptional = dataSourceDao.findByIdAndUserId(id, user.getId());
 
         if (dataSourceOptional.isEmpty()) {
             throw new NoSuchElementFoundException(String.format("Data source not found with id %s and current user", id));
         }
 
-        // clone data source
+        // get data source
         DataSource dataSource = dataSourceOptional.get();
-        DataSource clonedDataSource = new DataSource(dataSource);
-        clonedDataSource.setId(null);
 
-        // save cloned data source
-        return dataSourceDao.save(clonedDataSource);
+        // update data source fields
+        dataSource.setName(dataSourceDto.getName());
+        dataSource.setIsPublic(dataSourceDto.getIsPublic());
+        dataSource.setDescription(dataSourceDto.getDescription());
+        dataSource.setStaticData(dataSourceDto.getStaticData());
+        dataSource.setDataType(dataSourceDto.getDataType());
+        dataSource.setUrl(dataSourceDto.getUrl());
+        dataSource.setDataSourceExample(dataSourceDto.getDataSourceExample());
+        dataSource.setDataSourceSlots(dataSourceDto.getDataSourceSlots());
+
+        // update modified time
+        dataSource.setModifiedTime(new Date());
+
+        // save data source
+        return dataSourceDao.save(dataSource);
     }
 }

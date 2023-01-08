@@ -49,7 +49,7 @@ public class DataSourceController {
         // return not found if data source is not found
         Optional<DataSource> dataSourceData = dataSourceDao.findById(id);
         if (dataSourceData.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         // return unauthorized if jwt username is not equal to user id
@@ -115,5 +115,19 @@ public class DataSourceController {
 
         // return data source
         return new ResponseEntity<>(dataSource, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<DataSource> updateDataSource(@PathVariable("id") String id,
+                                                       @Valid @RequestBody DataSourceDto dataSourceDto,
+                                                       @RequestHeader("Authorization") String authorizationHeader) {
+        // get jwt user
+        User user = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
+
+        // update data source
+        DataSource dataSource = dataSourceService.updateDataSource(id, dataSourceDto, user);
+
+        // return data source
+        return new ResponseEntity<>(dataSource, HttpStatus.OK);
     }
 }
