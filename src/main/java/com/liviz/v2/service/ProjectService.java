@@ -47,7 +47,7 @@ public class ProjectService {
         }
     }
 
-    public List<Project> getProjectsByFilters(User user, Boolean isPublic, String createdById) {
+    public @NotNull List<Project> getProjectsByFilters(User user, Boolean isPublic, String createdById) {
         // if requested user is not the jwt user
         if (user == null || !user.getId().equals(createdById)) {
             // if isPublic is not True
