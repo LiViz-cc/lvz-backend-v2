@@ -93,6 +93,14 @@ public class ProjectService {
         // set new project's created by to current user
         newProject.setCreatedBy(user);
 
+        // set time
+        newProject.setCreatedTime(new Date());
+        newProject.setModifiedTime(new Date());
+
+        // clean linkage
+        newProject.setDisplaySchema(null);
+        newProject.setDataSources(new ArrayList<>());
+
         // save and return new project
         return projectDao.save(newProject);
     }
