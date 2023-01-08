@@ -11,17 +11,20 @@ import com.liviz.v2.model.User;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class ShareConfigService {
     @Autowired
     ShareConfigDao shareConfigDao;
 
     @Autowired
     ProjectDao projectDao;
+
 
     public ShareConfig createShareConfig(@NotNull ShareConfigDto shareConfigDto, @NotNull User user) {
         Optional<Project> linkedProjectOptional = projectDao.findByIdAndUserId(
@@ -41,8 +44,26 @@ public class ShareConfigService {
                 shareConfigDto.getPasswordProtected(),
                 shareConfigDto.getPassword()
         );
+
+        // link project
+        Optional<Project> projectData = projectDao.findByIdAndUserId(shareConfigDto.getLinkedProjectId(), user.getId());
+
+        if (projectData.isEmpty()) {
+            throw new NoSuchElementFoundException("Project with id " + shareConfigDto.getLinkedProjectId() + " not found");
+        }
+
+        // save share config
+        shareConfigDao.save(shareConfig);
+
+        // link project with share config
+        projectData.get().addShareConfig(shareConfig);
+        projectDao.save(projectData.get());
+
+        // return share config
         return shareConfigDao.save(shareConfig);
+
     }
+
 
     public Optional<ShareConfig> getShareConfigByIdAndUser(String id, User user) {
         return shareConfigDao.findByIdAndUserId(id, user.getId());
@@ -52,8 +73,15 @@ public class ShareConfigService {
         // check if share config exists
         Optional<ShareConfig> shareConfigOptional = getShareConfigByIdAndUser(id, user);
         if (shareConfigOptional.isEmpty()) {
-            throw new RuntimeException("Share config not found");
+            throw new NoSuchElementFoundException("Share config with id " + id + " not found");
         }
+
+        // unlink project
+        if (shareConfigOptional.get().getLinkedProject() != null) {
+            shareConfigOptional.get().getLinkedProject().removeShareConfig(shareConfigOptional.get());
+            projectDao.save(shareConfigOptional.get().getLinkedProject());
+        }
+
 
         // delete share config
         shareConfigDao.delete(shareConfigOptional.get());
@@ -86,6 +114,22 @@ public class ShareConfigService {
 
         // save share config
         return shareConfigDao.save(shareConfig);
+
+    }
+
+    public ShareConfig updateShareConfig(String shareConfigId, ShareConfigDto shareConfigDto, User user) {
+        // find old share config
+        Optional<ShareConfig> shareConfigOptional = getShareConfigByIdAndUser(shareConfigId, user);
+
+        if (shareConfigOptional.isEmpty()) {
+            throw new NoSuchElementFoundException("Share config with id " + shareConfigId + " not found");
+        }
+
+        // delete old share config
+        deleteShareConfigByIdAndUser(shareConfigId, user);
+
+        // create new share config
+        return createShareConfig(shareConfigDto, user);
 
     }
 }

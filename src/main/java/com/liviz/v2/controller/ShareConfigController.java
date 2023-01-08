@@ -69,19 +69,15 @@ public class ShareConfigController {
     @DeleteMapping("/{id}")
     public ResponseEntity<ShareConfig> deleteShareConfig(@PathVariable("id") String id,
                                                          @RequestHeader("Authorization") String authorizationHeader) {
-        try {
-            // get jwt user
-            User user = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
 
-            // delete share config
-            shareConfigService.deleteShareConfigByIdAndUser(id, user);
+        // get jwt user
+        User user = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
 
-            // return no content
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (Exception e) {
-            logger.error(e);
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        // delete share config
+        shareConfigService.deleteShareConfigByIdAndUser(id, user);
+
+        // return no content
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PostMapping("/{id}/password")
@@ -96,6 +92,22 @@ public class ShareConfigController {
         ShareConfig shareConfig = shareConfigService.changePassword(shareConfigId, displaySchemaChangePasswordDto, user);
 
         return new ResponseEntity<>(shareConfig, HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ShareConfig> updateShareConfig(@PathVariable("id") String id,
+                                                         @Valid @RequestBody ShareConfigDto shareConfigDto,
+                                                         @RequestHeader("Authorization") String authorizationHeader) {
+
+        // get jwt user
+        User user = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
+
+        // update share config
+        ShareConfig shareConfig = shareConfigService.updateShareConfig(id, shareConfigDto, user);
+
+        // return share config
+        return new ResponseEntity<>(shareConfig, HttpStatus.OK);
+
     }
 
 }

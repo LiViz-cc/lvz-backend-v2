@@ -72,5 +72,17 @@ public class Project {
         this.shareConfigs = other.shareConfigs;
     }
 
+    public void addDataSource(DataSource dataSource) {
+        this.dataSources.add(dataSource);
+    }
+
+    public void addShareConfig(ShareConfig shareConfig) {
+        this.shareConfigs.add(shareConfig);
+    }
+
+    public void removeShareConfig(ShareConfig shareConfig) {
+        this.shareConfigs.remove(shareConfig);
+    }
+
 
 }
