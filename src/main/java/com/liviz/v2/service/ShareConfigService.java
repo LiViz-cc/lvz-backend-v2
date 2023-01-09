@@ -4,6 +4,7 @@ import com.liviz.v2.dao.ProjectDao;
 import com.liviz.v2.dao.ShareConfigDao;
 import com.liviz.v2.dto.DisplaySchemaChangePasswordDto;
 import com.liviz.v2.dto.ShareConfigDto;
+import com.liviz.v2.exception.BadRequestException;
 import com.liviz.v2.exception.NoSuchElementFoundException;
 import com.liviz.v2.model.Project;
 import com.liviz.v2.model.ShareConfig;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -130,6 +132,18 @@ public class ShareConfigService {
 
         // create new share config
         return createShareConfig(shareConfigDto, user);
+
+    }
+
+    public List<ShareConfig> getShareConfigsByFilter(User user, String createdById) {
+        // if requested user is not the jwt user
+        if (user == null || !user.getId().equals(createdById)) {
+            throw new BadRequestException("This query combination is not allowed.");
+
+        }
+
+        return shareConfigDao.queryByCreatedBy(createdById);
+
 
     }
 }

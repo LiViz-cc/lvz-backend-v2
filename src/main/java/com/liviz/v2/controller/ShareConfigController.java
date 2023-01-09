@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -109,5 +110,25 @@ public class ShareConfigController {
         return new ResponseEntity<>(shareConfig, HttpStatus.OK);
 
     }
+
+    @GetMapping
+    public ResponseEntity<List<ShareConfig>> getShareConfigsByFilter(@RequestHeader("Authorization") String authorizationHeader,
+                                                                         @RequestParam(name = "created_by", required = false) String createdBy) {
+
+        // get jwt user
+        User user = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
+
+        // get share configs by filter
+        List<ShareConfig> shareConfigs = shareConfigService.getShareConfigsByFilter(user, createdBy);
+
+        if (shareConfigs.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        // return share configs
+        return new ResponseEntity<>(shareConfigs, HttpStatus.OK);
+
+    }
+
 
 }
