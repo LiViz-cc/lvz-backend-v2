@@ -3,6 +3,8 @@ package com.liviz.v2.service;
 import com.liviz.v2.dao.DataSourceDao;
 import com.liviz.v2.dao.DisplaySchemaDao;
 import com.liviz.v2.dao.ProjectDao;
+import com.liviz.v2.dto.ProjectDto;
+import com.liviz.v2.dto.ProjectEditingDto;
 import com.liviz.v2.exception.BadRequestException;
 import com.liviz.v2.exception.NoSuchElementFoundException;
 import com.liviz.v2.model.DataSource;
@@ -15,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,8 +31,37 @@ public class ProjectService {
     @Autowired
     DataSourceDao dataSourceDao;
 
-    public Optional<Project> findByIdAndUserId(String id, String userId) {
-        return projectDao.findByIdAndUserId(id, userId);
+
+    public @NotNull Project findByIdAndUserId(String id, String userId) {
+        Optional<Project> projectOptional = projectDao.findByIdAndUserId(id, userId);
+
+        // check if project exists
+        if (projectOptional.isEmpty()) {
+            throw new NoSuchElementFoundException("Project with id " + id + " not found");
+        }
+
+        return projectOptional.get();
+    }
+
+    public @NotNull Project editProject(String id, ProjectEditingDto projectEditingDto, User user) {
+        Project project = findByIdAndUserId(id, user.getId());
+
+        // update project
+        if (projectEditingDto.getName() != null) {
+            project.setName(projectEditingDto.getName());
+        }
+
+        if (projectEditingDto.getDescription() != null) {
+            project.setDescription(projectEditingDto.getDescription());
+        }
+
+        if (projectEditingDto.getIsPublic() != null) {
+            project.setIsPublic(projectEditingDto.getIsPublic());
+        }
+
+        project.setModifiedTime(new Date());
+
+        return projectDao.save(project);
     }
 
     public void deleteByIdAndUserId(String id, String userId) {
@@ -105,13 +135,14 @@ public class ProjectService {
         return projectDao.save(newProject);
     }
 
-    public Optional<Project> addProjectDisplaySchema(String id, @NotNull User user, String displaySchemaId) {
+    @NotNull
+    public Project addProjectDisplaySchema(String id, @NotNull User user, String displaySchemaId) {
         // find project by id and user id
         Optional<Project> projectOptional = projectDao.findByIdAndUserId(id, user.getId());
 
         // if project is not found
         if (projectOptional.isEmpty()) {
-            return projectOptional;
+            throw new NoSuchElementFoundException(String.format("Project not found with id %s and current user", id));
         }
 
         Project project = projectOptional.get();
@@ -134,17 +165,18 @@ public class ProjectService {
         project.setDisplaySchema(displaySchemaOptional.get());
 
         // save and return project
-        return Optional.of(projectDao.save(project));
+        return projectDao.save(project);
     }
 
 
-    public Optional<Project> deleteProjectDisplaySchema(String projectId, @NotNull User user) {
+    @NotNull
+    public Project deleteProjectDisplaySchema(String projectId, @NotNull User user) {
         // find project by id and user id
         Optional<Project> projectOptional = projectDao.findByIdAndUserId(projectId, user.getId());
 
         // if project is not found
         if (projectOptional.isEmpty()) {
-            return projectOptional;
+            throw new NoSuchElementFoundException(String.format("Project not found with id %s and current user", projectId));
         }
 
         Project project = projectOptional.get();
@@ -157,7 +189,7 @@ public class ProjectService {
         project.setDisplaySchema(null);
 
         // save and return project
-        return Optional.of(projectDao.save(project));
+        return projectDao.save(project);
     }
 
     public @NotNull Project addProjectDataSource(String projectId, User user, List<String> dataSourceIds) {
@@ -333,5 +365,12 @@ public class ProjectService {
         ).collect(Collectors.toList()));
 
         return projectDao.save(project);
+    }
+
+    public Project createProject(ProjectDto project, User user) {
+        return projectDao.save(
+                new Project(
+                        project.getName(), new Date(), new Date(), user, project.getIsPublic(),
+                        project.getDescription()));
     }
 }

@@ -26,16 +26,13 @@ import java.util.Optional;
 @RequestMapping("/auth")
 public class JwtAuthenticationController {
     @Autowired
-    private JwtTokenUtil jwtTokenUtil;
+    JwtTokenUtil jwtTokenUtil;
 
     @Autowired
-    private JWTUserDetailsService userDetailsService;
+    JWTUserDetailsService userDetailsService;
 
     @Autowired
-    private AuthService authService;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    AuthService authService;
 
     @Autowired
     UserService userService;

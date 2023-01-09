@@ -1,9 +1,11 @@
 package com.liviz.v2.service;
 
+import com.liviz.v2.controller.DataSourceController;
 import com.liviz.v2.dao.DataSourceDao;
 import com.liviz.v2.dto.DataSourceDto;
 import com.liviz.v2.exception.BadRequestException;
 import com.liviz.v2.exception.NoSuchElementFoundException;
+import com.liviz.v2.exception.UnauthenticatedException;
 import com.liviz.v2.model.DataSource;
 import com.liviz.v2.model.User;
 import org.jetbrains.annotations.NotNull;
@@ -125,5 +127,16 @@ public class DataSourceService {
 
         // save data source
         return dataSourceDao.save(dataSource);
+    }
+
+    @NotNull
+    public DataSource getDataSource(String id, User user) {
+        // return not found if data source is not found
+        Optional<DataSource> dataSourceData = dataSourceDao.findByIdAndUserId(id, user.getId());
+        if (dataSourceData.isEmpty()) {
+            throw new NoSuchElementFoundException("Data source with id " + id + " not found");
+        }
+
+        return dataSourceData.get();
     }
 }

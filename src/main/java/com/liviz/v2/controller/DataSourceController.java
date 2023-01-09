@@ -2,18 +2,13 @@ package com.liviz.v2.controller;
 
 import com.liviz.v2.config.JwtTokenUtil;
 import com.liviz.v2.dao.DataSourceDao;
-import com.liviz.v2.dao.UserDao;
 import com.liviz.v2.dto.DataSourceDto;
 import com.liviz.v2.model.DataSource;
 import com.liviz.v2.model.User;
 import com.liviz.v2.service.DataSourceService;
 import com.liviz.v2.service.UserService;
-import javafx.util.Pair;
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.annotation.QueryAnnotation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,14 +20,9 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/data_sources")
 public class DataSourceController {
-    @Autowired
-    DataSourceDao dataSourceDao;
 
     @Autowired
     DataSourceService dataSourceService;
-
-    @Autowired
-    UserService userService;
 
     @Autowired
     JwtTokenUtil jwtTokenUtil;
@@ -40,25 +30,17 @@ public class DataSourceController {
     @Autowired
     private Log logger;
 
+    // TODO: refract all controller methods to services
     @GetMapping("/{id}")
     public ResponseEntity<DataSource> getDataSourceById(@PathVariable("id") String id,
                                                         @RequestHeader("Authorization") String authorizationHeader) {
         // get jwt user
         User user = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
 
-        // return not found if data source is not found
-        Optional<DataSource> dataSourceData = dataSourceDao.findById(id);
-        if (dataSourceData.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        // return unauthorized if jwt username is not equal to user id
-        if (!dataSourceData.get().getCreatedBy().getId().equals(user.getId())) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
+        DataSource dataSourceData = dataSourceService.getDataSource(id, user);
 
         // return data source
-        return new ResponseEntity<>(dataSourceData.get(), HttpStatus.OK);
+        return new ResponseEntity<>(dataSourceData, HttpStatus.OK);
     }
 
 

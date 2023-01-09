@@ -120,23 +120,23 @@ class LinkProjectWithDataSourcesTest {
                                     "    \"staticData\": \"[150, 230, 224, 218, 135, 147, 260]\",\n" +
                                     "    \"dataType\": \"cccc\",\n" +
                                     "    \"url\": \"https://api.weatherapi.com/v1/current.json\",\n" +
-                                    "    \"slots\": [\n" +
+                                    "    \"dataSourceSlots\": [\n" +
                                     "        {\n" +
                                     "            \"name\": \"q\",\n" +
                                     "            \"slotType\": \"string\",\n" +
-                                    "            \"optional\": true,\n" +
+                                    "            \"isOptional\": true,\n" +
                                     "            \"defaultValue\": \"los ang\",\n" +
                                     "            \"aliasValue\": \"city\"\n" +
                                     "        },\n" +
                                     "        {\n" +
                                     "            \"name\": \"key\",\n" +
                                     "            \"slotType\": \"string\",\n" +
-                                    "            \"optional\": true,\n" +
+                                    "            \"isOptional\": true,\n" +
                                     "            \"defaultValue\": \"f41c963f33c244ab94814224222505\",\n" +
                                     "            \"aliasValue\": \"token\"\n" +
                                     "        }\n" +
                                     "    ],\n" +
-                                    "    \"examples\": [],\n" +
+                                    "    \"dataSourceExample\": null,\n" +
                                     "    \"isPublic\": true\n" +
                                     "}")
                     )

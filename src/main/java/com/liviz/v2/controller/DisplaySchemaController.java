@@ -23,9 +23,6 @@ public class DisplaySchemaController {
     DisplaySchemaService displaySchemaService;
 
     @Autowired
-    UserService userService;
-
-    @Autowired
     JwtTokenUtil jwtTokenUtil;
 
     @Autowired

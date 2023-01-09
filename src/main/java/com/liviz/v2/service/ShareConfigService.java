@@ -11,6 +11,8 @@ import com.liviz.v2.model.ShareConfig;
 import com.liviz.v2.model.User;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +28,7 @@ public class ShareConfigService {
 
     @Autowired
     ProjectDao projectDao;
+    private Optional<ShareConfig> shareConfigOptional;
 
 
     public ShareConfig createShareConfig(@NotNull ShareConfigDto shareConfigDto, @NotNull User user) {
@@ -67,36 +70,33 @@ public class ShareConfigService {
     }
 
 
-    public Optional<ShareConfig> getShareConfigByIdAndUser(String id, User user) {
-        return shareConfigDao.findByIdAndUserId(id, user.getId());
-    }
+    public ShareConfig getShareConfigByIdAndUser(String id, User user) {
+        Optional<ShareConfig> shareConfigOptional = shareConfigDao.findByIdAndUserId(id, user.getId());
 
-    public void deleteShareConfigByIdAndUser(String id, User user) {
-        // check if share config exists
-        Optional<ShareConfig> shareConfigOptional = getShareConfigByIdAndUser(id, user);
         if (shareConfigOptional.isEmpty()) {
             throw new NoSuchElementFoundException("Share config with id " + id + " not found");
         }
 
+        return shareConfigOptional.get();
+    }
+
+    public void deleteShareConfigByIdAndUser(String id, User user) {
+        // check if share config exists
+        ShareConfig shareConfig = getShareConfigByIdAndUser(id, user);
+
         // unlink project
-        if (shareConfigOptional.get().getLinkedProject() != null) {
-            shareConfigOptional.get().getLinkedProject().removeShareConfig(shareConfigOptional.get());
-            projectDao.save(shareConfigOptional.get().getLinkedProject());
+        if (shareConfig.getLinkedProject() != null) {
+            shareConfig.getLinkedProject().removeShareConfig(shareConfig);
+            projectDao.save(shareConfig.getLinkedProject());
         }
 
-
         // delete share config
-        shareConfigDao.delete(shareConfigOptional.get());
+        shareConfigDao.delete(shareConfig);
     }
 
     public ShareConfig changePassword(String shareConfigId, DisplaySchemaChangePasswordDto displaySchemaChangePasswordDto, User user) {
         // check if share config exists
-        Optional<ShareConfig> shareConfigOptional = getShareConfigByIdAndUser(shareConfigId, user);
-        if (shareConfigOptional.isEmpty()) {
-            throw new NoSuchElementFoundException("Share config with id " + shareConfigId + " not found");
-        }
-
-        ShareConfig shareConfig = shareConfigOptional.get();
+        ShareConfig shareConfig = getShareConfigByIdAndUser(shareConfigId, user);
 
         // check if old password is correct
         if (shareConfig.getPasswordProtected() && !shareConfig.getPassword().equals(displaySchemaChangePasswordDto.getOldPassword())) {
@@ -116,34 +116,22 @@ public class ShareConfigService {
 
         // save share config
         return shareConfigDao.save(shareConfig);
-
     }
 
     public ShareConfig updateShareConfig(String shareConfigId, ShareConfigDto shareConfigDto, User user) {
-        // find old share config
-        Optional<ShareConfig> shareConfigOptional = getShareConfigByIdAndUser(shareConfigId, user);
-
-        if (shareConfigOptional.isEmpty()) {
-            throw new NoSuchElementFoundException("Share config with id " + shareConfigId + " not found");
-        }
-
         // delete old share config
         deleteShareConfigByIdAndUser(shareConfigId, user);
 
         // create new share config
         return createShareConfig(shareConfigDto, user);
-
     }
 
     public List<ShareConfig> getShareConfigsByFilter(User user, String createdById) {
         // if requested user is not the jwt user
         if (user == null || !user.getId().equals(createdById)) {
             throw new BadRequestException("This query combination is not allowed.");
-
         }
 
         return shareConfigDao.queryByCreatedBy(createdById);
-
-
     }
 }
