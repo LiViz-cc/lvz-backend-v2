@@ -1,30 +1,23 @@
 package com.liviz.v2.config;
 
+import com.liviz.v2.exception.UnauthenticatedException;
+import com.liviz.v2.model.User;
+import com.liviz.v2.service.UserService;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
+
 import java.io.Serializable;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
-
-import com.liviz.v2.controller.UserController;
-import com.liviz.v2.exception.UnauthenticatedException;
-import com.liviz.v2.model.User;
-import com.liviz.v2.service.UserService;
-import io.jsonwebtoken.impl.TextCodec;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
-
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import javafx.util.Pair;
 
 //reference: https://www.javainuse.com/spring/boot-jwt
 @Component
