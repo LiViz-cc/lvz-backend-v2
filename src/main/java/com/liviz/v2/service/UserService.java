@@ -4,7 +4,6 @@ import com.liviz.v2.dao.*;
 import com.liviz.v2.dto.ChangePasswordDto;
 import com.liviz.v2.dto.ChangeUsernameDto;
 import com.liviz.v2.exception.UnauthenticatedException;
-import com.liviz.v2.model.DataSource;
 import com.liviz.v2.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;

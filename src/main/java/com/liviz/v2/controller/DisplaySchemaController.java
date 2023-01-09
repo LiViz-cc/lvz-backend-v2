@@ -6,7 +6,6 @@ import com.liviz.v2.exception.NoSuchElementFoundException;
 import com.liviz.v2.model.DisplaySchema;
 import com.liviz.v2.model.User;
 import com.liviz.v2.service.DisplaySchemaService;
-import com.liviz.v2.service.UserService;
 import org.apache.commons.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

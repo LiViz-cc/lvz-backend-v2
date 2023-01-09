@@ -2,17 +2,15 @@ package com.liviz.v2.controller;
 
 import com.liviz.v2.config.JwtTokenUtil;
 import com.liviz.v2.dto.AuthSignUpDto;
-import com.liviz.v2.dto.JwtResponse;
 import com.liviz.v2.dto.JwtRequest;
+import com.liviz.v2.dto.JwtResponse;
 import com.liviz.v2.model.User;
 import com.liviz.v2.service.AuthService;
 import com.liviz.v2.service.JWTUserDetailsService;
 import com.liviz.v2.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;

@@ -1,12 +1,10 @@
 package com.liviz.v2.controller;
 
 import com.liviz.v2.config.JwtTokenUtil;
-import com.liviz.v2.dao.DataSourceDao;
 import com.liviz.v2.dto.DataSourceDto;
 import com.liviz.v2.model.DataSource;
 import com.liviz.v2.model.User;
 import com.liviz.v2.service.DataSourceService;
-import com.liviz.v2.service.UserService;
 import org.apache.commons.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/data_sources")

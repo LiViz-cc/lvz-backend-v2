@@ -1,11 +1,9 @@
 package com.liviz.v2.dao;
 
 import com.liviz.v2.model.DisplaySchema;
-import com.liviz.v2.model.User;
 import org.springframework.data.mongodb.repository.DeleteQuery;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;

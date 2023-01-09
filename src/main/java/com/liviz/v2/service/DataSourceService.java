@@ -1,11 +1,9 @@
 package com.liviz.v2.service;
 
-import com.liviz.v2.controller.DataSourceController;
 import com.liviz.v2.dao.DataSourceDao;
 import com.liviz.v2.dto.DataSourceDto;
 import com.liviz.v2.exception.BadRequestException;
 import com.liviz.v2.exception.NoSuchElementFoundException;
-import com.liviz.v2.exception.UnauthenticatedException;
 import com.liviz.v2.model.DataSource;
 import com.liviz.v2.model.User;
 import org.jetbrains.annotations.NotNull;

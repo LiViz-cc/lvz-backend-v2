@@ -2,13 +2,10 @@ package com.liviz.v2.controller;
 
 import com.liviz.v2.config.JwtTokenUtil;
 import com.liviz.v2.dto.DisplaySchemaChangePasswordDto;
-import com.liviz.v2.dto.DisplaySchemaDto;
 import com.liviz.v2.dto.ShareConfigDto;
-import com.liviz.v2.model.DisplaySchema;
 import com.liviz.v2.model.ShareConfig;
 import com.liviz.v2.model.User;
 import com.liviz.v2.service.ShareConfigService;
-import javafx.util.Pair;
 import org.apache.commons.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/share_configs")

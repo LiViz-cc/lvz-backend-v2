@@ -1,12 +1,12 @@
 package com.liviz.v2.dto;
 
-import com.fasterxml.jackson.annotation.JsonSetter;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-
-import com.fasterxml.jackson.annotation.Nulls;
 
 
 @Getter

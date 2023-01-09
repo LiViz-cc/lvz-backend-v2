@@ -1,6 +1,5 @@
 package com.liviz.v2.service;
 
-import com.liviz.v2.controller.JwtAuthenticationController;
 import com.liviz.v2.dao.UserDao;
 import com.liviz.v2.dto.AuthSignUpDto;
 import com.liviz.v2.model.User;

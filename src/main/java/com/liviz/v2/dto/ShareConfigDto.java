@@ -1,18 +1,14 @@
 package com.liviz.v2.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.liviz.v2.model.Project;
-import com.liviz.v2.model.User;
-import lombok.*;
-import org.springframework.data.annotation.Id;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Date;
 
 @Getter
 @Setter
