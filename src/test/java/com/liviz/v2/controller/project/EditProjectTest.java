@@ -40,9 +40,9 @@ class EditProjectTest {
 
     @BeforeAll
     void login() throws Exception {
-        System.out.println(String.format("{\"username\": \"%s\"," +
+        System.out.printf("{\"username\": \"%s\"," +
                 "\n\"password\": \"%s\"" +
-                "\n}", usernameTest, passwordTest));
+                "\n}%n", usernameTest, passwordTest);
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders
                         .post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)

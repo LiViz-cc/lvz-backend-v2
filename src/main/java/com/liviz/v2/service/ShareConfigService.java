@@ -108,11 +108,7 @@ public class ShareConfigService {
         // change password
         shareConfig.setPassword(displaySchemaChangePasswordDto.getNewPassword());
 
-        if (displaySchemaChangePasswordDto.getNewPassword() == null || displaySchemaChangePasswordDto.getNewPassword().isEmpty()) {
-            shareConfig.setPasswordProtected(false);
-        } else {
-            shareConfig.setPasswordProtected(true);
-        }
+        shareConfig.setPasswordProtected(displaySchemaChangePasswordDto.getNewPassword() != null && !displaySchemaChangePasswordDto.getNewPassword().isEmpty());
 
         // save share config
         return shareConfigDao.save(shareConfig);
