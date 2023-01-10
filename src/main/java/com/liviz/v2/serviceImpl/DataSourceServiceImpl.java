@@ -7,6 +7,7 @@ import com.liviz.v2.exception.BadRequestException;
 import com.liviz.v2.exception.NoSuchElementFoundException;
 import com.liviz.v2.model.DataSource;
 import com.liviz.v2.model.User;
+import com.liviz.v2.service.ApiFetcher;
 import com.liviz.v2.service.DataSourceService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ public class DataSourceServiceImpl implements DataSourceService {
     DataSourceDao dataSourceDao;
 
     @Autowired
-    ApiFetcherImpl apiFetchService;
+    ApiFetcher apiFetchService;
 
     @Override
     @NotNull
