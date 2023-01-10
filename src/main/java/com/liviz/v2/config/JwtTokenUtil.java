@@ -2,7 +2,7 @@ package com.liviz.v2.config;
 
 import com.liviz.v2.exception.UnauthenticatedException;
 import com.liviz.v2.model.User;
-import com.liviz.v2.service.UserService;
+import com.liviz.v2.serviceImpl.UserServiceImpl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -31,7 +31,7 @@ public class JwtTokenUtil implements Serializable {
     private String secret;
 
     @Autowired
-    UserService userService;
+    UserServiceImpl userService;
 
     //retrieve username from jwt token
     public String getUsernameFromToken(String token) {

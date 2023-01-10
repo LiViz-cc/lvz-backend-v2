@@ -5,7 +5,7 @@ import com.liviz.v2.dto.DisplaySchemaChangePasswordDto;
 import com.liviz.v2.dto.ShareConfigDto;
 import com.liviz.v2.model.ShareConfig;
 import com.liviz.v2.model.User;
-import com.liviz.v2.service.ShareConfigService;
+import com.liviz.v2.serviceImpl.ShareConfigServiceImpl;
 import org.apache.commons.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,7 +19,7 @@ import java.util.List;
 @RequestMapping("/share_configs")
 public class ShareConfigController {
     @Autowired
-    ShareConfigService shareConfigService;
+    ShareConfigServiceImpl shareConfigService;
 
     @Autowired
     JwtTokenUtil jwtTokenUtil;

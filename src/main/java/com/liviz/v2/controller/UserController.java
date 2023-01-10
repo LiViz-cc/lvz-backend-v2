@@ -5,8 +5,8 @@ import com.liviz.v2.dto.ChangePasswordDto;
 import com.liviz.v2.dto.ChangeUsernameDto;
 import com.liviz.v2.dto.ResetUserDto;
 import com.liviz.v2.model.User;
-import com.liviz.v2.service.AuthService;
-import com.liviz.v2.service.UserService;
+import com.liviz.v2.serviceImpl.AuthServiceImpl;
+import com.liviz.v2.serviceImpl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,13 +20,13 @@ import java.util.Optional;
 public class UserController {
 
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userService;
 
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
     @Autowired
-    private AuthService authService;
+    private AuthServiceImpl authService;
 
 
     @GetMapping("/{id}")

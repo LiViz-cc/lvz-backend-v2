@@ -5,9 +5,9 @@ import com.liviz.v2.dto.AuthSignUpDto;
 import com.liviz.v2.dto.JwtRequest;
 import com.liviz.v2.dto.JwtResponse;
 import com.liviz.v2.model.User;
-import com.liviz.v2.service.AuthService;
-import com.liviz.v2.service.JWTUserDetailsService;
-import com.liviz.v2.service.UserService;
+import com.liviz.v2.serviceImpl.AuthServiceImpl;
+import com.liviz.v2.serviceImpl.JWTUserDetailsServiceImpl;
+import com.liviz.v2.serviceImpl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,13 +27,13 @@ public class JwtAuthenticationController {
     JwtTokenUtil jwtTokenUtil;
 
     @Autowired
-    JWTUserDetailsService userDetailsService;
+    JWTUserDetailsServiceImpl userDetailsService;
 
     @Autowired
-    AuthService authService;
+    AuthServiceImpl authService;
 
     @Autowired
-    UserService userService;
+    UserServiceImpl userService;
 
     @PostMapping("/login")
     public ResponseEntity<?> createAuthenticationToken(@Valid @RequestBody JwtRequest jwtRequest) throws Exception {

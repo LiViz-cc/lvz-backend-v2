@@ -1,6 +1,6 @@
 package com.liviz.v2.config;
 
-import com.liviz.v2.service.JWTUserDetailsService;
+import com.liviz.v2.serviceImpl.JWTUserDetailsServiceImpl;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,7 +20,7 @@ import java.io.IOException;
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Autowired
-    private JWTUserDetailsService jwtUserDetailsService;
+    private JWTUserDetailsServiceImpl jwtUserDetailsService;
 
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
