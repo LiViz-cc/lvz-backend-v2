@@ -27,35 +27,35 @@ import java.util.stream.Collectors;
         property = "id")
 public class DataSource {
     @Id
-    private String id;
+    protected String id;
 
     @Indexed(unique = true)
-    private String name;
+    protected String name;
 
-    private Boolean isPublic;
-    private String description;
-    private String staticData;
-    private String dataType;
+    protected Boolean isPublic;
+    protected String description;
+    protected String staticData;
+    protected String dataType;
 
     @URL
-    private String url;
+    protected String url;
 
     @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
-    private Date createdTime;
+    protected Date createdTime;
 
     @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
-    private Date modifiedTime;
+    protected Date modifiedTime;
 
     @DBRef(lazy = true)
-    private User createdBy;
+    protected User createdBy;
 
     @DBRef(lazy = true)
-    private List<Project> projects = new ArrayList<>();
+    protected List<Project> projects = new ArrayList<>();
 
-    private DataSourceExample dataSourceExample;
+    protected DataSourceExample dataSourceExample;
 
     @NotNull
-    private List<DataSourceSlot> dataSourceSlots;
+    protected List<DataSourceSlot> dataSourceSlots;
 
     public DataSource(String name, Boolean isPublic, String description, String static_data, String data_type, String url, DataSourceExample dataSourceExample, List<DataSourceSlot> dataSourceSlots) {
         this.name = name;

@@ -2,6 +2,7 @@ package com.liviz.v2.controller;
 
 import com.liviz.v2.config.JwtTokenUtil;
 import com.liviz.v2.dto.DataSourceDto;
+import com.liviz.v2.dto.DataSourceResponseDto;
 import com.liviz.v2.model.DataSource;
 import com.liviz.v2.model.User;
 import com.liviz.v2.service.DataSourceService;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/data_sources")
@@ -29,12 +31,13 @@ public class DataSourceController {
 
     // TODO: refract all controller methods to services
     @GetMapping("/{id}")
-    public ResponseEntity<DataSource> getDataSourceById(@PathVariable("id") String id,
-                                                        @RequestHeader("Authorization") String authorizationHeader) {
+    public ResponseEntity<DataSourceResponseDto> getDataSourceById(@PathVariable("id") String id,
+                                                                   @RequestHeader("Authorization") String authorizationHeader,
+                                                                   @RequestParam(required = false) Map<String, String> requestParams) {
         // get jwt user
         User user = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
 
-        DataSource dataSourceData = dataSourceService.getDataSource(id, user);
+        DataSourceResponseDto dataSourceData = dataSourceService.getDataSource(id, user, requestParams);
 
         // return data source
         return new ResponseEntity<>(dataSourceData, HttpStatus.OK);

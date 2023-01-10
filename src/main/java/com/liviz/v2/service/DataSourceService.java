@@ -2,6 +2,7 @@ package com.liviz.v2.service;
 
 import com.liviz.v2.dao.DataSourceDao;
 import com.liviz.v2.dto.DataSourceDto;
+import com.liviz.v2.dto.DataSourceResponseDto;
 import com.liviz.v2.exception.BadRequestException;
 import com.liviz.v2.exception.NoSuchElementFoundException;
 import com.liviz.v2.model.DataSource;
@@ -10,15 +11,15 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class DataSourceService {
     @Autowired
     DataSourceDao dataSourceDao;
+
+    @Autowired
+    ApiFetcher apiFetchService;
 
     @NotNull
     public DataSource createDataSource(DataSourceDto dataSourceDto, User user) {
@@ -128,13 +129,24 @@ public class DataSourceService {
     }
 
     @NotNull
-    public DataSource getDataSource(String id, User user) {
+    public DataSourceResponseDto getDataSource(String id, User user, Map<String, String> requestParams) {
         // return not found if data source is not found
         Optional<DataSource> dataSourceData = dataSourceDao.findByIdAndUserId(id, user.getId());
         if (dataSourceData.isEmpty()) {
             throw new NoSuchElementFoundException("Data source with id " + id + " not found");
         }
 
-        return dataSourceData.get();
+        // get data source
+        DataSource dataSource = dataSourceData.get();
+
+        // return data source without data if data is not requested
+        if (requestParams.isEmpty()) {
+            return new DataSourceResponseDto(dataSourceData.get());
+        }
+
+        // get data
+        var node = apiFetchService.fetchData(dataSource.getUrl(), dataSource.getDataSourceSlots(), requestParams);
+
+        return new DataSourceResponseDto(dataSourceData.get(), node);
     }
 }
