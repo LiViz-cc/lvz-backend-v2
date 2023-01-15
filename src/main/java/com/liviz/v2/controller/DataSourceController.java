@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +35,7 @@ public class DataSourceController {
     @GetMapping("/{id}")
     public ResponseEntity<DataSourceResponseDto> getDataSourceById(@PathVariable("id") String id,
                                                                    @RequestHeader("Authorization") String authorizationHeader,
-                                                                   @RequestParam(required = false) Map<String, String> requestParams) {
+                                                                   @RequestParam(required = false) Map<String, String> requestParams) throws IOException, URISyntaxException {
         // get jwt user
         User user = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
 

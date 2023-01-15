@@ -13,6 +13,8 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.*;
 
 @Service
@@ -137,7 +139,7 @@ public class DataSourceServiceImpl implements DataSourceService {
 
     @Override
     @NotNull
-    public DataSourceResponseDto getDataSource(String id, User user, Map<String, String> requestParams) {
+    public DataSourceResponseDto getDataSource(String id, User user, Map<String, String> requestParams) throws IOException, URISyntaxException {
         // return not found if data source is not found
         Optional<DataSource> dataSourceData = dataSourceDao.findByIdAndUserId(id, user.getId());
         if (dataSourceData.isEmpty()) {
