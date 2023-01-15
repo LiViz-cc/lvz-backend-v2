@@ -103,8 +103,6 @@ public class ShareConfigServiceImpl implements ShareConfigService {
 
         // check if old password is correct
         if (shareConfig.getPasswordProtected() && !shareConfig.getPassword().equals(displaySchemaChangePasswordDto.getOldPassword())) {
-            System.out.println("shareConfig.getPassword() = " + shareConfig.getPassword());
-            System.out.println("displaySchemaChangePasswordDto.getOldPassword() = " + displaySchemaChangePasswordDto.getOldPassword());
             throw new RuntimeException("Old password is incorrect");
         }
 

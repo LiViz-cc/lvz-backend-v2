@@ -35,8 +35,6 @@ public class ApiFetcherImpl implements ApiFetcher {
         builder.setPath(urlString);
         requestParams.forEach(builder::addParameter);
 
-        System.out.println("urlString: " + urlString);
-
         URL url = new URL(builder.build().toString());
 
         StringBuilder content = new StringBuilder();

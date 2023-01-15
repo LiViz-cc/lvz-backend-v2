@@ -103,7 +103,6 @@ class DataSourceControllerTest {
                 // TODO: nested check for the list of slots
             } else {
                 assertNotNull(entry.getValue(), "The value of " + entry.getKey() + " should not be null");
-                System.out.println(entry.getKey() + " : " + entry.getValue() + " : " + dataSourceMap.get(entry.getKey()));
                 assertNotNull(dataSourceMap.get(entry.getKey()), "key " + entry.getKey() + " not found");
                 assertEquals(entry.getValue(),
                         dataSourceMap.get(entry.getKey()),
@@ -115,9 +114,6 @@ class DataSourceControllerTest {
     }
 
     void login() throws Exception {
-        System.out.printf("{\"username\": \"%s\"," +
-                "\n\"password\": \"%s\"" +
-                "\n}%n", usernameTest, passwordTest);
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders
                         .post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)

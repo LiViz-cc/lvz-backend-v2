@@ -56,9 +56,6 @@ class LinkProjectWithDataSourcesTest {
     }
 
     void login() throws Exception {
-        System.out.printf("{\"username\": \"%s\"," +
-                "\n\"password\": \"%s\"" +
-                "\n}%n", usernameTest, passwordTest);
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders
                         .post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -210,7 +207,6 @@ class LinkProjectWithDataSourcesTest {
 
             JsonNode rootAfterUnlinkDataSource = getJsonTree(resultAfterUnlinkDataSource);
 
-            System.out.println("rootAfterUnlinkDataSource: " + rootAfterUnlinkDataSource);
             JsonNode projectsAfterUnlinkDataSource = rootAfterUnlinkDataSource.get("projects");
             assertEquals(0, projectsAfterUnlinkDataSource.size());
         }
@@ -283,7 +279,6 @@ class LinkProjectWithDataSourcesTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        System.out.println(result.getResponse().getContentAsString());
         JsonNode root = getJsonTree(result);
         JsonNode dataSources = root.get("dataSources");
         assertEquals(NUMBER_OF_DATASOURCES, dataSources.size());
@@ -301,8 +296,6 @@ class LinkProjectWithDataSourcesTest {
                     )
                     .andExpect(status().isOk())
                     .andReturn();
-
-            System.out.println(resultGetDataSource.getResponse().getContentAsString());
 
             JsonNode rootDataSource = getJsonTree(resultGetDataSource);
 
