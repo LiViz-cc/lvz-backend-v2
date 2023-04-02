@@ -9,4 +9,6 @@ public interface AuthService {
     Optional<User> signUp(AuthSignUpDto authSignUpDto);
 
     void authenticate(String username, String password) throws Exception;
+
+    Optional<User> createAnonymousUser();
 }

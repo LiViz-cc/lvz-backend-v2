@@ -19,5 +19,4 @@ public interface UserService {
 
     User resetUser(User jwtUser, String userId);
 
-    User createAnonymousUser();
 }

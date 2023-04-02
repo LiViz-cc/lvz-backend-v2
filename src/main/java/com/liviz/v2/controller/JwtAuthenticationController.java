@@ -79,4 +79,25 @@ public class JwtAuthenticationController {
         }
         return ResponseEntity.ok(userOptional.get());
     }
+
+    @PostMapping("/create_anonymous")
+    public ResponseEntity<?> createAnonymousUser() {
+        Optional<User> userOptional = authService.createAnonymousUser();
+        if (userOptional.isEmpty()) {
+            return ResponseEntity.badRequest().body("Cannot create anonymous user");
+        }
+
+        // get user details
+        final UserDetails userDetails = userDetailsService
+                .loadUserByUsername(userOptional.get().getUsername());
+
+        // generate token
+        final String token = jwtTokenUtil.generateToken(userDetails);
+
+        // return token and user
+        Map<String, Object> response = new HashMap<>();
+        response.put("token", new JwtResponse(token));
+        response.put("user", userOptional.get());
+        return ResponseEntity.ok(response);
+    }
 }

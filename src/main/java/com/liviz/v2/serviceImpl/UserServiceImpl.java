@@ -38,12 +38,6 @@ public class UserServiceImpl implements UserService {
     @Autowired
     DisplaySchemaDao displaySchemaDao;
 
-    @Autowired
-    RandomStringGenerator randomStringGenerator;
-
-    @Autowired
-    AuthService authService;
-
     @Override
     public Optional<User> findById(String id) {
         return userDao.findById(id);
@@ -125,21 +119,4 @@ public class UserServiceImpl implements UserService {
         return userDao.save(user);
     }
 
-    @Override
-    public User createAnonymousUser() {
-        // generate random username and password
-        String username = randomStringGenerator.generateUsername(10);
-        String password = randomStringGenerator.generatePassword(20);
-
-        // pack authSignUpDto
-        AuthSignUpDto authSignUpDto = new AuthSignUpDto();
-        authSignUpDto.setUsername(username);
-        authSignUpDto.setPassword(password);
-
-        // create user
-        Optional<User> userOptional = authService.signUp(authSignUpDto);
-
-        // return user
-        return userOptional.orElseThrow(() -> new UnauthenticatedException("Unauthorized"));
-    }
 }

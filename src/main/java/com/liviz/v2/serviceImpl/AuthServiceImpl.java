@@ -2,8 +2,10 @@ package com.liviz.v2.serviceImpl;
 
 import com.liviz.v2.dao.UserDao;
 import com.liviz.v2.dto.AuthSignUpDto;
+import com.liviz.v2.exception.UnauthenticatedException;
 import com.liviz.v2.model.User;
 import com.liviz.v2.service.AuthService;
+import com.liviz.v2.utils.RandomStringGenerator;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -33,6 +35,9 @@ public class AuthServiceImpl implements AuthService {
     private AuthenticationManager authenticationManager;
 
     private final Log logger = LogFactory.getLog(this.getClass());
+
+    @Autowired
+    RandomStringGenerator randomStringGenerator;
 
     @Override
     public Optional<User> signUp(AuthSignUpDto authSignUpDto) {
@@ -89,5 +94,25 @@ public class AuthServiceImpl implements AuthService {
         } catch (BadCredentialsException e) {
             throw new Exception("INVALID_CREDENTIALS", e);
         }
+    }
+
+
+    @Override
+    public Optional<User> createAnonymousUser() {
+        // generate random username and password
+        String username = randomStringGenerator.generateUsername(10);
+        String password = randomStringGenerator.generatePassword(20);
+
+        // pack authSignUpDto
+        AuthSignUpDto authSignUpDto = new AuthSignUpDto();
+        authSignUpDto.setUsername(username);
+        authSignUpDto.setPassword(password);
+        authSignUpDto.setEmail(username + "@anonymous.com");
+
+        logger.info("username: " + username);
+        logger.info("password: " + password);
+
+        // sign up user
+        return signUp(authSignUpDto);
     }
 }
