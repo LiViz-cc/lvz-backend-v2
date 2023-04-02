@@ -1,9 +1,11 @@
 package com.liviz.v2.controller;
 
 import com.liviz.v2.config.JwtTokenUtil;
+import com.liviz.v2.dto.AuthSignUpDto;
 import com.liviz.v2.dto.ChangePasswordDto;
 import com.liviz.v2.dto.ChangeUsernameDto;
 import com.liviz.v2.dto.ResetUserDto;
+import com.liviz.v2.exception.BadRequestException;
 import com.liviz.v2.model.User;
 import com.liviz.v2.serviceImpl.AuthServiceImpl;
 import com.liviz.v2.serviceImpl.UserServiceImpl;
@@ -114,6 +116,23 @@ public class UserController {
 
         // return user
         return new ResponseEntity<>(userData, HttpStatus.OK);
+
+    }
+
+    @PostMapping("/{id}/authenticate")
+    public ResponseEntity<User> authenticateAnonymousUser(
+            @PathVariable("id") String userId,
+            @RequestHeader("Authorization") String authorizationHeader,
+            @Valid @RequestBody AuthSignUpDto authSignUpDto
+    ) throws Exception {
+
+        // get jwt user
+        User jwtUser = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
+
+        User user = userService.authenticateAnonymousUser(jwtUser, authSignUpDto);
+
+        // return user
+        return new ResponseEntity<>(user, HttpStatus.OK);
 
     }
 }

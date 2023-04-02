@@ -1,5 +1,6 @@
 package com.liviz.v2.config;
 
+import com.liviz.v2.dao.UserDao;
 import com.liviz.v2.exception.UnauthenticatedException;
 import com.liviz.v2.model.User;
 import com.liviz.v2.serviceImpl.UserServiceImpl;
@@ -31,7 +32,7 @@ public class JwtTokenUtil implements Serializable {
     private String secret;
 
     @Autowired
-    UserServiceImpl userService;
+    UserDao userDao;
 
     //retrieve username from jwt token
     public String getUsernameFromToken(String token) {
@@ -112,7 +113,8 @@ public class JwtTokenUtil implements Serializable {
         String usernameFromToken = getJwtIdentity(authorizationHeader);
 
         // get user from database
-        Optional<User> userOptional = userService.findByUsername(usernameFromToken);
+        Optional<User> userOptional = userDao.findByUsername(usernameFromToken);
+
 
         // return unauthenticated if jwt username is null
         if (userOptional.isEmpty()) {
