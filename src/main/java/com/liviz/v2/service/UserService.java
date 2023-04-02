@@ -18,4 +18,6 @@ public interface UserService {
     User changeUsername(User jwtUser, String userId, ChangeUsernameDto changeUsernameDto);
 
     User resetUser(User jwtUser, String userId);
+
+    User createAnonymousUser();
 }
