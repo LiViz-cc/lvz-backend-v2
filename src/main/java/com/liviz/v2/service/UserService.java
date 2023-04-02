@@ -1,5 +1,6 @@
 package com.liviz.v2.service;
 
+import com.liviz.v2.dto.AuthSignUpDto;
 import com.liviz.v2.dto.ChangePasswordDto;
 import com.liviz.v2.dto.ChangeUsernameDto;
 import com.liviz.v2.model.User;
@@ -19,4 +20,5 @@ public interface UserService {
 
     User resetUser(User jwtUser, String userId);
 
+    User authenticateAnonymousUser(User jwtUser, AuthSignUpDto authSignUpDto);
 }
