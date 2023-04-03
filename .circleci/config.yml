@@ -7,13 +7,6 @@ workflows:
   build-and-deploy:
     jobs:
       - build-docker
-      - deploy-to-aws:
-          requires:
-            - build-docker
-          filters:
-            branches:
-              only:
-                - main
 jobs:
   build-docker:
     docker:
