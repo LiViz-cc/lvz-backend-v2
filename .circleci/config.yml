@@ -7,6 +7,13 @@ workflows:
   build-and-deploy:
     jobs:
       - build-docker
+      - deploy-to-aws:
+          requires:
+            - build-docker
+          filters:
+            branches:
+              only:
+                - dev-test-circle-ci
 jobs:
   build-docker:
     docker:
@@ -34,3 +41,30 @@ jobs:
               --build-arg LIVIZ_JWT_SECRET_KEY="LIVIZ_JWT_SECRET_KEY" \
               -t ${DOCKERHUB_USERNAME}/${DOCKER_IMAGE_NAME}:latest .
             docker push ${DOCKERHUB_USERNAME}/${DOCKER_IMAGE_NAME}:latest
+  deploy-to-aws:
+    executor: java-executor
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "${SSH_FINGERPRINT}"
+      - run:
+          name: Install AWS CLI
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y python3-pip
+            sudo pip3 install awscli
+      - run:
+          name: Deploy to AWS EC2
+          command: |
+            rsync -av -e "ssh -o StrictHostKeyChecking=no" --delete --exclude '.*' ./ $REMOTE_USER@$REMOTE_HOST:$REMOTE_PATH
+            ssh -o StrictHostKeyChecking=no $REMOTE_USER@$REMOTE_HOST "cd $REMOTE_PATH \
+              && docker pull $DOCKERHUB_USERNAME/$DOCKER_IMAGE_NAME:latest \
+              && docker run -d \
+              -e DB_URI="$DB_URI" \
+              -e TEST_USERNAME="$TEST_USERNAME" \
+              -e TEST_PASSWORD="$TEST_PASSWORD" \
+              -e LIVIZ_JWT_SECRET_KEY="LIVIZ_JWT_SECRET_KEY" \
+              -p 8081:8081 \
+              $DOCKERHUB_USERNAME/$DOCKER_IMAGE_NAME:latest"
+
