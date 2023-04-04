@@ -1,8 +1,4 @@
 version: 2.1
-#executors:
-#  java-executor:
-#    docker:
-#      - image: circleci/openjdk:17-jdk
 workflows:
   build-and-deploy:
     jobs:
@@ -59,7 +55,9 @@ jobs:
             ssh -o StrictHostKeyChecking=no $REMOTE_USER@$REMOTE_HOST "cd $REMOTE_PATH \
               && echo "$DOCKER_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin \
               && docker pull $DOCKERHUB_USERNAME/$DOCKER_IMAGE_NAME:latest \
+              && docker stop your_container_name \
+              && docker rm your_container_name \
               && docker run -d \
-              -p 8081:8081 \
-              $DOCKERHUB_USERNAME/$DOCKER_IMAGE_NAME:latest"
-
+                  --name your_container_name \
+                  -p 8081:8081 \
+                  $DOCKERHUB_USERNAME/$DOCKER_IMAGE_NAME:latest"
