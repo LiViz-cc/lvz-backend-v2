@@ -18,7 +18,7 @@
         <DB_URI>${env.DB_URI}</DB_URI>
         <TEST_USERNAME>${env.TEST_USERNAME}</TEST_USERNAME>
         <TEST_PASSWORD>${env.TEST_PASSWORD}</TEST_PASSWORD>
-        <JWT_SECRET>${env.JWT_SECRET}</JWT_SECRET>
+        <LIVIZ_JWT_SECRET_KEY>${env.LIVIZ_JWT_SECRET_KEY}</LIVIZ_JWT_SECRET_KEY>
     </properties>
     <dependencies>
         <!--		<dependency>-->
@@ -163,7 +163,7 @@
                         <DB_URI>${DB_URI}</DB_URI>
                         <TEST_USERNAME>${TEST_USERNAME}</TEST_USERNAME>
                         <TEST_PASSWORD>${TEST_PASSWORD}</TEST_PASSWORD>
-                        <JWT_SECRET>${JWT_SECRET}</JWT_SECRET>
+                        <LIVIZ_JWT_SECRET_KEY>${LIVIZ_JWT_SECRET_KEY}</LIVIZ_JWT_SECRET_KEY>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
