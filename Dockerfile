@@ -21,7 +21,7 @@ WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 
 # Copy the YAML configuration file into the image
-COPY src/main/resources/application.yml application.yml
+COPY src/main/resources/application.yml.example application.yml
 
 # Expose ports
 EXPOSE 8080 8081
