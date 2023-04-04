@@ -23,6 +23,15 @@ RUN mvn clean install
 # Stage 2: Use the official JDK 17 base image
 FROM openjdk:17-slim
 
+# Get environment variables from the host
+ARG DB_USERNAME
+ARG DB_PASSWORD
+ARG DB_HOST
+ARG DB_DATABASE
+ARG TEST_USERNAME
+ARG TEST_PASSWORD
+ARG LIVIZ_JWT_SECRET_KEY
+
 # Set the working directory inside the container
 WORKDIR /app
 
