@@ -41,7 +41,13 @@ WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 
 # Copy the YAML configuration file into the image
-COPY src/main/resources/application.yml.example application.yml
+COPY src/main/resources/application.yml.templete application.yml
+
+# Replace the environment variables in the YAML configuration file
+RUN sed -i "s|\${DB_URI}|${DB_URI}|g" /path/to/your/application/resources/application.yml \
+  && sed -i "s|\${TEST_USERNAME}|${TEST_USERNAME}|g" /path/to/your/application/resources/application.yml \
+  && sed -i "s|\${TEST_PASSWORD}|${TEST_PASSWORD}|g" /path/to/your/application/resources/application.yml \
+  && sed -i "s|\${LIVIZ_JWT_SECRET_KEY}|${LIVIZ_JWT_SECRET_KEY}|g" /path/to/your/application/resources/application.yml
 
 # Expose ports
 EXPOSE 8080 8081
