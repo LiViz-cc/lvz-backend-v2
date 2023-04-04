@@ -2,14 +2,19 @@ version: 2.1
 workflows:
   build-and-deploy:
     jobs:
-      - build-docker
+      - build-docker:
+          filters:
+            branches:
+              only:
+                - main
+                - dev
       - deploy-to-aws:
           requires:
             - build-docker
           filters:
             branches:
               only:
-                - dev-test-circle-ci
+                - dev
 jobs:
   build-docker:
     docker:
