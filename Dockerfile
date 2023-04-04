@@ -29,8 +29,6 @@ RUN sed -i "s|DB_URI|${DB_URI}|g" application.yml \
   && sed -i "s|TEST_PASSWORD|${TEST_PASSWORD}|g" application.yml \
   && sed -i "s|LIVIZ_JWT_SECRET_KEY|${LIVIZ_JWT_SECRET_KEY}|g" application.yml
 
-RUN cat application.yml
-
 # Expose ports
 EXPOSE 8080 8081
 
