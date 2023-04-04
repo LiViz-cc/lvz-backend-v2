@@ -1,10 +1,7 @@
 spring:
   data:
     mongodb:
-      user: DB_USERNAME
-      password: DB_PASSWORD
-      host: DB_HOST
-      database: DB_DATABASE
+      uri: mongodb+srv://DB_USERNAME:DB_PASSWORD@DB_HOST/DB_DATABASE
   mvc:
     throw-exception-if-no-handler-found: false
   web:
