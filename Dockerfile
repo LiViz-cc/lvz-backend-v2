@@ -1,6 +1,15 @@
 # Stage 1: Use the official Maven image to build the project
 FROM maven:3.8.2-openjdk-17-slim AS build
 
+# Get environment variables from the host
+ARG DB_USERNAME
+ARG DB_PASSWORD
+ARG DB_HOST
+ARG DB_DATABASE
+ARG TEST_USERNAME
+ARG TEST_PASSWORD
+ARG LIVIZ_JWT_SECRET_KEY
+
 # Set the working directory inside the container
 WORKDIR /app
 
@@ -23,15 +32,6 @@ COPY --from=build /app/target/*.jar app.jar
 # Copy the YAML configuration file into the image
 COPY src/main/resources/application.yml.templete application.yml
 
-# Get environment variables from the host
-ARG DB_USERNAME
-ARG DB_PASSWORD
-ARG DB_HOST
-ARG DB_DATABASE
-ARG TEST_USERNAME
-ARG TEST_PASSWORD
-ARG LIVIZ_JWT_SECRET_KEY
-
 # Replace the environment variables in the YAML configuration file
 RUN sed -i "s/DB_USERNAME/${DB_USERNAME}/g" application.yml \
     && sed -i "s/DB_PASSWORD/${DB_PASSWORD}/g" application.yml \
@@ -40,8 +40,6 @@ RUN sed -i "s/DB_USERNAME/${DB_USERNAME}/g" application.yml \
     && sed -i "s/TEST_USERNAME/${TEST_USERNAME}/g" application.yml \
     && sed -i "s/TEST_PASSWORD/${TEST_PASSWORD}/g" application.yml \
     && sed -i "s/LIVIZ_JWT_SECRET_KEY/${LIVIZ_JWT_SECRET_KEY}/g" application.yml
-
-RUN cat application.yml
 
 # Expose ports
 EXPOSE 8080 8081
