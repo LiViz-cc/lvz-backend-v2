@@ -24,5 +24,10 @@ jobs:
           name: Build and push Docker image
           command: |
             echo "$DOCKER_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-            docker build -t ${DOCKERHUB_USERNAME}/${DOCKER_IMAGE_NAME}:latest .
+            docker build \
+              --build-arg DB_URI="$DB_URI" \
+              --build-arg TEST_USERNAME="$TEST_USERNAME" \
+              --build-arg TEST_PASSWORD="$TEST_PASSWORD" \
+              --build-arg JWT_SECRET="$JWT_SECRET" \
+              -t ${DOCKERHUB_USERNAME}/${DOCKER_IMAGE_NAME}:latest .
             docker push ${DOCKERHUB_USERNAME}/${DOCKER_IMAGE_NAME}:latest
