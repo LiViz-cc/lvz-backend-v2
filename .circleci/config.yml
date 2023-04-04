@@ -28,6 +28,6 @@ jobs:
               --build-arg DB_URI="$DB_URI" \
               --build-arg TEST_USERNAME="$TEST_USERNAME" \
               --build-arg TEST_PASSWORD="$TEST_PASSWORD" \
-              --build-arg JWT_SECRET="$JWT_SECRET" \
+              --build-arg LIVIZ_JWT_SECRET_KEY="LIVIZ_JWT_SECRET_KEY" \
               -t ${DOCKERHUB_USERNAME}/${DOCKER_IMAGE_NAME}:latest .
             docker push ${DOCKERHUB_USERNAME}/${DOCKER_IMAGE_NAME}:latest
