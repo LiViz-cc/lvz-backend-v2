@@ -1,3 +1,6 @@
+# Stage 1: Use the official Maven image to build the project
+FROM maven:3.8.2-openjdk-17-slim AS build
+
 ARG DB_URI
 ARG TEST_USERNAME
 ARG TEST_PASSWORD
@@ -7,9 +10,6 @@ ENV DB_URI=${DB_URI}
 ENV TEST_USERNAME=${TEST_USERNAME}
 ENV TEST_PASSWORD=${TEST_PASSWORD}
 ENV JWT_SECRET=${JWT_SECRET}
-
-# Stage 1: Use the official Maven image to build the project
-FROM maven:3.8.2-openjdk-17-slim AS build
 
 # Set the working directory inside the container
 WORKDIR /app
