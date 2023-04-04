@@ -15,6 +15,9 @@ jobs:
       - checkout
       - setup_remote_docker
       - run:
+          name: Check Dockerfile
+          command: cat Dockerfile
+      - run:
           name: Install Docker Compose
           command: |
             sudo apt-get update
