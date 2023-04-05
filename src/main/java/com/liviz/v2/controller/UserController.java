@@ -5,6 +5,8 @@ import com.liviz.v2.dto.*;
 import com.liviz.v2.exception.BadRequestException;
 import com.liviz.v2.exception.UnauthenticatedException;
 import com.liviz.v2.model.User;
+import com.liviz.v2.service.AuthService;
+import com.liviz.v2.service.UserService;
 import com.liviz.v2.serviceImpl.AuthServiceImpl;
 import com.liviz.v2.serviceImpl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +22,13 @@ import java.util.Optional;
 public class UserController {
 
     @Autowired
-    private UserServiceImpl userService;
+    private UserService userService;
 
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
     @Autowired
-    private AuthServiceImpl authService;
+    private AuthService authService;
 
 
     @GetMapping("/{id}")

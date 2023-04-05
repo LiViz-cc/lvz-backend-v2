@@ -6,6 +6,9 @@ import com.liviz.v2.dto.AuthSignUpDto;
 import com.liviz.v2.dto.JwtRequest;
 import com.liviz.v2.dto.JwtResponse;
 import com.liviz.v2.model.User;
+import com.liviz.v2.service.AuthService;
+import com.liviz.v2.service.JWTUserDetailsService;
+import com.liviz.v2.service.UserService;
 import com.liviz.v2.serviceImpl.AuthServiceImpl;
 import com.liviz.v2.serviceImpl.JWTUserDetailsServiceImpl;
 import com.liviz.v2.serviceImpl.UserServiceImpl;
@@ -28,13 +31,13 @@ public class JwtAuthenticationController {
     JwtTokenUtil jwtTokenUtil;
 
     @Autowired
-    JWTUserDetailsServiceImpl userDetailsService;
+    JWTUserDetailsService userDetailsService;
 
     @Autowired
-    AuthServiceImpl authService;
+    AuthService authService;
 
     @Autowired
-    UserServiceImpl userService;
+    UserService userService;
 
     @PostMapping("/login")
     public ResponseEntity<?> createAuthenticationToken(@Valid @RequestBody JwtRequest jwtRequest) throws Exception {
