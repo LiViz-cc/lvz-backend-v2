@@ -1,6 +1,8 @@
 package com.liviz.v2.serviceImpl;
 
+import com.liviz.v2.config.JwtTokenUtil;
 import com.liviz.v2.dao.*;
+import com.liviz.v2.dto.AuthResponseDto;
 import com.liviz.v2.dto.AuthSignUpDto;
 import com.liviz.v2.dto.ChangePasswordDto;
 import com.liviz.v2.dto.ChangeUsernameDto;
@@ -9,6 +11,7 @@ import com.liviz.v2.exception.UnauthenticatedException;
 import com.liviz.v2.model.User;
 import com.liviz.v2.service.AuthService;
 import com.liviz.v2.service.UserService;
+import com.liviz.v2.utils.JwtResponseBuilder;
 import com.liviz.v2.utils.RandomStringGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -39,6 +42,12 @@ public class UserServiceImpl implements UserService {
     @Autowired
     DisplaySchemaDao displaySchemaDao;
 
+    @Autowired
+    JwtTokenUtil jwtTokenUtil;
+
+    @Autowired
+    JwtResponseBuilder jwtResponseBuilder;
+
     @Override
     public Optional<User> findById(String id) {
         return userDao.findById(id);
@@ -56,7 +65,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public User changePassword(User jwtUser, String userId, ChangePasswordDto changePasswordDto) {
+    public AuthResponseDto changePassword(User jwtUser, String userId, ChangePasswordDto changePasswordDto) {
         // return unauthorized if jwt username is not equal to user id
         if (!userId.equals(jwtUser.getId())) {
             throw new UnauthenticatedException("Unauthorized");
@@ -77,7 +86,10 @@ public class UserServiceImpl implements UserService {
         user.setPassword(encodedPassword);
 
         // save user
-        return userDao.save(user);
+        userDao.save(user);
+
+        // save user
+        return jwtResponseBuilder.build(user, jwtTokenUtil);
 
     }
 

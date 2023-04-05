@@ -1,11 +1,9 @@
 package com.liviz.v2.controller;
 
 import com.liviz.v2.config.JwtTokenUtil;
-import com.liviz.v2.dto.AuthSignUpDto;
-import com.liviz.v2.dto.ChangePasswordDto;
-import com.liviz.v2.dto.ChangeUsernameDto;
-import com.liviz.v2.dto.ResetUserDto;
+import com.liviz.v2.dto.*;
 import com.liviz.v2.exception.BadRequestException;
+import com.liviz.v2.exception.UnauthenticatedException;
 import com.liviz.v2.model.User;
 import com.liviz.v2.serviceImpl.AuthServiceImpl;
 import com.liviz.v2.serviceImpl.UserServiceImpl;
@@ -57,7 +55,7 @@ public class UserController {
     }
 
     @PostMapping("/{id}/password")
-    public ResponseEntity<User> changePassword(
+    public ResponseEntity<AuthResponseDto> changePassword(
             @PathVariable("id") String userId,
             @RequestHeader("Authorization") String authorizationHeader,
             @Valid @RequestBody ChangePasswordDto changePasswordDto
@@ -67,10 +65,14 @@ public class UserController {
         User jwtUser = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
 
         // check password
-        authService.authenticate(jwtUser.getUsername(), changePasswordDto.getOldPassword());
+        try {
+            authService.authenticate(jwtUser.getUsername(), changePasswordDto.getOldPassword());
+        } catch (UnauthenticatedException err) {
+            throw new BadRequestException("Old password is wrong");
+        }
 
         // change password
-        User userData = userService.changePassword(jwtUser, userId, changePasswordDto);
+        AuthResponseDto userData = userService.changePassword(jwtUser, userId, changePasswordDto);
 
         // return ok if change password success
         return new ResponseEntity<>(userData, HttpStatus.OK);
