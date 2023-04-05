@@ -17,9 +17,9 @@ public interface UserService {
 
     AuthResponseDto changePassword(User jwtUser, String userId, ChangePasswordDto changePasswordDto);
 
-    User changeUsername(User jwtUser, String userId, ChangeUsernameDto changeUsernameDto);
+    AuthResponseDto changeUsername(User jwtUser, String userId, ChangeUsernameDto changeUsernameDto);
 
     User resetUser(User jwtUser, String userId);
 
-    User authenticateAnonymousUser(User jwtUser, AuthSignUpDto authSignUpDto);
+    AuthResponseDto authenticateAnonymousUser(User jwtUser, AuthSignUpDto authSignUpDto);
 }

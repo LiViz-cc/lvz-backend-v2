@@ -82,7 +82,7 @@ public class UserController {
     }
 
     @PostMapping("/{id}/username")
-    public ResponseEntity<User> changeUsername(
+    public ResponseEntity<AuthResponseDto> changeUsername(
             @PathVariable("id") String userId,
             @RequestHeader("Authorization") String authorizationHeader,
             @Valid @RequestBody ChangeUsernameDto changeUsernameDto
@@ -95,7 +95,7 @@ public class UserController {
         authService.authenticate(jwtUser.getUsername(), changeUsernameDto.getPassword());
 
         // change username
-        User userData = userService.changeUsername(jwtUser, userId, changeUsernameDto);
+        AuthResponseDto userData = userService.changeUsername(jwtUser, userId, changeUsernameDto);
 
         // return user
         return new ResponseEntity<>(userData, HttpStatus.OK);
@@ -124,7 +124,7 @@ public class UserController {
     }
 
     @PostMapping("/{id}/authenticate")
-    public ResponseEntity<User> authenticateAnonymousUser(
+    public ResponseEntity<AuthResponseDto> authenticateAnonymousUser(
             @PathVariable("id") String userId,
             @RequestHeader("Authorization") String authorizationHeader,
             @Valid @RequestBody AuthSignUpDto authSignUpDto
@@ -133,10 +133,10 @@ public class UserController {
         // get jwt user
         User jwtUser = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
 
-        User user = userService.authenticateAnonymousUser(jwtUser, authSignUpDto);
+        AuthResponseDto userData = userService.authenticateAnonymousUser(jwtUser, authSignUpDto);
 
         // return user
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        return new ResponseEntity<>(userData, HttpStatus.OK);
 
     }
 }

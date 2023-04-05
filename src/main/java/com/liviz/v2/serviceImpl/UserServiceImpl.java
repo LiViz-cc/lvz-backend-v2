@@ -94,7 +94,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User changeUsername(User jwtUser, String userId, ChangeUsernameDto changeUsernameDto) {
+    public AuthResponseDto changeUsername(User jwtUser, String userId, ChangeUsernameDto changeUsernameDto) {
         // get user by id
         User user = userDao.findById(userId).orElseThrow(() -> new UnauthenticatedException("Unauthorized"));
 
@@ -107,7 +107,10 @@ public class UserServiceImpl implements UserService {
         user.setUsername(changeUsernameDto.getUsername());
 
         // save user
-        return userDao.save(user);
+        userDao.save(user);
+
+        // return jwt response
+        return jwtResponseBuilder.build(user, jwtTokenUtil);
     }
 
     @Override
@@ -133,7 +136,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User authenticateAnonymousUser(User jwtUser, AuthSignUpDto authSignUpDto) {
+    public AuthResponseDto authenticateAnonymousUser(User jwtUser, AuthSignUpDto authSignUpDto) {
         // if user is not anonymous
         if (!jwtUser.getEmail().endsWith("@anonymous.com")) {
             throw new BadRequestException("User is not anonymous. No need to authenticate");
@@ -166,7 +169,10 @@ public class UserServiceImpl implements UserService {
         }
 
         // save user
-        return userDao.save(jwtUser);
+        userDao.save(jwtUser);
+
+        // return jwt response
+        return jwtResponseBuilder.build(jwtUser, jwtTokenUtil);
     }
 
 }
