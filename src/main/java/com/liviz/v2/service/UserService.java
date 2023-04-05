@@ -1,5 +1,6 @@
 package com.liviz.v2.service;
 
+import com.liviz.v2.dto.AuthResponseDto;
 import com.liviz.v2.dto.AuthSignUpDto;
 import com.liviz.v2.dto.ChangePasswordDto;
 import com.liviz.v2.dto.ChangeUsernameDto;
@@ -14,11 +15,11 @@ public interface UserService {
 
     Optional<User> findByUsername(String username);
 
-    User changePassword(User jwtUser, String userId, ChangePasswordDto changePasswordDto);
+    AuthResponseDto changePassword(User jwtUser, String userId, ChangePasswordDto changePasswordDto);
 
-    User changeUsername(User jwtUser, String userId, ChangeUsernameDto changeUsernameDto);
+    AuthResponseDto changeUsername(User jwtUser, String userId, ChangeUsernameDto changeUsernameDto);
 
     User resetUser(User jwtUser, String userId);
 
-    User authenticateAnonymousUser(User jwtUser, AuthSignUpDto authSignUpDto);
+    AuthResponseDto authenticateAnonymousUser(User jwtUser, AuthSignUpDto authSignUpDto);
 }

@@ -29,6 +29,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
 
+        String requestPath = request.getServletPath();
+        if (requestPath.equals("/auth/create_anonymous")) {
+            chain.doFilter(request, response);
+            return;
+        }
+
         final String requestTokenHeader = request.getHeader("Authorization");
 
         String username = null;

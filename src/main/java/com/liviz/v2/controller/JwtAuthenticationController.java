@@ -1,10 +1,14 @@
 package com.liviz.v2.controller;
 
 import com.liviz.v2.config.JwtTokenUtil;
+import com.liviz.v2.dto.AuthResponseDto;
 import com.liviz.v2.dto.AuthSignUpDto;
 import com.liviz.v2.dto.JwtRequest;
 import com.liviz.v2.dto.JwtResponse;
 import com.liviz.v2.model.User;
+import com.liviz.v2.service.AuthService;
+import com.liviz.v2.service.JWTUserDetailsService;
+import com.liviz.v2.service.UserService;
 import com.liviz.v2.serviceImpl.AuthServiceImpl;
 import com.liviz.v2.serviceImpl.JWTUserDetailsServiceImpl;
 import com.liviz.v2.serviceImpl.UserServiceImpl;
@@ -27,13 +31,13 @@ public class JwtAuthenticationController {
     JwtTokenUtil jwtTokenUtil;
 
     @Autowired
-    JWTUserDetailsServiceImpl userDetailsService;
+    JWTUserDetailsService userDetailsService;
 
     @Autowired
-    AuthServiceImpl authService;
+    AuthService authService;
 
     @Autowired
-    UserServiceImpl userService;
+    UserService userService;
 
     @PostMapping("/login")
     public ResponseEntity<?> createAuthenticationToken(@Valid @RequestBody JwtRequest jwtRequest) throws Exception {
@@ -73,11 +77,26 @@ public class JwtAuthenticationController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@Valid @RequestBody AuthSignUpDto authSignUpDto) {
+        // sign up
         Optional<User> userOptional = authService.signUp(authSignUpDto);
+
+        // return bad request if user is not found
         if (userOptional.isEmpty()) {
             return ResponseEntity.badRequest().body("User already exists");
         }
-        return ResponseEntity.ok(userOptional.get());
+
+        // get user details
+        final UserDetails userDetails = userDetailsService
+                .loadUserByUsername(userOptional.get().getUsername());
+
+        // generate token
+        final String token = jwtTokenUtil.generateToken(userDetails);
+
+        // return token and user
+        AuthResponseDto authResponseDto = new AuthResponseDto();
+        authResponseDto.setUser(userOptional.get());
+        authResponseDto.setToken(new JwtResponse(token));
+        return ResponseEntity.ok(authResponseDto);
     }
 
     @PostMapping("/create_anonymous")

@@ -7,6 +7,7 @@ import com.liviz.v2.dto.ProjectPutDataSourceDto;
 import com.liviz.v2.dto.ProjectPutDisplaySchemaDto;
 import com.liviz.v2.model.Project;
 import com.liviz.v2.model.User;
+import com.liviz.v2.service.ProjectService;
 import com.liviz.v2.serviceImpl.ProjectServiceImpl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,7 +23,7 @@ import java.util.List;
 @RequestMapping("/projects")
 public class ProjectController {
     @Autowired
-    ProjectServiceImpl projectService;
+    ProjectService projectService;
 
     @Autowired
     JwtTokenUtil jwtTokenUtil;
