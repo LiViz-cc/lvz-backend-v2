@@ -1,6 +1,7 @@
 package com.liviz.v2.controller;
 
 import com.liviz.v2.config.JwtTokenUtil;
+import com.liviz.v2.dto.AuthResponseDto;
 import com.liviz.v2.dto.AuthSignUpDto;
 import com.liviz.v2.dto.JwtRequest;
 import com.liviz.v2.dto.JwtResponse;
@@ -73,11 +74,26 @@ public class JwtAuthenticationController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@Valid @RequestBody AuthSignUpDto authSignUpDto) {
+        // sign up
         Optional<User> userOptional = authService.signUp(authSignUpDto);
+
+        // return bad request if user is not found
         if (userOptional.isEmpty()) {
             return ResponseEntity.badRequest().body("User already exists");
         }
-        return ResponseEntity.ok(userOptional.get());
+
+        // get user details
+        final UserDetails userDetails = userDetailsService
+                .loadUserByUsername(userOptional.get().getUsername());
+
+        // generate token
+        final String token = jwtTokenUtil.generateToken(userDetails);
+
+        // return token and user
+        AuthResponseDto authResponseDto = new AuthResponseDto();
+        authResponseDto.setUser(userOptional.get());
+        authResponseDto.setToken(new JwtResponse(token));
+        return ResponseEntity.ok(authResponseDto);
     }
 
     @PostMapping("/create_anonymous")
