@@ -1,16 +1,13 @@
 package com.liviz.v2.utils;
 
 import com.liviz.v2.config.JwtTokenUtil;
-import com.liviz.v2.dto.AuthResponseDto;
-import com.liviz.v2.dto.JwtResponse;
-import com.liviz.v2.model.User;
-import org.springframework.http.ResponseEntity;
+import com.liviz.v2.Auth.AuthResponseDto;
+import com.liviz.v2.Auth.JwtResponse;
+import com.liviz.v2.User.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Optional;
 
 @Component
 public class JwtResponseBuilder {

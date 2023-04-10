@@ -1,9 +1,8 @@
 package com.liviz.v2.config;
 
-import com.liviz.v2.dao.UserDao;
+import com.liviz.v2.User.UserDao;
 import com.liviz.v2.exception.UnauthenticatedException;
-import com.liviz.v2.model.User;
-import com.liviz.v2.serviceImpl.UserServiceImpl;
+import com.liviz.v2.User.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -108,7 +107,7 @@ public class JwtTokenUtil implements Serializable {
         return username;
     }
 
-    public com.liviz.v2.model.User getJwtUserFromToken(String authorizationHeader) throws UnauthenticatedException {
+    public User getJwtUserFromToken(String authorizationHeader) throws UnauthenticatedException {
         // get jwt username
         String usernameFromToken = getJwtIdentity(authorizationHeader);
 
