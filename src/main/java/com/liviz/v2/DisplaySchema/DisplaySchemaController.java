@@ -15,10 +15,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@JsonSerialize
-class EmptyJsonBody {
-}
-
 @RestController
 @RequestMapping("/display_schemas")
 public class DisplaySchemaController {
