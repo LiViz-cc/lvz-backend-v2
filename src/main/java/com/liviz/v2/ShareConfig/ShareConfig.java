@@ -15,6 +15,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Date;
 
 @Document("share_config")
@@ -27,7 +29,10 @@ import java.util.Date;
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "id")
-public class ShareConfig {
+public class ShareConfig implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     @Id
     private String id;
 

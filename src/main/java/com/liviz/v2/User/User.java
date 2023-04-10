@@ -12,6 +12,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Date;
 
 @Document("user")
@@ -23,7 +25,10 @@ import java.util.Date;
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "id")
-public class User {
+public class User implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     @Id
     private String id;
 
