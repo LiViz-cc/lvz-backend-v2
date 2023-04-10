@@ -1,6 +1,6 @@
 package com.liviz.v2.config;
 
-import com.liviz.v2.serviceImpl.JWTUserDetailsServiceImpl;
+import com.liviz.v2.Auth.JWTUserDetailsServiceImpl;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
