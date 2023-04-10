@@ -1,12 +1,12 @@
 package com.liviz.v2.controller;
 
 import com.liviz.v2.config.JwtTokenUtil;
-import com.liviz.v2.dto.AuthSignUpDto;
-import com.liviz.v2.dto.ChangePasswordDto;
-import com.liviz.v2.dto.ChangeUsernameDto;
-import com.liviz.v2.dto.ResetUserDto;
+import com.liviz.v2.dto.*;
 import com.liviz.v2.exception.BadRequestException;
+import com.liviz.v2.exception.UnauthenticatedException;
 import com.liviz.v2.model.User;
+import com.liviz.v2.service.AuthService;
+import com.liviz.v2.service.UserService;
 import com.liviz.v2.serviceImpl.AuthServiceImpl;
 import com.liviz.v2.serviceImpl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,13 +22,13 @@ import java.util.Optional;
 public class UserController {
 
     @Autowired
-    private UserServiceImpl userService;
+    private UserService userService;
 
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
     @Autowired
-    private AuthServiceImpl authService;
+    private AuthService authService;
 
 
     @GetMapping("/{id}")
@@ -57,7 +57,7 @@ public class UserController {
     }
 
     @PostMapping("/{id}/password")
-    public ResponseEntity<User> changePassword(
+    public ResponseEntity<AuthResponseDto> changePassword(
             @PathVariable("id") String userId,
             @RequestHeader("Authorization") String authorizationHeader,
             @Valid @RequestBody ChangePasswordDto changePasswordDto
@@ -67,10 +67,14 @@ public class UserController {
         User jwtUser = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
 
         // check password
-        authService.authenticate(jwtUser.getUsername(), changePasswordDto.getOldPassword());
+        try {
+            authService.authenticate(jwtUser.getUsername(), changePasswordDto.getOldPassword());
+        } catch (UnauthenticatedException err) {
+            throw new BadRequestException("Old password is wrong");
+        }
 
         // change password
-        User userData = userService.changePassword(jwtUser, userId, changePasswordDto);
+        AuthResponseDto userData = userService.changePassword(jwtUser, userId, changePasswordDto);
 
         // return ok if change password success
         return new ResponseEntity<>(userData, HttpStatus.OK);
@@ -78,7 +82,7 @@ public class UserController {
     }
 
     @PostMapping("/{id}/username")
-    public ResponseEntity<User> changeUsername(
+    public ResponseEntity<AuthResponseDto> changeUsername(
             @PathVariable("id") String userId,
             @RequestHeader("Authorization") String authorizationHeader,
             @Valid @RequestBody ChangeUsernameDto changeUsernameDto
@@ -91,7 +95,7 @@ public class UserController {
         authService.authenticate(jwtUser.getUsername(), changeUsernameDto.getPassword());
 
         // change username
-        User userData = userService.changeUsername(jwtUser, userId, changeUsernameDto);
+        AuthResponseDto userData = userService.changeUsername(jwtUser, userId, changeUsernameDto);
 
         // return user
         return new ResponseEntity<>(userData, HttpStatus.OK);
@@ -120,7 +124,7 @@ public class UserController {
     }
 
     @PostMapping("/{id}/authenticate")
-    public ResponseEntity<User> authenticateAnonymousUser(
+    public ResponseEntity<AuthResponseDto> authenticateAnonymousUser(
             @PathVariable("id") String userId,
             @RequestHeader("Authorization") String authorizationHeader,
             @Valid @RequestBody AuthSignUpDto authSignUpDto
@@ -129,10 +133,10 @@ public class UserController {
         // get jwt user
         User jwtUser = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
 
-        User user = userService.authenticateAnonymousUser(jwtUser, authSignUpDto);
+        AuthResponseDto userData = userService.authenticateAnonymousUser(jwtUser, authSignUpDto);
 
         // return user
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        return new ResponseEntity<>(userData, HttpStatus.OK);
 
     }
 }
