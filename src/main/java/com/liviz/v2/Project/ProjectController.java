@@ -78,9 +78,6 @@ public class ProjectController {
 
         List<Project> projects = projectService.getProjectsByFilters(user, isPublic, createdBy);
 
-        if (projects.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
         return new ResponseEntity<>(projects, HttpStatus.OK);
     }
 

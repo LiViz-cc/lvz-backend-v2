@@ -108,10 +108,6 @@ public class ShareConfigController {
         // get share configs by filter
         List<ShareConfig> shareConfigs = shareConfigService.getShareConfigsByFilter(user, createdBy);
 
-        if (shareConfigs.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-
         // return share configs
         return new ResponseEntity<>(shareConfigs, HttpStatus.OK);
 
