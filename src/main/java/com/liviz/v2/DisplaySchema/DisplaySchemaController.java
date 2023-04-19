@@ -1,5 +1,6 @@
 package com.liviz.v2.DisplaySchema;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.liviz.v2.config.JwtTokenUtil;
 import com.liviz.v2.exception.NoSuchElementFoundException;
 import com.liviz.v2.User.User;
@@ -10,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -91,7 +94,7 @@ public class DisplaySchemaController {
 
     // TODO: add pagination
     @GetMapping
-    public ResponseEntity<Iterable<DisplaySchema>> getDisplaySchemas(
+    public ResponseEntity<Object> getDisplaySchemas(
             @RequestHeader("Authorization") String authorizationHeader,
             @RequestParam(name = "is_public", required = false) Boolean isPublic,
             @RequestParam(name = "created_by", required = false) String createdBy
@@ -101,10 +104,6 @@ public class DisplaySchemaController {
 
         // get display schemas
         List<DisplaySchema> displaySchemas = displaySchemaService.getDisplaySchemas(user, isPublic, createdBy);
-
-        if (displaySchemas.size() == 0) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
 
         // return display schemas
         return new ResponseEntity<>(displaySchemas, HttpStatus.OK);

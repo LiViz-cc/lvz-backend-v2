@@ -3,6 +3,7 @@ package com.liviz.v2.Auth;
 import com.liviz.v2.config.JwtTokenUtil;
 import com.liviz.v2.User.User;
 import com.liviz.v2.User.UserService;
+import com.liviz.v2.exception.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -39,12 +40,12 @@ public class JwtAuthenticationController {
         } else if (jwtRequest.getEmail() != null) {
             userOptional = userService.findByEmail(jwtRequest.getEmail());
         } else {
-            return ResponseEntity.badRequest().body("Username and email are null");
+            throw new BadRequestException("Username and email are null");
         }
 
         // return bad request if user is not found
         if (userOptional.isEmpty()) {
-            return ResponseEntity.badRequest().body("User not found");
+            throw new BadRequestException("User not found");
         }
 
         final User user = userOptional.get();
@@ -67,13 +68,13 @@ public class JwtAuthenticationController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signUp(@Valid @RequestBody AuthSignUpDto authSignUpDto) {
+    public ResponseEntity<?> signUp(@Valid @RequestBody AuthSignUpDto authSignUpDto) throws BadRequestException {
         // sign up
         Optional<User> userOptional = authService.signUp(authSignUpDto);
 
         // return bad request if user is not found
         if (userOptional.isEmpty()) {
-            return ResponseEntity.badRequest().body("User already exists");
+            throw new BadRequestException("User already exists");
         }
 
         // get user details
@@ -94,7 +95,7 @@ public class JwtAuthenticationController {
     public ResponseEntity<?> createAnonymousUser() {
         Optional<User> userOptional = authService.createAnonymousUser();
         if (userOptional.isEmpty()) {
-            return ResponseEntity.badRequest().body("Cannot create anonymous user");
+            throw new BadRequestException("Cannot create anonymous user");
         }
 
         // get user details

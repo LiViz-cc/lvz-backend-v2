@@ -6,6 +6,7 @@ import com.liviz.v2.Auth.ChangePasswordDto;
 import com.liviz.v2.Auth.ChangeUsernameDto;
 import com.liviz.v2.config.JwtTokenUtil;
 import com.liviz.v2.exception.BadRequestException;
+import com.liviz.v2.exception.NoSuchElementFoundException;
 import com.liviz.v2.exception.UnauthenticatedException;
 import com.liviz.v2.Auth.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RestController
@@ -43,12 +45,12 @@ public class UserController {
 
         // return not found if user is not found
         if (userData.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            throw new NoSuchElementFoundException("User not found");
         }
 
         // return unauthorized if jwt username is not equal to user id
         if (!userData.get().getId().equals(jwtUser.getId())) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            throw new UnauthenticatedException("Unauthorized");
         }
 
         // return user
