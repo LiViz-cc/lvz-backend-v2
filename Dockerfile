@@ -9,6 +9,8 @@ ARG DB_DATABASE
 ARG TEST_USERNAME
 ARG TEST_PASSWORD
 ARG LIVIZ_JWT_SECRET_KEY
+ARG google_oauth_client_id
+ARG google_oauth_client_secret
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -27,7 +29,9 @@ RUN sed -i "s/DB_USERNAME/${DB_USERNAME}/g" ./application.yml \
     && sed -i "s/DB_DATABASE/${DB_DATABASE}/g" ./application.yml \
     && sed -i "s/TEST_USERNAME/${TEST_USERNAME}/g" ./application.yml \
     && sed -i "s/TEST_PASSWORD/${TEST_PASSWORD}/g" ./application.yml \
-    && sed -i "s/LIVIZ_JWT_SECRET_KEY/${LIVIZ_JWT_SECRET_KEY}/g" ./application.yml
+    && sed -i "s/LIVIZ_JWT_SECRET_KEY/${LIVIZ_JWT_SECRET_KEY}/g" ./application.yml \
+    && sed -i "s/google_oauth_client_id/${google_oauth_client_id}/g" ./application.yml \
+    && sed -i "s/google_oauth_client_secret/${google_oauth_client_secret}/g" ./application.yml
 
 # Use Maven to build the project and generate the JAR file
 RUN mvn clean install

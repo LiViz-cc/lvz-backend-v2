@@ -43,6 +43,8 @@ jobs:
               --build-arg TEST_USERNAME="$TEST_USERNAME" \
               --build-arg TEST_PASSWORD="$TEST_PASSWORD" \
               --build-arg LIVIZ_JWT_SECRET_KEY="$LIVIZ_JWT_SECRET_KEY" \
+              --build-arg google_oauth_client_id="$google_oauth_client_id" \
+              --build-arg google_oauth_client_secret="$google_oauth_client_secret" \
               -t ${DOCKERHUB_USERNAME}/${DOCKER_IMAGE_NAME}:latest .
             docker push ${DOCKERHUB_USERNAME}/${DOCKER_IMAGE_NAME}:latest
   deploy-to-aws:
