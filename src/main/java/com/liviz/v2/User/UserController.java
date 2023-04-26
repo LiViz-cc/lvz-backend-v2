@@ -82,6 +82,24 @@ public class UserController {
 
     }
 
+    @PostMapping("/{id}/add_password")
+    public ResponseEntity<AuthResponseDto> addPassword(
+            @PathVariable("id") String userId,
+            @RequestHeader("Authorization") String authorizationHeader,
+            @Valid @RequestBody AddPasswordDto addPasswordDto
+    ) throws Exception {
+
+        // get jwt user
+        User jwtUser = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
+
+        // change password
+        AuthResponseDto userData = userService.addPassword(jwtUser, userId, addPasswordDto);
+
+        // return ok if change password success
+        return new ResponseEntity<>(userData, HttpStatus.OK);
+
+    }
+
     @PostMapping("/{id}/username")
     public ResponseEntity<AuthResponseDto> changeUsername(
             @PathVariable("id") String userId,
