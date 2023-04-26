@@ -51,6 +51,8 @@ public class User implements Serializable {
 
     private String googleId;
 
+    private Boolean hasPassword = true;
+
     public User(){
         this.createdTime = new Date(System.currentTimeMillis());
         this.modifiedTime = new Date(System.currentTimeMillis());

@@ -33,6 +33,9 @@ public class JwtAuthenticationController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    SignUpService signUpService;
+
     @PostMapping("/login")
     public ResponseEntity<?> createAuthenticationToken(@Valid @RequestBody JwtRequest jwtRequest) throws Exception {
         // get user by username or email
@@ -72,7 +75,7 @@ public class JwtAuthenticationController {
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@Valid @RequestBody AuthSignUpDto authSignUpDto) throws BadRequestException {
         // sign up
-        Optional<User> userOptional = authService.signUp(authSignUpDto);
+        Optional<User> userOptional = signUpService.signUp(authSignUpDto);
 
         // return bad request if user is not found
         if (userOptional.isEmpty()) {
@@ -95,7 +98,7 @@ public class JwtAuthenticationController {
 
     @PostMapping("/create_anonymous")
     public ResponseEntity<?> createAnonymousUser() {
-        Optional<User> userOptional = authService.createAnonymousUser();
+        Optional<User> userOptional = signUpService.createAnonymousUser();
         if (userOptional.isEmpty()) {
             throw new BadRequestException("Cannot create anonymous user");
         }

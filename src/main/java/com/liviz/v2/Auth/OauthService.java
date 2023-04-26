@@ -3,6 +3,7 @@ package com.liviz.v2.Auth;
 import com.liviz.v2.User.User;
 import com.liviz.v2.User.UserDao;
 import com.liviz.v2.config.JwtTokenUtil;
+import com.liviz.v2.utils.RandomStringGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -19,6 +20,12 @@ public class OauthService {
 
     @Autowired
     JwtTokenUtil jwtTokenUtil;
+
+    @Autowired
+    RandomStringGenerator randomStringGenerator;
+
+    @Autowired
+    SignUpService signUpService;
 
     public AuthResponseDto googleOauthSuccess(OAuth2AuthenticationToken oAuth2AuthenticationToken) {
         OAuth2User oAuth2user = oAuth2AuthenticationToken.getPrincipal();
@@ -38,12 +45,18 @@ public class OauthService {
 
         /* if user not found, create new user and then provide jwt token */
         if (userOptional.isEmpty()) {
-            user = new User();
-            user.setEmail(email);
-            user.setUsername(name);
-            user.setGoogleId(googleId);
+            AuthSignUpDto authSignUpDto = new AuthSignUpDto();
+            authSignUpDto.setEmail(email);
+            authSignUpDto.setUsername(name);
+            authSignUpDto.setPassword(randomStringGenerator.generatePassword(20));
+            authSignUpDto.setHasPassword(false);
+            authSignUpDto.setGoogleId(googleId);
+            Optional<User> userOptionalSignUp = signUpService.signUp(authSignUpDto);
 
-            userDao.save(user);
+            if (userOptionalSignUp.isEmpty()) {
+                throw new RuntimeException("Cannot create user");
+            }
+            user = userOptionalSignUp.get();
 
         } else {
             user = userOptional.get();
