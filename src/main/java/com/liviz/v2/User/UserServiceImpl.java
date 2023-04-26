@@ -206,9 +206,5 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    @Override
-    public Optional<User> findUserByJwtToken(String jwtToken){
-        
-    }
 
 }

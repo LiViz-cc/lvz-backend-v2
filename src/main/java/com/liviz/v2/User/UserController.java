@@ -57,6 +57,25 @@ public class UserController {
         return new ResponseEntity<>(userData.get(), HttpStatus.OK);
     }
 
+    @GetMapping("/self")
+    public ResponseEntity<User> getUserByJwtToken(
+            @RequestHeader("Authorization") String authorizationHeader
+    ) {
+        // get jwt user
+        User jwtUser = jwtTokenUtil.getJwtUserFromToken(authorizationHeader);
+
+        // get user by id
+        Optional<User> userData = userService.findById(jwtUser.getId());
+
+        // return not found if user is not found
+        if (userData.isEmpty()) {
+            throw new NoSuchElementFoundException("User not found");
+        }
+
+        // return user
+        return new ResponseEntity<>(userData.get(), HttpStatus.OK);
+    }
+
     @PostMapping("/{id}/password")
     public ResponseEntity<AuthResponseDto> changePassword(
             @PathVariable("id") String userId,

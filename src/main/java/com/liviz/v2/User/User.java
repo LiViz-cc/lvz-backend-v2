@@ -49,8 +49,10 @@ public class User implements Serializable {
     @NotBlank
     private String username;
 
+    @JsonIgnore
     private String googleId;
 
+    @JsonIgnore
     private Boolean hasPassword = true;
 
     public User(){

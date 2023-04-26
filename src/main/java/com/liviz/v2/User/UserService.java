@@ -26,5 +26,4 @@ public interface UserService {
 
     AuthResponseDto addPassword(@NotNull User jwtUser, @NotNull String userId, @NotNull AddPasswordDto addPasswordDto);
 
-    Optional<User> findUserByJwtToken(String jwtToken);
 }
