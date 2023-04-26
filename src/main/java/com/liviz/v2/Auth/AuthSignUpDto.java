@@ -17,4 +17,8 @@ public class AuthSignUpDto {
     private String password;
     private String username;
 
+    private Boolean hasPassword = true;
+
+    private String googleId;
+
 }

@@ -4,7 +4,6 @@ import com.liviz.v2.DataSource.DataSourceDao;
 import com.liviz.v2.DisplaySchema.DisplaySchemaDao;
 import com.liviz.v2.Project.ProjectDao;
 import com.liviz.v2.ShareConfig.ShareConfigDao;
-import com.liviz.v2.User.UserDao;
 import com.liviz.v2.config.JwtTokenUtil;
 import com.liviz.v2.Auth.AuthResponseDto;
 import com.liviz.v2.Auth.AuthSignUpDto;
@@ -12,9 +11,8 @@ import com.liviz.v2.Auth.ChangePasswordDto;
 import com.liviz.v2.Auth.ChangeUsernameDto;
 import com.liviz.v2.exception.BadRequestException;
 import com.liviz.v2.exception.UnauthenticatedException;
-import com.liviz.v2.User.User;
-import com.liviz.v2.User.UserService;
 import com.liviz.v2.utils.JwtResponseBuilder;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -176,5 +174,37 @@ public class UserServiceImpl implements UserService {
         // return jwt response
         return jwtResponseBuilder.build(jwtUser, jwtTokenUtil);
     }
+
+    @Override
+    public AuthResponseDto addPassword(@NotNull User jwtUser, @NotNull String userId, @NotNull AddPasswordDto addPasswordDto) {
+        if (jwtUser.getHasPassword()) {
+            throw new BadRequestException("User already has password");
+        }
+
+        // check if password is empty
+        if (addPasswordDto.getPassword() == null || addPasswordDto.getPassword().isEmpty()) {
+            throw new BadRequestException("Password is required");
+        }
+
+        // get user by id
+        User user = userDao.findById(userId).orElseThrow(() -> new UnauthenticatedException("No such users"));
+
+        // encode password
+        String encodedPassword = passwordEncoder.encode(addPasswordDto.getPassword());
+
+        // update password
+        user.setPassword(encodedPassword);
+
+        // set has password to true
+        user.setHasPassword(true);
+
+        // save user
+        userDao.save(user);
+
+        // save user
+        return jwtResponseBuilder.build(user, jwtTokenUtil);
+
+    }
+
 
 }

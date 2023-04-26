@@ -7,7 +7,9 @@ import com.liviz.v2.exception.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import javax.validation.Valid;
 import java.util.HashMap;
@@ -30,6 +32,9 @@ public class JwtAuthenticationController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    SignUpService signUpService;
 
     @PostMapping("/login")
     public ResponseEntity<?> createAuthenticationToken(@Valid @RequestBody JwtRequest jwtRequest) throws Exception {
@@ -70,7 +75,7 @@ public class JwtAuthenticationController {
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@Valid @RequestBody AuthSignUpDto authSignUpDto) throws BadRequestException {
         // sign up
-        Optional<User> userOptional = authService.signUp(authSignUpDto);
+        Optional<User> userOptional = signUpService.signUp(authSignUpDto);
 
         // return bad request if user is not found
         if (userOptional.isEmpty()) {
@@ -93,7 +98,7 @@ public class JwtAuthenticationController {
 
     @PostMapping("/create_anonymous")
     public ResponseEntity<?> createAnonymousUser() {
-        Optional<User> userOptional = authService.createAnonymousUser();
+        Optional<User> userOptional = signUpService.createAnonymousUser();
         if (userOptional.isEmpty()) {
             throw new BadRequestException("Cannot create anonymous user");
         }
@@ -111,4 +116,5 @@ public class JwtAuthenticationController {
         response.put("user", userOptional.get());
         return ResponseEntity.ok(response);
     }
+
 }

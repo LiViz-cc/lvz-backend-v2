@@ -20,7 +20,6 @@ import java.util.Date;
 @Getter
 @Setter
 @ToString
-@NoArgsConstructor
 @EqualsAndHashCode(of = {"id"})
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
@@ -49,6 +48,17 @@ public class User implements Serializable {
     @Indexed(unique = true)
     @NotBlank
     private String username;
+
+    @JsonIgnore
+    private String googleId;
+
+    @JsonIgnore
+    private Boolean hasPassword = true;
+
+    public User(){
+        this.createdTime = new Date(System.currentTimeMillis());
+        this.modifiedTime = new Date(System.currentTimeMillis());
+    }
 
     public User(String email, String password, String username) {
         this.email = email;

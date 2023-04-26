@@ -5,6 +5,7 @@ import com.liviz.v2.Auth.AuthSignUpDto;
 import com.liviz.v2.Auth.ChangePasswordDto;
 import com.liviz.v2.Auth.ChangeUsernameDto;
 import com.liviz.v2.User.User;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
@@ -22,4 +23,7 @@ public interface UserService {
     User resetUser(User jwtUser, String userId);
 
     AuthResponseDto authenticateAnonymousUser(User jwtUser, AuthSignUpDto authSignUpDto);
+
+    AuthResponseDto addPassword(@NotNull User jwtUser, @NotNull String userId, @NotNull AddPasswordDto addPasswordDto);
+
 }

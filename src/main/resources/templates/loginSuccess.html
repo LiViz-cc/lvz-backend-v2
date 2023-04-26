@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Token Display</title>
+  <script>
+        function getQueryParam(name) {
+            var query = window.location.search.substring(1);
+            var params = query.split('&');
+            for (var i = 0; i < params.length; i++) {
+                var param = params[i].split('=');
+                if (param[0] === name) {
+                    return param[1];
+                }
+            }
+            return null;
+        }
+
+        function displayToken() {
+            var token = getQueryParam('token');
+            if (token) {
+                document.getElementById('token-display').innerText = 'Token: ' + token;
+            } else {
+                document.getElementById('token-display').innerText = 'Token not found in URL query parameters.';
+            }
+        }
+
+        window.onload = displayToken;
+    </script>
+</head>
+<body>
+<h1>Token Display</h1>
+<p id="token-display"></p>
+</body>
+</html>
