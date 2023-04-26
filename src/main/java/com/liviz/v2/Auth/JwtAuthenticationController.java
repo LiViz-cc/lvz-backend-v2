@@ -117,11 +117,4 @@ public class JwtAuthenticationController {
         return ResponseEntity.ok(response);
     }
 
-    // no use
-    @GetMapping("/oauth2/loginSuccess")
-    public ResponseEntity<?> getLoginInfoFromOauth(@AuthenticationPrincipal OAuth2AuthenticationToken token) {
-        System.out.println(token);
-
-        return ResponseEntity.ok(null);
-    }
 }
