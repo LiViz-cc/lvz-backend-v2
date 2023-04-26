@@ -7,7 +7,9 @@ import com.liviz.v2.exception.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import javax.validation.Valid;
 import java.util.HashMap;
@@ -110,5 +112,12 @@ public class JwtAuthenticationController {
         response.put("token", new JwtResponse(token));
         response.put("user", userOptional.get());
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/oauth2/loginSuccess")
+    public ResponseEntity<?> getLoginInfoFromOauth(@AuthenticationPrincipal OAuth2AuthenticationToken token) {
+        System.out.println(token);
+
+        return ResponseEntity.ok(null);
     }
 }

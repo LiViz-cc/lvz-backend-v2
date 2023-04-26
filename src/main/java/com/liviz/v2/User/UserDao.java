@@ -14,4 +14,7 @@ public interface UserDao extends MongoRepository<User, String> {
     @Query("{ 'username' : ?0 }")
     Optional<User> findByUsername(String username);
 
+    @Query("{ 'googleId' : ?0 }")
+    Optional<User> findByGoogleId(String googleId);
+
 }

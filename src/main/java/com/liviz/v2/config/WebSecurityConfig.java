@@ -1,5 +1,6 @@
 package com.liviz.v2.config;
 
+import com.liviz.v2.Auth.OAuth2LoginSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +13,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -27,6 +31,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private JwtRequestFilter jwtRequestFilter;
+
+    @Autowired
+    private OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
@@ -46,19 +54,33 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         // We don't need CSRF for this example
         httpSecurity.csrf().disable()
-                // dont authenticate this particular request
                 .authorizeRequests()
-                .antMatchers("/auth/login").permitAll()
-                .antMatchers("/auth/signup").permitAll()
-                .antMatchers("/auth/create_anonymous").permitAll()
-                // all other requests need to be authenticated
-                .anyRequest().authenticated().and().
-                // make sure we use stateless session; session won't be used to
-                // store user's state.
-                        exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                    .antMatchers("/auth/*").permitAll()
+                    .antMatchers("/auth/*/*").permitAll()
+                    .antMatchers("/login").permitAll()
+                    .antMatchers("/loginSuccess").permitAll()
+                    .anyRequest().authenticated()
+
+                .and().exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
+
+                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+
+                .and()
+                // oauth2
+                .oauth2Login()
+//                    .loginPage("/login")
+                    .userInfoEndpoint()
+                    .userService(oauth2UserService())
+                    .and()
+                    .successHandler(oAuth2LoginSuccessHandler);
+
 
         // Add a filter to validate the tokens with every request
         httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+    }
+
+    @Bean
+    public DefaultOAuth2UserService oauth2UserService() {
+        return new DefaultOAuth2UserService();
     }
 }
