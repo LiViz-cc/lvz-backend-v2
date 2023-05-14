@@ -1,6 +1,6 @@
 # LiViz - Data Visualization and Sharing Service
 
-LiViz is a data visualization and sharing service built with Java and several modern technologies, including Spring Boot, Hibernate, JUnit, MongoDB, Redis, Docker, AWS, and CircleCI. The project was developed between May 2022 and April 2023.
+LiViz is a data visualization and sharing service built with Java and several modern technologies, including Spring Boot, Hibernate, JUnit, MongoDB, Redis, Docker, AWS, and CircleCI.
 
 ## Features
 
