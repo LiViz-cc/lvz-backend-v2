@@ -71,10 +71,10 @@ public class WebSecurityConfig {
                 // oauth2
                 .oauth2Login()
 //                    .loginPage("/login")
-                    .userInfoEndpoint()
-                    .userService(oauth2UserService())
-                    .and()
-                    .successHandler(oAuth2LoginSuccessHandler);
+                .userInfoEndpoint()
+                .userService(oauth2UserService())
+                .and()
+                .successHandler(oAuth2LoginSuccessHandler);
 
 
         // Add a filter to validate the tokens with every request
